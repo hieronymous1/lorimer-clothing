@@ -1,0 +1,267 @@
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .card {
+    border: 1px solid #272727;
+    background: #101010;
+    cursor: pointer;
+  }
+  .card-image {
+    aspect-ratio: 4 / 5;
+    border-bottom: 1px solid #272727;
+    padding: 20px;
+    display: grid;
+    background: #0a0a0a;
+  }
+  .mini-site {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 16px;
+    height: 100%;
+    border: 1px solid #3a3a3a;
+    background: #fff;
+    color: #000;
+    overflow: hidden;
+  }
+  .mini-nav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid #000;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .mini-nav .left,
+  .mini-nav .right {
+    display: flex;
+    gap: 10px;
+  }
+  .mini-nav .right {
+    justify-content: flex-end;
+  }
+  .mini-brand {
+    justify-self: center;
+    font-size: 15px;
+    letter-spacing: 0.14em;
+  }
+  .mini-body {
+    padding: 18px;
+    display: grid;
+    gap: 16px;
+    align-content: start;
+  }
+  .mini-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .mini-hero {
+    display: grid;
+    gap: 12px;
+  }
+  .mini-hero h4,
+  .mini-section h4 {
+    margin: 0;
+    font-size: 34px;
+    line-height: 0.9;
+    font-weight: 600;
+  }
+  .mini-copy {
+    font-size: 11px;
+    line-height: 1.45;
+    max-width: 26ch;
+  }
+  .mini-row {
+    display: grid;
+    grid-template-columns: 1fr 0.85fr;
+    gap: 12px;
+    align-items: end;
+  }
+  .mini-block {
+    border: 1px solid #000;
+    min-height: 140px;
+    background: linear-gradient(135deg, #fafafa 0%, #ececec 100%);
+  }
+  .mini-lines {
+    display: grid;
+    gap: 7px;
+  }
+  .mini-lines span {
+    display: block;
+    height: 1px;
+    background: #000;
+    opacity: 0.2;
+  }
+  .mini-footer {
+    border-top: 1px solid #000;
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  .severe .mini-site {
+    font-family: "Times New Roman", Georgia, serif;
+  }
+  .severe .mini-hero h4,
+  .severe .mini-section h4,
+  .severe .mini-brand {
+    font-family: Didot, "Bodoni 72", serif;
+  }
+  .severe .mini-block {
+    background:
+      linear-gradient(180deg, #ffffff 0%, #f4f4f4 100%);
+  }
+  .raw .mini-site {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .raw .mini-hero h4,
+  .raw .mini-section h4,
+  .raw .mini-brand {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+  }
+  .raw .mini-body {
+    gap: 12px;
+  }
+  .raw .mini-block {
+    background:
+      linear-gradient(135deg, #f4f4f4 0%, #d8d8d8 50%, #f8f8f8 100%);
+  }
+  .raw .mini-footer,
+  .raw .mini-nav {
+    background: #f3f3f3;
+  }
+  .clean .mini-site {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  .clean .mini-hero h4,
+  .clean .mini-section h4,
+  .clean .mini-brand {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+  .clean .mini-row {
+    grid-template-columns: 1fr;
+  }
+  .clean .mini-block {
+    min-height: 190px;
+    background:
+      linear-gradient(180deg, #fdfdfd 0%, #f1f1f1 100%);
+  }
+  .clean .mini-footer {
+    grid-template-columns: 1fr;
+  }
+  .tone {
+    margin-top: 12px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  @media (max-width: 1100px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<h2>Choose The Visual Register</h2>
+<p class="subtitle">These are not literal page designs. They are three design attitudes for the Figma rebuild. Click the one that feels closest to LORIMER.</p>
+
+<div class="cards">
+  <div class="card severe" data-choice="severe-luxury-editorial" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mini-site">
+        <div class="mini-nav">
+          <div class="left"><span>Home</span><span>S-S 24</span></div>
+          <div class="mini-brand">LORIMER</div>
+          <div class="right"><span>Shop</span><span>About</span></div>
+        </div>
+        <div class="mini-body">
+          <div class="mini-hero">
+            <div class="mini-eyebrow">Severe Luxury Editorial</div>
+            <h4>Silence, scale, and exactness.</h4>
+            <div class="mini-copy">High-contrast serif typography, long white space, and very formal composition.</div>
+          </div>
+          <div class="mini-row">
+            <div class="mini-block"></div>
+            <div class="mini-lines"><span></span><span></span><span></span><span></span></div>
+          </div>
+        </div>
+        <div class="mini-footer"><span>Contact</span><span>Privacy</span><span>Address</span></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Severe Luxury Editorial</h3>
+      <p>Feels precise, expensive, restrained, and art-directed. Best if you want LORIMER to read as quiet luxury with editorial authority.</p>
+      <div class="tone">Didot / big whitespace / formal hierarchy</div>
+    </div>
+  </div>
+
+  <div class="card raw" data-choice="raw-underground-fashion" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mini-site">
+        <div class="mini-nav">
+          <div class="left"><span>Home</span><span>S-S 24</span></div>
+          <div class="mini-brand">LORIMER</div>
+          <div class="right"><span>Shop</span><span>About</span></div>
+        </div>
+        <div class="mini-body">
+          <div class="mini-hero">
+            <div class="mini-eyebrow">Raw Underground Fashion</div>
+            <h4>Sharper, harder, less polite.</h4>
+            <div class="mini-copy">More confrontational typography, denser rhythm, and a less polished image structure.</div>
+          </div>
+          <div class="mini-row">
+            <div class="mini-block"></div>
+            <div class="mini-block" style="min-height:110px;"></div>
+          </div>
+        </div>
+        <div class="mini-footer"><span>Contact</span><span>Shipping</span><span>Madrid</span></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Raw Underground Fashion</h3>
+      <p>Feels tougher, younger, and less composed. Best if you want LORIMER to read as more experimental and less luxury-house formal.</p>
+      <div class="tone">bold sans / harsher rhythm / attitude first</div>
+    </div>
+  </div>
+
+  <div class="card clean" data-choice="clean-commercial-minimal" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mini-site">
+        <div class="mini-nav">
+          <div class="left"><span>Home</span><span>S-S 24</span></div>
+          <div class="mini-brand">LORIMER</div>
+          <div class="right"><span>Shop</span><span>About</span></div>
+        </div>
+        <div class="mini-body">
+          <div class="mini-hero">
+            <div class="mini-eyebrow">Clean Commercial Minimal</div>
+            <h4>Calm, efficient, broadly legible.</h4>
+            <div class="mini-copy">Cleaner sans-serif hierarchy, simpler layout logic, and safer luxury-commerce behavior.</div>
+          </div>
+          <div class="mini-block"></div>
+        </div>
+        <div class="mini-footer"><span>Contact</span><span>Privacy</span><span>Shipping</span></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Clean Commercial Minimal</h3>
+      <p>Feels polished and easy, but also the safest. Best if you want a clearer retail-leaning experience over a stronger editorial point of view.</p>
+      <div class="tone">helvetica system / simple grid / safer premium</div>
+    </div>
+  </div>
+</div>
