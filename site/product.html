@@ -14,21 +14,17 @@
   <div class="site-shell">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-nav nav-block section-wrapper">
-      <nav class="nav-group" aria-label="Primary left">
-        <a class="nav-link" href="index.html">Home</a>
-        <a class="nav-link" href="ss24.html">S/S24</a>
-      </nav>
-      <a class="brand" href="index.html">LORIMER</a>
-      <nav class="nav-group" aria-label="Primary right">
-        <a class="nav-link is-active" href="shop.html" aria-current="page">Products</a>
-        <a class="nav-link" href="about.html">About</a>
-      </nav>
+      <div class="nav-zone nav-zone--a"><a class="nav-link" href="index.html">HOME</a></div>
+      <div class="nav-zone nav-zone--b"><a class="nav-link nav-link--seasonal" href="ss24.html">S/S_24</a></div>
+      <div class="nav-zone nav-zone--c"><a class="brand" href="index.html">LORIMER</a></div>
+      <div class="nav-zone nav-zone--d"><a class="nav-link is-active" href="shop.html" aria-current="page">SHOP</a></div>
+      <div class="nav-zone nav-zone--e"><a class="nav-link" href="about.html">ABOUT</a></div>
       <button class="menu-toggle" type="button" data-menu-toggle data-menu-target="mobile-nav-product" aria-controls="mobile-nav-product" aria-expanded="false" aria-label="Toggle navigation menu">Menu</button>
       <nav id="mobile-nav-product" class="mobile-nav-panel" data-mobile-panel aria-label="Mobile navigation">
-        <a class="nav-link" href="index.html">Home</a>
-        <a class="nav-link" href="ss24.html">S/S24</a>
-        <a class="nav-link is-active" href="shop.html" aria-current="page">Products</a>
-        <a class="nav-link" href="about.html">About</a>
+        <a class="nav-link" href="index.html">HOME</a>
+        <a class="nav-link" href="ss24.html">S/S_24</a>
+        <a class="nav-link is-active" href="shop.html" aria-current="page">SHOP</a>
+        <a class="nav-link" href="about.html">ABOUT</a>
       </nav>
     </header>
 
@@ -58,6 +54,16 @@
 
           <div class="product-detail-support stack-24">
             <p class="product-detail-price" data-product-price></p>
+            <div class="product-detail-purchase stack-16">
+              <div class="product-detail-size-label">Size</div>
+              <div class="product-detail-size-options" role="group" aria-label="Select size">
+                <button class="product-size-option is-active" type="button">S</button>
+                <button class="product-size-option" type="button">M</button>
+                <button class="product-size-option" type="button">L</button>
+                <button class="product-size-option" type="button">XL</button>
+              </div>
+              <button class="product-add-button" type="button">Add to Cart</button>
+            </div>
             <p class="product-detail-note" data-product-note></p>
             <div class="product-detail-links cluster-24">
               <a class="button" href="shop.html">Back to Products</a>
@@ -67,7 +73,7 @@
         </article>
 
         <figure class="product-detail-media" data-product-media>
-          <img data-product-image src="" alt="" fetchpriority="high" decoding="async">
+          <div class="product-detail-gallery" data-product-gallery></div>
         </figure>
       </section>
     </main>

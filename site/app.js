@@ -31,7 +31,7 @@ if (toggle && panel) {
 const homeToolbar = document.querySelector("[data-home-toolbar]");
 const isHomePage = document.body?.dataset.page === "home";
 
-if (isHomePage && homeToolbar) {
+if (isHomePage && homeToolbar && homeToolbar.dataset.toolbarMode !== "static") {
   let lastY = window.scrollY;
   const offset = 16;
 
@@ -175,7 +175,11 @@ const productCatalog = {
     fit: "Relaxed straight fit with a controlled shoulder line.",
     composition: "Cotton-heavy jersey blend with compact surface texture.",
     price: "Price on request",
-    note: "Inquiries are handled directly through the studio."
+    note: "Inquiries are handled directly through the studio.",
+    images: [
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/UOLSweater.FIT2.jpeg",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Trousers.FIT3.jpeg"
+    ]
   },
   "reconstructed-bomber-jacket": {
     season: "S/S24 / Men",
@@ -187,7 +191,13 @@ const productCatalog = {
     fit: "Boxy cropped profile with a shorter body length and relaxed arm.",
     composition: "Mixed denim and leather with tonal hardware accents.",
     price: "Price on request",
-    note: "Produced in limited quantities."
+    note: "Produced in limited quantities.",
+    images: [
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/BomberJacket.FIT3.V3.png",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/BomberJacket.FIT3V5.png",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/BomberJacket.FIT3.V6.png",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/BomberJacket.FIT3V4.jpeg"
+    ]
   },
   "pinstriped-trouser": {
     season: "S/S24 / Men",
@@ -199,7 +209,11 @@ const productCatalog = {
     fit: "Straight leg with moderate rise and light break at hem.",
     composition: "Wool blend suiting with fine stripe structure.",
     price: "Price on request",
-    note: "Sizing support is available on request."
+    note: "Sizing support is available on request.",
+    images: [
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Pinstripe.Trouser.V1.png",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Trousers.FIT3V2.png"
+    ]
   },
   "layered-texture-skirt": {
     season: "S/S24 / Women",
@@ -211,7 +225,12 @@ const productCatalog = {
     fit: "High-waisted profile with structured drape around the hip.",
     composition: "Cotton and technical blend with textured face.",
     price: "Price on request",
-    note: "Available through direct studio contact."
+    note: "Available through direct studio contact.",
+    images: [
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Skirt.FITV3.png",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Skirt.FIT5V2.jpeg",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Skirt.FIT5.jpeg"
+    ]
   },
   "ss24-dress": {
     season: "S/S24 / Women",
@@ -223,7 +242,11 @@ const productCatalog = {
     fit: "Long vertical silhouette with easy movement through the lower body.",
     composition: "Soft drape woven fabric with matte finish.",
     price: "Price on request",
-    note: "Styling and fit guidance is available on request."
+    note: "Styling and fit guidance is available on request.",
+    images: [
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Dresss.jpeg",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Dress.FIT6.jpeg"
+    ]
   },
   "asymmetrical-top": {
     season: "S/S24 / Women",
@@ -235,7 +258,11 @@ const productCatalog = {
     fit: "Close shoulder with controlled ease through body.",
     composition: "Lightweight woven blend with crisp hand.",
     price: "Price on request",
-    note: "Designed for layered pairings within S/S24."
+    note: "Designed for layered pairings within S/S24.",
+    images: [
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Top.FIT5.jpeg",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Top.FIT4.jpeg"
+    ]
   },
   "dual-texture-knit-vest": {
     season: "S/S24 / Capsule",
@@ -247,7 +274,11 @@ const productCatalog = {
     fit: "Regular fit with slight boxy volume through body.",
     composition: "Dual-gauge knit cotton blend.",
     price: "Price on request",
-    note: "Built to layer with shirting or standalone."
+    note: "Built to layer with shirting or standalone.",
+    images: [
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Vest.FIT1V2.png",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Vest.Black.FIT1.png"
+    ]
   },
   "reconstructed-button-up-002": {
     season: "S/S24 / Capsule",
@@ -259,7 +290,11 @@ const productCatalog = {
     fit: "Relaxed shirt block with a slightly elongated body.",
     composition: "Cotton shirting with mixed panel weights.",
     price: "Price on request",
-    note: "Limited run."
+    note: "Limited run.",
+    images: [
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/ReconShirt2.Flat.jpeg",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/ReconShirt2.Flat.Back.jpeg"
+    ]
   },
   "adjustable-button-trousers": {
     season: "S/S24 / Capsule",
@@ -271,7 +306,12 @@ const productCatalog = {
     fit: "Straight cut with adjustable side shaping.",
     composition: "Structured cotton blend twill.",
     price: "Price on request",
-    note: "Adjustment system is demonstrated during fitting appointments."
+    note: "Adjustment system is demonstrated during fitting appointments.",
+    images: [
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Trousers.FIT1.png",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Trousers.FIT1.V2.jpeg",
+      "../wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2026-02-12_1803/AAGarmentFlats/Trousers.FIT4.jpeg"
+    ]
   }
 };
 
@@ -292,7 +332,7 @@ if (productDetailPage) {
   const compositionNode = productDetailPage.querySelector("[data-product-composition]");
   const priceNode = productDetailPage.querySelector("[data-product-price]");
   const noteNode = productDetailPage.querySelector("[data-product-note]");
-  const imageNode = productDetailPage.querySelector("[data-product-image]");
+  const galleryNode = productDetailPage.querySelector("[data-product-gallery]");
 
   if (titleNode) {
     titleNode.textContent = product.title;
@@ -318,10 +358,23 @@ if (productDetailPage) {
   if (noteNode) {
     noteNode.textContent = product.note;
   }
-  if (imageNode) {
-    imageNode.src = product.image;
-    imageNode.alt = product.alt;
+  if (galleryNode) {
+    const galleryImages = Array.isArray(product.images) && product.images.length ? product.images : [product.image];
+    galleryNode.innerHTML = galleryImages
+      .map((src, index) => {
+        const priority = index === 0 ? ' fetchpriority="high"' : "";
+        return `<img src="${src}" alt="${product.alt} ${index + 1}"${priority} decoding="async" loading="${index === 0 ? "eager" : "lazy"}">`;
+      })
+      .join("");
   }
+
+  const sizeOptions = productDetailPage.querySelectorAll(".product-size-option");
+  sizeOptions.forEach((button) => {
+    button.addEventListener("click", () => {
+      sizeOptions.forEach((item) => item.classList.remove("is-active"));
+      button.classList.add("is-active");
+    });
+  });
 
   document.title = `LORIMER ${product.title}`;
 }
