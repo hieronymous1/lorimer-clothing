@@ -3,99 +3,108 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LORIMER Product</title>
-  <meta name="description" content="Individual product page for LORIMER.">
+  <title>Product | Lorimer</title>
+  <meta name="description" content="Individual product page for Lorimer.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body data-page="product-detail">
+<body data-page="shop">
   <div class="site-shell">
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="site-nav nav-block section-wrapper">
-      <div class="nav-zone nav-zone--a"><a class="nav-link" href="index.html">HOME</a></div>
-      <div class="nav-zone nav-zone--b"><a class="nav-link nav-link--seasonal" href="ss24.html">S/S_24</a></div>
-      <div class="nav-zone nav-zone--c"><a class="brand" href="index.html">LORIMER</a></div>
-      <div class="nav-zone nav-zone--d"><a class="nav-link is-active" href="shop.html" aria-current="page">SHOP</a></div>
-      <div class="nav-zone nav-zone--e"><a class="nav-link" href="about.html">ABOUT</a></div>
-      <button class="menu-toggle" type="button" data-menu-toggle data-menu-target="mobile-nav-product" aria-controls="mobile-nav-product" aria-expanded="false" aria-label="Toggle navigation menu">Menu</button>
+    <header class="site-nav">
+      <a class="nav-link" data-route="home" href="index.html">HOME</a>
+      <a class="nav-link" data-route="ss24" href="ss24.html">S/S_24</a>
+      <a class="brand-mark" href="index.html" aria-label="Lorimer home">
+        <img src="../FINAL PICS WEBSITE/Lorimer final logo_Lorimer 1 black.png" alt="Lorimer">
+      </a>
+      <a class="nav-link" data-route="shop" href="shop.html">SHOP</a>
+      <a class="nav-link" data-route="about" href="about.html">ABOUT</a>
+      <button class="menu-toggle" type="button" data-menu-toggle data-menu-target="mobile-nav-product" aria-controls="mobile-nav-product" aria-expanded="false">Menu</button>
       <nav id="mobile-nav-product" class="mobile-nav-panel" data-mobile-panel aria-label="Mobile navigation">
         <a class="nav-link" href="index.html">HOME</a>
         <a class="nav-link" href="ss24.html">S/S_24</a>
-        <a class="nav-link is-active" href="shop.html" aria-current="page">SHOP</a>
+        <a class="nav-link" href="shop.html">SHOP</a>
         <a class="nav-link" href="about.html">ABOUT</a>
       </nav>
     </header>
 
-    <main id="main-content" class="page section-wrapper product-detail-page" data-product-detail-page>
-      <section class="product-detail-layout" data-product-layout>
-        <article class="product-detail-text" data-product-text>
-          <div class="product-detail-header stack-24">
-            <div class="eyebrow" data-product-season>S/S24</div>
-            <h1 class="product-detail-title" data-product-title>Product</h1>
-            <p class="product-detail-intro" data-product-intro></p>
-          </div>
+    <main id="main-content" class="page product-page" data-product-page>
+      <section class="product-layout">
+        <div class="product-visual-column">
+          <div class="product-gallery" data-product-gallery></div>
+        </div>
+        <aside class="product-info-column">
+          <div class="product-info-sticky">
+            <div class="eyebrow" data-product-season></div>
+            <h1 data-product-title>Product</h1>
+            <p class="product-price" data-product-price></p>
+            <p class="product-description" data-product-description></p>
 
-          <div class="product-detail-groups stack-40" data-product-groups>
-            <section class="product-detail-group" data-group="details">
-              <h2>Details</h2>
-              <p data-product-details></p>
-            </section>
-            <section class="product-detail-group" data-group="fit">
-              <h2>Fit</h2>
-              <p data-product-fit></p>
-            </section>
-            <section class="product-detail-group" data-group="composition">
-              <h2>Composition</h2>
-              <p data-product-composition></p>
-            </section>
-          </div>
-
-          <div class="product-detail-support stack-24">
-            <p class="product-detail-price" data-product-price></p>
-            <div class="product-detail-purchase stack-16">
-              <div class="product-detail-size-label">Size</div>
-              <div class="product-detail-size-options" role="group" aria-label="Select size">
-                <button class="product-size-option is-active" type="button">S</button>
-                <button class="product-size-option" type="button">M</button>
-                <button class="product-size-option" type="button">L</button>
-                <button class="product-size-option" type="button">XL</button>
+            <dl class="product-facts">
+              <div>
+                <dt>Status</dt>
+                <dd data-product-status></dd>
               </div>
-              <button class="product-add-button" type="button">Add to Cart</button>
-            </div>
-            <p class="product-detail-note" data-product-note></p>
-            <div class="product-detail-links cluster-24">
-              <a class="button" href="shop.html">Back to Products</a>
-              <a class="link-quiet" href="ss24.html">View S/S24</a>
+              <div>
+                <dt>Size</dt>
+                <dd data-product-sizes></dd>
+              </div>
+              <div>
+                <dt>Construction</dt>
+                <dd data-product-details></dd>
+              </div>
+            </dl>
+
+            <div class="product-actions">
+              <a class="button-link" data-product-inquiry href="#">Inquiry</a>
+              <a class="button-link is-muted" href="shop.html">Back to products</a>
             </div>
           </div>
-        </article>
+        </aside>
+      </section>
 
-        <figure class="product-detail-media" data-product-media>
-          <div class="product-detail-gallery" data-product-gallery></div>
-        </figure>
+      <section class="style-section">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Style your garment</p>
+            <h2>Secondary imagery is treated as the styling and atmosphere layer from the PDF templates.</h2>
+          </div>
+        </div>
+        <div class="style-gallery" data-style-gallery></div>
+      </section>
+
+      <section class="related-section">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Linked products</p>
+            <h2>Built to connect back to the wider chapter rather than isolate the garment.</h2>
+          </div>
+        </div>
+        <div class="related-grid" data-product-related></div>
       </section>
     </main>
 
-    <footer class="site-footer section-wrapper">
-      <p class="footer-closing-note">Lorimer is built as a quiet product archive with seasonal chapters and direct studio access.</p>
-      <div class="footer-grid footer-grid--closing">
-        <div class="footer-col">
+    <footer class="site-footer">
+      <p class="footer-note">The product page is rebuilt from the new product-page templates: dominant imagery, restrained copy, and direct inquiry.</p>
+      <div class="footer-grid">
+        <div>
           <div class="footer-label">Studio</div>
-          <p class="footer-copy"><a href="mailto:throwawaydeltron@gmail.com">throwawaydeltron@gmail.com</a><br><a href="tel:+34664656820">+34 664 65 6820</a></p>
+          <p><a data-contact-email href="#">Email</a><br><a data-contact-phone href="#">Phone</a></p>
         </div>
-        <div class="footer-col">
-          <div class="footer-label">Notes</div>
-          <p class="footer-copy">By appointment<br>Shipping and terms on request</p>
-        </div>
-        <div class="footer-col">
+        <div>
           <div class="footer-label">Base</div>
-          <p class="footer-copy">Monda Esp<br>28012 Madrid</p>
+          <p data-contact-base></p>
+        </div>
+        <div>
+          <div class="footer-label">Route</div>
+          <p>Inquiry-first<br>Archive-aware</p>
         </div>
       </div>
     </footer>
   </div>
+  <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
