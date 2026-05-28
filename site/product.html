@@ -14,19 +14,19 @@
   <div class="site-shell">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-nav">
-      <a class="nav-link" data-route="home" href="index.html">HOME</a>
-      <a class="nav-link" data-route="ss24" href="ss24.html">S/S_24</a>
+      <a class="nav-link" data-route="ss24" href="ss24.html">S/S24</a>
+      <a class="nav-link" data-route="shop" href="shop.html">PRODUCTS</a>
       <a class="brand-mark" href="index.html" aria-label="Lorimer home">
         <img src="../FINAL PICS WEBSITE/Lorimer final logo_Lorimer 1 black.png" alt="Lorimer">
       </a>
-      <a class="nav-link" data-route="shop" href="shop.html">SHOP</a>
       <a class="nav-link" data-route="about" href="about.html">ABOUT</a>
+      <a class="nav-link" data-route="cart" href="#">CART</a>
       <button class="menu-toggle" type="button" data-menu-toggle data-menu-target="mobile-nav-product" aria-controls="mobile-nav-product" aria-expanded="false">Menu</button>
       <nav id="mobile-nav-product" class="mobile-nav-panel" data-mobile-panel aria-label="Mobile navigation">
-        <a class="nav-link" href="index.html">HOME</a>
-        <a class="nav-link" href="ss24.html">S/S_24</a>
-        <a class="nav-link" href="shop.html">SHOP</a>
+        <a class="nav-link" href="ss24.html">S/S24</a>
+        <a class="nav-link" href="shop.html">PRODUCTS</a>
         <a class="nav-link" href="about.html">ABOUT</a>
+        <a class="nav-link" href="#">CART</a>
       </nav>
     </header>
 
@@ -37,52 +37,39 @@
         </div>
         <aside class="product-info-column">
           <div class="product-info-sticky">
-            <div class="eyebrow" data-product-season></div>
             <h1 data-product-title>Product</h1>
-            <p class="product-price" data-product-price></p>
-            <p class="product-description" data-product-description></p>
 
-            <dl class="product-facts">
-              <div>
-                <dt>Status</dt>
-                <dd data-product-status></dd>
-              </div>
-              <div>
-                <dt>Size</dt>
-                <dd data-product-sizes></dd>
-              </div>
-              <div>
-                <dt>Construction</dt>
-                <dd data-product-details></dd>
-              </div>
-            </dl>
+            <div class="product-pricing">
+              <span class="product-price" data-product-price></span>
+              <a class="product-inquiry" data-product-inquiry href="#" hidden>Inquiry</a>
+              <span class="product-stock" data-product-stock hidden></span>
+            </div>
 
-            <div class="product-actions">
-              <a class="button-link" data-product-inquiry href="#">Inquiry</a>
-              <a class="button-link is-muted" href="shop.html">Back to products</a>
+            <div class="product-field product-field--colors" data-product-colors-field hidden>
+              <span class="product-field-label">Color:</span>
+              <div class="product-colors" data-product-colors></div>
+            </div>
+
+            <div class="product-field product-field--sizes">
+              <span class="product-field-label">Size:</span>
+              <div class="product-sizes" data-product-sizes></div>
+            </div>
+
+            <button class="product-cta" data-product-cta type="button"></button>
+
+            <p class="product-date" data-product-date hidden></p>
+
+            <div class="product-copy">
+              <p class="product-description" data-product-description></p>
+              <p class="product-details" data-product-details></p>
+            </div>
+
+            <div class="product-style-block">
+              <p class="product-style-eyebrow">Style your <span data-style-noun>garment</span>:</p>
+              <div class="style-gallery" data-style-gallery></div>
             </div>
           </div>
         </aside>
-      </section>
-
-      <section class="style-section">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Style your garment</p>
-            <h2>Secondary imagery is treated as the styling and atmosphere layer from the PDF templates.</h2>
-          </div>
-        </div>
-        <div class="style-gallery" data-style-gallery></div>
-      </section>
-
-      <section class="related-section">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Linked products</p>
-            <h2>Built to connect back to the wider chapter rather than isolate the garment.</h2>
-          </div>
-        </div>
-        <div class="related-grid" data-product-related></div>
       </section>
     </main>
 

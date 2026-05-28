@@ -175,6 +175,27 @@
     });
   };
 
+  const styleNounFromTitle = (title) => {
+    const lookup = [
+      ["jacket", "jacket"],
+      ["denim", "denim"],
+      ["jean", "denim"],
+      ["trouser", "trousers"],
+      ["pant", "trousers"],
+      ["skirt", "skirt"],
+      ["dress", "dress"],
+      ["vest", "vest"],
+      ["sweatshirt", "sweatshirt"],
+      ["top", "top"],
+      ["shirt", "shirt"]
+    ];
+    const lower = title.toLowerCase();
+    for (const [needle, label] of lookup) {
+      if (lower.includes(needle)) return label;
+    }
+    return "garment";
+  };
+
   const renderProduct = () => {
     const page = document.querySelector("[data-product-page]");
 
@@ -191,57 +212,101 @@
     }
 
     document.title = `${product.title} | Lorimer`;
+    const variant = product.variant === "sellable" ? "sellable" : "archived";
+    page.dataset.variant = variant;
 
     const title = document.querySelector("[data-product-title]");
-    const season = document.querySelector("[data-product-season]");
     const price = document.querySelector("[data-product-price]");
+    const inquiry = document.querySelector("[data-product-inquiry]");
+    const stock = document.querySelector("[data-product-stock]");
+    const colorsField = document.querySelector("[data-product-colors-field]");
+    const colors = document.querySelector("[data-product-colors]");
+    const sizes = document.querySelector("[data-product-sizes]");
+    const cta = document.querySelector("[data-product-cta]");
+    const date = document.querySelector("[data-product-date]");
     const description = document.querySelector("[data-product-description]");
     const details = document.querySelector("[data-product-details]");
-    const sizing = document.querySelector("[data-product-sizes]");
-    const status = document.querySelector("[data-product-status]");
-    const inquiry = document.querySelector("[data-product-inquiry]");
     const gallery = document.querySelector("[data-product-gallery]");
     const styleGallery = document.querySelector("[data-style-gallery]");
-    const related = document.querySelector("[data-product-related]");
+    const styleNoun = document.querySelector("[data-style-noun]");
 
     title.textContent = product.title;
-    season.textContent = product.season;
     price.textContent = product.priceLabel;
     description.textContent = product.description;
     details.textContent = product.details;
-    status.textContent = product.statusLabel;
-    sizing.textContent = product.sizes.join(" / ");
-    inquiry.href = `mailto:${data.contact.email}?subject=${encodeURIComponent(`Lorimer inquiry: ${product.title}`)}`;
-    inquiry.textContent = product.inquiryLabel;
+
+    if (variant === "sellable") {
+      stock.textContent = product.statusLabel || "In Stock";
+      stock.hidden = false;
+      inquiry.hidden = true;
+    } else {
+      inquiry.href = `mailto:${data.contact.email}?subject=${encodeURIComponent(`Lorimer inquiry: ${product.title}`)}`;
+      inquiry.textContent = product.inquiryLabel || "Inquiry";
+      inquiry.hidden = false;
+      stock.hidden = true;
+    }
+
+    if (variant === "sellable" && Array.isArray(product.colors) && product.colors.length) {
+      product.colors.forEach((color, index) => {
+        const swatch = document.createElement("button");
+        swatch.type = "button";
+        swatch.className = "swatch" + (index === 0 ? " is-selected" : "");
+        swatch.setAttribute("aria-label", color.label);
+        swatch.style.background = color.hex;
+        colors.appendChild(swatch);
+      });
+      colorsField.hidden = false;
+    }
+
+    product.sizes.forEach((size, index) => {
+      const pill = document.createElement("span");
+      pill.className = "size-pill" + (variant === "archived" || index === 0 ? " is-selected" : "");
+      pill.textContent = size;
+      sizes.appendChild(pill);
+    });
+
+    const ctaLabel = product.ctaLabel || (variant === "sellable" ? "Add to Cart" : "Archived");
+    cta.textContent = ctaLabel;
+    cta.classList.add(variant === "sellable" ? "is-sellable" : "is-archived");
+    if (variant === "sellable") {
+      cta.addEventListener("click", () => {
+        cta.textContent = "Added";
+        window.setTimeout(() => { cta.textContent = ctaLabel; }, 1400);
+      });
+    } else {
+      cta.disabled = true;
+    }
+
+    if (variant === "archived" && product.dateOfConstruction) {
+      date.textContent = `Date of Construction: ${product.dateOfConstruction}`;
+      date.hidden = false;
+    }
 
     const primaryFrame = document.createElement("figure");
     primaryFrame.className = "product-gallery-primary";
     primaryFrame.appendChild(createImage(product.gallery[0].src, product.gallery[0].alt, "product-gallery-image"));
     gallery.appendChild(primaryFrame);
 
-    const secondary = document.createElement("div");
-    secondary.className = "product-gallery-secondary";
-    product.gallery.slice(1).forEach((image) => {
-      const frame = document.createElement("figure");
-      frame.className = "product-gallery-tile";
-      frame.appendChild(createImage(image.src, image.alt, "product-gallery-image"));
-      secondary.appendChild(frame);
-    });
-    gallery.appendChild(secondary);
+    if (product.gallery.length > 1) {
+      const secondary = document.createElement("div");
+      secondary.className = "product-gallery-secondary";
+      product.gallery.slice(1).forEach((image) => {
+        const frame = document.createElement("figure");
+        frame.className = "product-gallery-tile";
+        frame.appendChild(createImage(image.src, image.alt, "product-gallery-image"));
+        secondary.appendChild(frame);
+      });
+      gallery.appendChild(secondary);
+    }
 
-    product.styleGallery.forEach((image) => {
+    styleNoun.textContent = styleNounFromTitle(product.title);
+
+    product.styleGallery.slice(0, 3).forEach((image) => {
       const frame = document.createElement("figure");
       frame.className = "style-gallery-frame";
       frame.appendChild(createImage(image.src, image.alt, "style-gallery-image"));
       styleGallery.appendChild(frame);
     });
-
-    product.relatedSlugs
-      .map((slug) => productIndex.get(slug))
-      .filter(Boolean)
-      .forEach((relatedProduct) => {
-        related.appendChild(createProductCard(relatedProduct, "related-product-card"));
-      });
   };
 
   const renderLooks = () => {
