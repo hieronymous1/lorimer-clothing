@@ -17,3 +17,6 @@ wetransfer_lorimer-web-template-for-product-and-s-s24-page-product-flat-photos_2
 swisstransfer_*/
 images/
 references/external-captures/
+
+.playwright-mcp/
+tsconfig.tsbuildinfo

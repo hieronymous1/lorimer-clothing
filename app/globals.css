@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-shell text-ink antialiased;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0)),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.55), transparent 30%);
+}
+
+a {
+  @apply no-underline;
+}
+
+::selection {
+  background: rgba(22, 21, 18, 0.14);
+}
+
+.page-shell {
+  @apply mx-auto flex w-full max-w-shell flex-col px-4 md:px-8 xl:px-12;
+}
+
+.page-section {
+  @apply border-b border-line/80 py-12 md:py-16 xl:py-20;
+}
+
+.editorial-title {
+  @apply max-w-5xl text-balance text-[3rem] font-medium leading-[0.88] md:text-[4.5rem] xl:text-[6rem];
+}
+
+.editorial-copy {
+  @apply max-w-3xl text-[1.05rem] leading-8 text-fog md:text-[1.15rem];
+}
