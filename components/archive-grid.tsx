@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 import { ProductCard } from "@/components/product-card";
 import { RouteState } from "@/components/route-state";
-import type { GarmentCategory } from "@/lib/folio";
+import type { GarmentCategory } from "@/lib/folio-shared";
 import type { StorefrontProduct } from "@/lib/types";
 import { cn } from "@/lib/utils";
 

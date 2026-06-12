@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { LogoMark } from "@/components/logo-slices";
-import type { FolioPlate } from "@/lib/folio";
-import { FOLIO_META } from "@/lib/folio";
+import { FOLIO_META } from "@/lib/folio-shared";
+import type { FolioPlate } from "@/lib/folio-shared";
 
 /**
  * Face renderers for the folio leaves. Every face is a full-bleed

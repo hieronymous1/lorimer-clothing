@@ -1,33 +1,15 @@
+import "server-only";
+
 import { cache } from "react";
 
 import { getStorefrontData } from "@/lib/storefront";
-import type { AssetImage, StorefrontProduct } from "@/lib/types";
+import { FOLIO_META } from "@/lib/folio-shared";
+import type { FolioGarment, FolioPlate, GarmentCategory } from "@/lib/folio-shared";
+import type { StorefrontProduct } from "@/lib/types";
 import { normalizeAssetPath } from "@/lib/utils";
 
-export type GarmentCategory = "Outerwear" | "Tops" | "Bottoms" | "Dresses";
-
-export type FolioGarment = StorefrontProduct & {
-  category: GarmentCategory;
-  /** First clause of the details copy, used as the material line */
-  material: string;
-  lookNumber: number;
-};
-
-export type FolioPlate =
-  | { kind: "cover" }
-  | { kind: "index"; groups: Array<{ category: GarmentCategory; garments: FolioGarment[] }> }
-  | {
-      kind: "look";
-      lookNumber: number;
-      label: string;
-      title: string;
-      caption: string;
-      image: AssetImage;
-      extraImages: AssetImage[];
-      garments: FolioGarment[];
-    }
-  | { kind: "group"; image: AssetImage; caption: string }
-  | { kind: "colophon" };
+export { FOLIO_META };
+export type { FolioGarment, FolioPlate, GarmentCategory };
 
 const CATEGORY_RULES: Array<[RegExp, GarmentCategory]> = [
   [/dress/i, "Dresses"],
@@ -112,9 +94,3 @@ export const getFolioPlates = cache(async (): Promise<FolioPlate[]> => {
     { kind: "colophon" }
   ];
 });
-
-export const FOLIO_META = {
-  number: "N°01",
-  chapter: "S/S24",
-  recorded: "09.05.2024"
-} as const;

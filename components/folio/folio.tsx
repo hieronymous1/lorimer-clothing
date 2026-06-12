@@ -14,8 +14,8 @@ import {
   LookDataFace,
   LookImageFace
 } from "@/components/folio/faces";
-import type { FolioPlate } from "@/lib/folio";
-import { FOLIO_META } from "@/lib/folio";
+import { FOLIO_META } from "@/lib/folio-shared";
+import type { FolioPlate } from "@/lib/folio-shared";
 
 type Leaf = { front: ReactNode; back: ReactNode };
 
