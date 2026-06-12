@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { FadeInSection } from "@/components/fade-in-section";
 import { RouteState } from "@/components/route-state";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteImage } from "@/components/site-image";
@@ -19,14 +20,16 @@ export default async function SS24Page() {
   return (
     <>
       <SiteNav pathname="/ss24" logoSrc={chrome.logoSrc} />
-      <main className="page-shell pb-24">
-        <section className="page-section space-y-6">
-          <SectionHeading
-            eyebrow={collection.eyebrow}
-            title={collection.title}
-            description={collection.intro}
-          />
-        </section>
+      <main className="page-shell pb-32 xl:pb-48">
+        <FadeInSection>
+          <section className="page-section space-y-6">
+            <SectionHeading
+              eyebrow={collection.eyebrow}
+              title={collection.title}
+              description={collection.intro}
+            />
+          </section>
+        </FadeInSection>
 
         <section className="page-section grid gap-10 xl:grid-cols-shop xl:gap-14">
           <aside className="space-y-5 xl:sticky xl:top-32 xl:self-start">
@@ -53,7 +56,8 @@ export default async function SS24Page() {
                   .filter(Boolean);
 
                 return (
-                  <section key={look.id} id={look.id} className="space-y-8">
+                  <FadeInSection key={look.id}>
+                  <section id={look.id} className="space-y-8">
                     <div className="grid gap-4 border-b border-line pb-6 xl:grid-cols-[160px_minmax(0,1fr)]">
                       <p className="text-[0.74rem] uppercase tracking-[0.18em] text-fog">{look.label}</p>
                       <div className="space-y-3">
@@ -105,6 +109,7 @@ export default async function SS24Page() {
                       </p>
                     )}
                   </section>
+                  </FadeInSection>
                 );
               })
             ) : (

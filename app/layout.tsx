@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Archivo_Narrow, Cormorant_Garamond } from "next/font/google";
 
+import { SiteCursor } from "@/components/site-cursor";
 import { SiteFooter } from "@/components/site-footer";
+import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
 import { getSiteUrl } from "@/lib/site";
 import { getSiteChromeData } from "@/lib/storefront";
 
@@ -50,9 +52,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable}`}>
-      <body className="bg-shell font-[var(--font-serif)] text-ink antialiased">
-        {children}
-        <SiteFooter contact={chrome.contact} />
+      <body className="bg-shell font-[var(--font-sans)] text-ink antialiased">
+        <SmoothScrollProvider>
+          <SiteCursor />
+          {children}
+          <SiteFooter contact={chrome.contact} />
+        </SmoothScrollProvider>
       </body>
     </html>
   );

@@ -7,14 +7,28 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto; /* lenis handles smooth scroll */
 }
 
 body {
   @apply bg-shell text-ink antialiased;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   background-image:
     linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0)),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.55), transparent 30%);
+}
+
+/* Subtle grain texture for tactile feel */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
 }
 
 a {
@@ -26,17 +40,19 @@ a {
 }
 
 .page-shell {
-  @apply mx-auto flex w-full max-w-shell flex-col px-4 md:px-8 xl:px-12;
+  @apply mx-auto flex w-full max-w-shell flex-col px-4 pt-24 md:px-8 xl:px-12;
 }
 
 .page-section {
-  @apply border-b border-line/80 py-12 md:py-16 xl:py-20;
+  @apply border-b border-line/80 py-20 md:py-28 xl:py-36;
 }
 
 .editorial-title {
-  @apply max-w-5xl text-balance text-[3rem] font-medium leading-[0.88] md:text-[4.5rem] xl:text-[6rem];
+  @apply max-w-5xl text-balance text-[3rem] font-normal leading-[0.88] tracking-[-0.01em] md:text-[4.5rem] xl:text-[6rem];
+  font-family: var(--font-serif);
 }
 
 .editorial-copy {
   @apply max-w-3xl text-[1.05rem] leading-8 text-fog md:text-[1.15rem];
+  font-family: var(--font-serif);
 }

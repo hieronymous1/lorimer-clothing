@@ -1,3 +1,4 @@
+import { FadeInSection } from "@/components/fade-in-section";
 import { ProductCard } from "@/components/product-card";
 import { RouteState } from "@/components/route-state";
 import { SectionHeading } from "@/components/section-heading";
@@ -11,14 +12,16 @@ export default async function ShopPage() {
   return (
     <>
       <SiteNav pathname="/shop" logoSrc={chrome.logoSrc} />
-      <main className="page-shell pb-24">
-        <section className="page-section space-y-6">
+      <main className="page-shell pb-32 xl:pb-48">
+        <FadeInSection>
+          <section className="page-section space-y-6">
           <SectionHeading
             eyebrow="Shop"
             title="The catalog is staged as an authored field instead of a neutral product grid."
             description="Products stay grouped by collection logic and maintain their archive, inquiry, or purchase state without changing the visual tone of the route."
           />
-        </section>
+          </section>
+        </FadeInSection>
 
         <section className="page-section grid gap-10 xl:grid-cols-shop xl:gap-14">
           <aside className="space-y-5 xl:sticky xl:top-32 xl:self-start">
@@ -45,7 +48,8 @@ export default async function ShopPage() {
                   .filter(Boolean);
 
                 return (
-                  <section key={category.id} id={category.id} className="space-y-8">
+                  <FadeInSection key={category.id}>
+                  <section id={category.id} className="space-y-8">
                     <div className="grid gap-4 border-b border-line pb-6 xl:grid-cols-[160px_minmax(0,1fr)]">
                       <p className="text-[0.74rem] uppercase tracking-[0.18em] text-fog">{category.label}</p>
                       <div className="space-y-3">
@@ -70,6 +74,7 @@ export default async function ShopPage() {
                       />
                     )}
                   </section>
+                  </FadeInSection>
                 );
               })
             ) : (
