@@ -4,6 +4,8 @@
 
 :root {
   color-scheme: light;
+  --font-sans: "Arial Narrow", "Helvetica Neue Condensed", "Arial", sans-serif;
+  --font-serif: "Cormorant Garamond", "Times New Roman", serif;
 }
 
 html {
@@ -13,22 +15,6 @@ html {
 body {
   @apply bg-shell text-ink antialiased;
   font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
-  background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0)),
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.55), transparent 30%);
-}
-
-/* Subtle grain texture for tactile feel */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 128px 128px;
 }
 
 a {
@@ -36,23 +22,48 @@ a {
 }
 
 ::selection {
-  background: rgba(22, 21, 18, 0.14);
+  background: #d7ff2f;
+  color: #050505;
 }
 
 .page-shell {
-  @apply mx-auto flex w-full max-w-shell flex-col px-4 pt-24 md:px-8 xl:px-12;
+  @apply mx-auto flex w-full max-w-shell flex-col px-4 pt-20 md:px-8 xl:px-12;
 }
 
 .page-section {
-  @apply border-b border-line/80 py-20 md:py-28 xl:py-36;
+  @apply border-b border-line py-16 md:py-24 xl:py-32;
 }
 
 .editorial-title {
-  @apply max-w-5xl text-balance text-[3rem] font-normal leading-[0.88] tracking-[-0.01em] md:text-[4.5rem] xl:text-[6rem];
-  font-family: var(--font-serif);
+  @apply max-w-6xl text-balance text-[4rem] font-normal uppercase leading-[0.78] md:text-[7.5rem] xl:text-[10rem];
+  font-family: var(--font-sans);
+  letter-spacing: 0;
 }
 
 .editorial-copy {
   @apply max-w-3xl text-[1.05rem] leading-8 text-fog md:text-[1.15rem];
   font-family: var(--font-serif);
+}
+
+.meta-label {
+  @apply text-[0.68rem] uppercase tracking-[0.18em] text-fog;
+}
+
+.archive-link {
+  @apply inline-flex items-center gap-2 border-b border-ink pb-1 text-[0.72rem] uppercase tracking-[0.18em] text-ink transition duration-200 hover:border-acid hover:text-fog focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-acid;
+}
+
+.hard-rule {
+  @apply border-t border-line;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

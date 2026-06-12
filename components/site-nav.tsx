@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import { SiteImage } from "@/components/site-image";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -13,7 +12,7 @@ const links = [
   { href: "/about", label: "ABOUT" }
 ];
 
-export function SiteNav({ pathname, logoSrc }: { pathname: string; logoSrc: string }) {
+export function SiteNav({ pathname }: { pathname: string; logoSrc: string }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -25,52 +24,46 @@ export function SiteNav({ pathname, logoSrc }: { pathname: string; logoSrc: stri
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-30 transition-all duration-500",
+        "fixed left-0 right-0 top-0 z-30 transition-all duration-300",
         scrolled
-          ? "border-b border-line/80 bg-shell/90 backdrop-blur"
-          : "border-b border-transparent bg-transparent"
+          ? "border-b border-line bg-shell"
+          : "border-b border-line/0 bg-shell/95"
       )}
     >
-      <nav className="mx-auto flex min-h-[96px] w-full max-w-shell flex-col gap-4 px-4 py-5 md:px-8 xl:grid xl:grid-cols-[1fr_1fr_auto_1fr_1fr] xl:items-center xl:px-12">
-        <div className="hidden items-center gap-8 xl:flex">
-          {links.slice(0, 2).map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "text-[0.72rem] tracking-[0.12em] text-ink/70 transition hover:text-ink",
-                pathname === link.href && "text-ink"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-        <Link href="/" className="block w-[148px] md:w-[170px] xl:col-start-3 xl:justify-self-center">
-          <SiteImage src={logoSrc} alt="Lorimer" className="aspect-[3.2/1] bg-transparent" priority />
+      <nav
+        aria-label="Primary navigation"
+        className="mx-auto grid min-h-16 w-full max-w-shell grid-cols-[1fr_auto] items-center gap-4 px-4 py-3 md:px-8 xl:grid-cols-[1fr_auto_1fr] xl:px-12"
+      >
+        <Link
+          href="/"
+          aria-label="Lorimer home"
+          className="group inline-flex w-fit items-center gap-2 text-[1.25rem] uppercase leading-none text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-acid"
+        >
+          <span className="h-2 w-2 bg-ink transition group-hover:bg-acid" />
+          <span>Lorimer</span>
         </Link>
-        <div className="flex items-center justify-between border-t border-line pt-4 text-[0.72rem] tracking-[0.12em] xl:col-start-4 xl:justify-end xl:gap-8 xl:border-t-0 xl:pt-0">
+
+        <div className="hidden justify-self-center text-[0.68rem] uppercase tracking-[0.18em] text-fog xl:block">
+          S/S24 / Archive Storefront
+        </div>
+
+        <div className="flex items-center justify-end gap-4 overflow-x-auto text-[0.7rem] uppercase tracking-[0.16em] md:gap-7">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
+              aria-current={pathname === link.href ? "page" : undefined}
               className={cn(
-                "text-ink/70 transition hover:text-ink xl:hidden",
+                "inline-flex shrink-0 items-center gap-2 text-fog transition hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-acid",
                 pathname === link.href && "text-ink"
               )}
             >
-              {link.label}
-            </Link>
-          ))}
-          {links.slice(2).map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "hidden text-ink/70 transition hover:text-ink xl:block",
-                pathname === link.href && "text-ink"
-              )}
-            >
+              <span
+                className={cn(
+                  "hidden h-1.5 w-1.5 bg-line md:block",
+                  pathname === link.href && "bg-acid"
+                )}
+              />
               {link.label}
             </Link>
           ))}

@@ -21,14 +21,14 @@ export default async function HomePage() {
         <HeroSection heroImages={data.home.heroImages} />
 
         <FadeInSection>
-          <section className="page-section flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
+          <section className="page-section grid gap-8 xl:grid-cols-[minmax(0,7fr)_minmax(260px,3fr)] xl:items-end">
             <SectionHeading
               eyebrow="Current chapter"
-              title="Quiet structure, reduced language, and image-led navigation."
+              title="S/S24 is indexed through runway plates, garment records, and sparse studio notes."
             />
-            <p className="editorial-copy xl:max-w-xl">
-              The landing page opens with the final imagery, then moves into product and lookbook
-              surfaces without collapsing into a generic centered commerce grid.
+            <p className="max-w-sm text-[0.88rem] leading-7 text-fog">
+              The site behaves like an archive first: image, status, material, and look number carry
+              the experience before checkout language appears.
             </p>
           </section>
         </FadeInSection>
@@ -38,14 +38,14 @@ export default async function HomePage() {
             <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
               <SectionHeading
                 eyebrow="Selected products"
-                title="Product pages behave like plates from a collection archive."
+                title="Garments are presented as records with clear state, price, and chapter."
               />
-              <Link href="/shop" className="text-[0.72rem] tracking-[0.12em] text-fog transition hover:text-ink">
-                SEE ALL PRODUCTS
+              <Link href="/shop" className="archive-link">
+                See all products
               </Link>
             </div>
             {featured.length ? (
-              <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
                 {featured.map((product, i) => (
                   <ProductCard key={product.slug} product={product} index={i} />
                 ))}
@@ -65,19 +65,24 @@ export default async function HomePage() {
         <FadeInSection>
           <section className="page-section space-y-10">
             <SectionHeading
-              eyebrow="Horizontal studies"
-              title="Editorial frames stretch the pacing between object study and collection context."
+              eyebrow="Field studies"
+              title="Wide frames create the pause between object pages and the full look sequence."
             />
             {data.home.filmstrip.length ? (
-              <div className="grid gap-5 xl:grid-cols-3">
+              <div className="grid gap-3 xl:grid-cols-12">
                 {data.home.filmstrip.map((image, index) => (
-                  <SiteImage
+                  <figure
                     key={image.src}
-                    src={image.src}
-                    alt={image.alt}
-                    className={index === 2 ? "aspect-[1.35]" : "aspect-[1.55]"}
-                    sizes="(min-width: 1280px) 30vw, 100vw"
-                  />
+                    className={index === 0 ? "xl:col-span-7" : index === 1 ? "xl:col-span-5" : "xl:col-span-8 xl:col-start-5"}
+                  >
+                    <SiteImage
+                      src={image.src}
+                      alt={image.alt}
+                      className={index === 2 ? "aspect-[1.45]" : "aspect-[1.62]"}
+                      sizes="(min-width: 1280px) 55vw, 100vw"
+                    />
+                    <figcaption className="mt-2 meta-label">Study {String(index + 1).padStart(2, "0")}</figcaption>
+                  </figure>
                 ))}
               </div>
             ) : (

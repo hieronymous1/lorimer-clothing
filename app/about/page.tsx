@@ -19,7 +19,7 @@ export default async function AboutPage() {
             <SectionHeading
               eyebrow="Studio note"
               title="Lorimer treats garments as constructed documents before they are treated as products."
-              description="The application keeps that tone in the structure: generous whitespace, minimal language, and route relationships that move between collection context and individual object study."
+              description="The site uses the same rule set: direct imagery, sparse metadata, hard spacing, and no decorative commerce layer between the viewer and the garment."
             />
           </section>
         </FadeInSection>
@@ -34,14 +34,13 @@ export default async function AboutPage() {
                 priority
               />
               <p className="editorial-copy">
-                The storefront baseline preserves the image-led language from the rebuilt static
-                experience while opening clean seams for Shopify catalog data and Sanity-driven
-                editorial composition.
+                Lorimer works with clothing as a record of construction: surface, repair, proportion,
+                and context are allowed to stay visible before the object is reduced to a sale unit.
               </p>
             </div>
-            <div className="space-y-6 bg-panel/50 p-8">
-              <p className="text-[0.7rem] tracking-[0.12em] text-fog">MATERIAL REGISTER</p>
-              <h2 className="text-balance text-[2rem] leading-[0.95] md:text-[3rem]" style={{ fontFamily: "var(--font-serif)" }}>
+            <div className="space-y-6 border-t border-line pt-6">
+              <p className="meta-label">Material register</p>
+              <h2 className="text-balance text-[2.8rem] uppercase leading-[0.84] md:text-[4.5rem]">
                 Texture, cut, and sequence stay ahead of commercial chrome.
               </h2>
               <p className="editorial-copy">
@@ -56,16 +55,16 @@ export default async function AboutPage() {
           <section className="page-section space-y-10">
             <SectionHeading
               eyebrow="Three principles"
-              title="The same editorial rules carry across home, products, and collection pages."
+              title="The same archive rules carry across home, products, and collection pages."
             />
             {data.aboutPrinciples.length ? (
               <div className="grid gap-8 md:grid-cols-3">
                 {data.aboutPrinciples.map((principle) => (
                   <article key={principle.index} className="space-y-3 border-t border-line pt-5">
-                    <p className="text-[0.7rem] tracking-[0.12em] text-fog">
+                    <p className="meta-label">
                       {principle.index}
                     </p>
-                    <h3 className="text-[1.4rem] leading-tight text-ink" style={{ fontFamily: "var(--font-serif)" }}>{principle.title}</h3>
+                    <h3 className="text-[1.6rem] uppercase leading-[0.95] text-ink">{principle.title}</h3>
                     <p className="text-base leading-7 text-fog">{principle.copy}</p>
                   </article>
                 ))}
@@ -85,7 +84,7 @@ export default async function AboutPage() {
           <section className="page-section space-y-10">
             <SectionHeading
               eyebrow="Direct contact"
-              title="Appointments, archive questions, and product requests can be sent directly through the site."
+              title="Appointments, archive questions, and product requests can move through one studio form."
             />
             <InquiryForm defaultSubject="Lorimer studio inquiry" />
           </section>

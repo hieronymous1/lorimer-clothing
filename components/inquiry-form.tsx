@@ -33,6 +33,10 @@ export function InquiryForm({
       productTitle
     }
   });
+  const nameError = form.formState.errors.name?.message;
+  const emailError = form.formState.errors.email?.message;
+  const subjectError = form.formState.errors.subject?.message;
+  const messageError = form.formState.errors.message?.message;
 
   async function onSubmit(values: InquiryInput) {
     setSubmissionState("submitting");
@@ -79,50 +83,62 @@ export function InquiryForm({
 
       <div className="grid gap-5 md:grid-cols-2">
         <label className="grid gap-2 text-sm text-fog">
-          <span className="text-[0.74rem] uppercase tracking-[0.18em] text-ink">Name</span>
+          <span className="meta-label text-ink">Name</span>
           <input
+            id="inquiry-name"
             {...form.register("name")}
-            className="border-b border-line bg-transparent px-0 py-3 text-base text-ink outline-none placeholder:text-fog/70"
+            aria-describedby={nameError ? "inquiry-name-error" : undefined}
+            aria-invalid={Boolean(nameError)}
+            className="border-b border-line bg-transparent px-0 py-3 text-base text-ink outline-none placeholder:text-fog/70 focus:border-ink"
             placeholder="Your name"
           />
-          {form.formState.errors.name ? (
-            <span className="text-sm text-red-700">{form.formState.errors.name.message}</span>
+          {nameError ? (
+            <span id="inquiry-name-error" className="text-sm text-red-700">{nameError}</span>
           ) : null}
         </label>
 
         <label className="grid gap-2 text-sm text-fog">
-          <span className="text-[0.74rem] uppercase tracking-[0.18em] text-ink">Email</span>
+          <span className="meta-label text-ink">Email</span>
           <input
+            id="inquiry-email"
             {...form.register("email")}
-            className="border-b border-line bg-transparent px-0 py-3 text-base text-ink outline-none placeholder:text-fog/70"
+            aria-describedby={emailError ? "inquiry-email-error" : undefined}
+            aria-invalid={Boolean(emailError)}
+            className="border-b border-line bg-transparent px-0 py-3 text-base text-ink outline-none placeholder:text-fog/70 focus:border-ink"
             placeholder="you@example.com"
           />
-          {form.formState.errors.email ? (
-            <span className="text-sm text-red-700">{form.formState.errors.email.message}</span>
+          {emailError ? (
+            <span id="inquiry-email-error" className="text-sm text-red-700">{emailError}</span>
           ) : null}
         </label>
       </div>
 
       <label className="grid gap-2 text-sm text-fog">
-        <span className="text-[0.74rem] uppercase tracking-[0.18em] text-ink">Subject</span>
+        <span className="meta-label text-ink">Subject</span>
         <input
+          id="inquiry-subject"
           {...form.register("subject")}
-          className="border-b border-line bg-transparent px-0 py-3 text-base text-ink outline-none placeholder:text-fog/70"
+          aria-describedby={subjectError ? "inquiry-subject-error" : undefined}
+          aria-invalid={Boolean(subjectError)}
+          className="border-b border-line bg-transparent px-0 py-3 text-base text-ink outline-none placeholder:text-fog/70 focus:border-ink"
         />
-        {form.formState.errors.subject ? (
-          <span className="text-sm text-red-700">{form.formState.errors.subject.message}</span>
+        {subjectError ? (
+          <span id="inquiry-subject-error" className="text-sm text-red-700">{subjectError}</span>
         ) : null}
       </label>
 
       <label className="grid gap-2 text-sm text-fog">
-        <span className="text-[0.74rem] uppercase tracking-[0.18em] text-ink">Message</span>
+        <span className="meta-label text-ink">Message</span>
         <textarea
+          id="inquiry-message"
           {...form.register("message")}
-          className="min-h-40 border border-line bg-transparent p-4 text-base text-ink outline-none placeholder:text-fog/70"
+          aria-describedby={messageError ? "inquiry-message-error" : undefined}
+          aria-invalid={Boolean(messageError)}
+          className="min-h-40 border border-line bg-transparent p-4 text-base text-ink outline-none placeholder:text-fog/70 focus:border-ink"
           placeholder="Sizing, availability, archive questions, or appointment context."
         />
-        {form.formState.errors.message ? (
-          <span className="text-sm text-red-700">{form.formState.errors.message.message}</span>
+        {messageError ? (
+          <span id="inquiry-message-error" className="text-sm text-red-700">{messageError}</span>
         ) : null}
       </label>
 
@@ -130,13 +146,15 @@ export function InquiryForm({
         <button
           type="submit"
           disabled={submissionState === "submitting"}
-          className="inline-flex w-fit border-b border-ink pb-1 text-[0.82rem] uppercase tracking-[0.18em] text-ink transition hover:opacity-70 disabled:opacity-50"
+          className="archive-link disabled:opacity-50"
         >
           {submissionState === "submitting" ? "Sending..." : "Send inquiry"}
         </button>
 
         {submissionMessage ? (
           <p
+            role="status"
+            aria-live="polite"
             className={submissionState === "error" ? "text-sm text-red-700" : "text-sm text-fog"}
           >
             {submissionMessage}

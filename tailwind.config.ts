@@ -9,11 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        shell: "#f3eee6",
-        ink: "#161512",
-        fog: "#6b665d",
-        line: "rgba(22, 21, 18, 0.14)",
-        panel: "#ece5db"
+        shell: "#f7f7f2",
+        ink: "#050505",
+        fog: "#5e5e58",
+        line: "rgba(5, 5, 5, 0.16)",
+        panel: "#e8e8df",
+        acid: "#d7ff2f"
       },
       maxWidth: {
         shell: "1720px"
@@ -22,7 +23,7 @@ const config: Config = {
         editorial: "0.18em"
       },
       gridTemplateColumns: {
-        hero: "minmax(0,4fr) minmax(0,8fr)",
+        hero: "minmax(0,5fr) minmax(0,7fr)",
         product: "minmax(0,7fr) minmax(320px,4fr)",
         shop: "240px minmax(0,1fr)"
       }

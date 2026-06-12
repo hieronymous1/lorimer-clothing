@@ -21,9 +21,9 @@ export function RouteState({
   inset = false
 }: RouteStateProps) {
   return (
-    <section className={inset ? "border border-line/80 bg-panel/40 p-8 md:p-10" : "space-y-6"}>
-      <p className="text-[0.74rem] uppercase tracking-[0.18em] text-fog">{eyebrow}</p>
-      <h2 className="max-w-4xl text-balance text-[2rem] leading-[0.95] text-ink md:text-[3rem]">
+    <section className={inset ? "border border-line bg-panel p-8 md:p-10" : "space-y-6"}>
+      <p className="meta-label">{eyebrow}</p>
+      <h2 className="max-w-4xl text-balance text-[2.4rem] uppercase leading-[0.88] text-ink md:text-[3.5rem]">
         {title}
       </h2>
       <p className="editorial-copy">{description}</p>
@@ -33,7 +33,7 @@ export function RouteState({
             <Link
               key={`${action.href}-${action.label}`}
               href={action.href}
-              className="border-b border-ink pb-1 transition hover:opacity-70"
+              className="archive-link"
             >
               {action.label}
             </Link>

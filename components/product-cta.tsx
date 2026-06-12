@@ -7,7 +7,7 @@ export function ProductCta({ product }: { product: StorefrontProduct }) {
     return (
       <Link
         href={product.checkoutHref}
-        className="inline-flex border-b border-ink pb-1 text-[0.82rem] font-medium uppercase tracking-[0.18em] text-ink transition hover:opacity-70"
+        className="archive-link font-medium"
       >
         Add to cart
       </Link>
@@ -17,7 +17,7 @@ export function ProductCta({ product }: { product: StorefrontProduct }) {
   return (
     <a
       href="#inquiry-form"
-      className="inline-flex border-b border-ink pb-1 text-[0.82rem] font-medium uppercase tracking-[0.18em] text-ink transition hover:opacity-70"
+      className="archive-link font-medium"
     >
       {product.state === "archived" ? "Archive inquiry" : product.inquiryLabel}
     </a>

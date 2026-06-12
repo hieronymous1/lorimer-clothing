@@ -6,6 +6,10 @@ export function SiteCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
     const dot = dotRef.current;
     if (!dot) return;
 
@@ -41,6 +45,10 @@ export function SiteCursor() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMove);
+      document.querySelectorAll("[data-cursor-expand]").forEach((el) => {
+        el.removeEventListener("mouseenter", onEnterProduct);
+        el.removeEventListener("mouseleave", onLeaveProduct);
+      });
     };
   }, []);
 

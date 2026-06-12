@@ -33,12 +33,17 @@ export default async function SS24Page() {
 
         <section className="page-section grid gap-10 xl:grid-cols-shop xl:gap-14">
           <aside className="space-y-5 xl:sticky xl:top-32 xl:self-start">
-            <p className="text-[0.74rem] uppercase tracking-[0.18em] text-fog">Look index</p>
+            <p className="meta-label">Look index</p>
             {collection.looks.length ? (
-              <nav className="flex flex-col gap-3 text-sm text-fog">
+              <nav className="flex flex-col gap-3 text-sm uppercase tracking-[0.12em] text-fog">
                 {collection.looks.map((look) => (
-                  <a key={look.id} href={`#${look.id}`} className="transition hover:text-ink">
-                    {look.label}
+                  <a
+                    key={look.id}
+                    href={`#${look.id}`}
+                    className="flex justify-between gap-4 border-t border-line pt-3 transition hover:text-ink"
+                  >
+                    <span>{look.label}</span>
+                    <span>{String(look.images.length).padStart(2, "0")}</span>
                   </a>
                 ))}
               </nav>
@@ -57,58 +62,73 @@ export default async function SS24Page() {
 
                 return (
                   <FadeInSection key={look.id}>
-                  <section id={look.id} className="space-y-8">
-                    <div className="grid gap-4 border-b border-line pb-6 xl:grid-cols-[160px_minmax(0,1fr)]">
-                      <p className="text-[0.74rem] uppercase tracking-[0.18em] text-fog">{look.label}</p>
-                      <div className="space-y-3">
-                        <h2 className="text-[2rem] leading-none text-ink md:text-[2.75rem]">{look.title}</h2>
-                        <p className="max-w-3xl text-lg leading-8 text-fog">{look.caption}</p>
+                    <section id={look.id} className="space-y-8">
+                      <div className="grid gap-4 border-b border-line pb-6 xl:grid-cols-[160px_minmax(0,1fr)]">
+                        <p className="meta-label">{look.label}</p>
+                        <div className="space-y-3">
+                          <h2 className="max-w-5xl text-[2.8rem] uppercase leading-[0.82] text-ink md:text-[5.5rem]">
+                            {look.title}
+                          </h2>
+                          <p className="max-w-2xl text-base leading-7 text-fog">{look.caption}</p>
+                        </div>
                       </div>
-                    </div>
-                    {look.images.length ? (
-                      <div className="grid gap-5 xl:grid-cols-12">
-                        {look.images.map((image, imageIndex) => (
-                          <SiteImage
-                            key={image.src}
-                            src={image.src}
-                            alt={image.alt}
-                            className={
-                              imageIndex === 0
-                                ? "aspect-[0.74] xl:col-span-6"
-                                : imageIndex === 1
-                                  ? "aspect-[0.92] xl:col-span-3 xl:mt-12"
-                                  : "aspect-[1.15] xl:col-span-3 xl:mt-24"
-                            }
-                            sizes="(min-width: 1280px) 24vw, 100vw"
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <RouteState
-                        eyebrow={look.label}
-                        title={`${look.title} is awaiting its image sequence.`}
-                        description="The look remains indexed in the season narrative even though its plates have not been restored yet."
-                        inset
-                      />
-                    )}
-                    {linkedProducts.length ? (
-                      <div className="flex flex-wrap gap-x-8 gap-y-3 text-[0.78rem] uppercase tracking-[0.18em] text-fog">
-                        {linkedProducts.map((product) => (
-                          <Link
-                            key={product!.slug}
-                            href={`/product/${product!.slug}`}
-                            className="transition hover:text-ink"
-                          >
-                            {product!.title}
-                          </Link>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-[0.78rem] uppercase tracking-[0.18em] text-fog">
-                        Product links are being attached to this look.
-                      </p>
-                    )}
-                  </section>
+                      {look.images.length ? (
+                        <div className="grid gap-3 xl:grid-cols-12">
+                          {look.images.map((image, imageIndex) => (
+                            <figure
+                              key={image.src}
+                              className={
+                                imageIndex === 0
+                                  ? "xl:col-span-7"
+                                  : imageIndex === 1
+                                    ? "xl:col-span-5 xl:mt-20"
+                                    : "xl:col-span-6 xl:col-start-4"
+                              }
+                            >
+                              <SiteImage
+                                src={image.src}
+                                alt={image.alt}
+                                className={
+                                  imageIndex === 0
+                                    ? "aspect-[0.78]"
+                                    : imageIndex === 1
+                                      ? "aspect-[1.08]"
+                                      : "aspect-[1.35]"
+                                }
+                                sizes="(min-width: 1280px) 45vw, 100vw"
+                              />
+                              <figcaption className="mt-2 meta-label">
+                                {look.label} / Plate {String(imageIndex + 1).padStart(2, "0")}
+                              </figcaption>
+                            </figure>
+                          ))}
+                        </div>
+                      ) : (
+                        <RouteState
+                          eyebrow={look.label}
+                          title={`${look.title} is awaiting its image sequence.`}
+                          description="The look remains indexed in the season narrative even though its plates have not been restored yet."
+                          inset
+                        />
+                      )}
+                      {linkedProducts.length ? (
+                        <div className="flex flex-wrap gap-x-8 gap-y-3 border-t border-line pt-5 text-[0.78rem] uppercase tracking-[0.18em] text-fog">
+                          {linkedProducts.map((product) => (
+                            <Link
+                              key={product!.slug}
+                              href={`/product/${product!.slug}`}
+                              className="transition hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-acid"
+                            >
+                              {product!.title}
+                            </Link>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-[0.78rem] uppercase tracking-[0.18em] text-fog">
+                          Product links are being attached to this look.
+                        </p>
+                      )}
+                    </section>
                   </FadeInSection>
                 );
               })

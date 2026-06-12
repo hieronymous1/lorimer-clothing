@@ -10,7 +10,19 @@ const compat = new FlatCompat({
 
 const config = [
   {
-    ignores: [".next/**", "node_modules/**", "generated/**"]
+    ignores: [
+      ".next/**",
+      ".playwright-mcp/**",
+      ".vercel/**",
+      "node_modules/**",
+      "generated/**",
+      "FINAL PICS WEBSITE/**",
+      "cargo references/**",
+      "images/**",
+      "references/external-captures/**",
+      "swisstransfer_*/**",
+      "wetransfer_*/**"
+    ]
   },
   ...compat.extends("next/core-web-vitals")
 ];

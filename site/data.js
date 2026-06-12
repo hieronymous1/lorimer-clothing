@@ -423,17 +423,17 @@ window.LORIMER_DATA = {
     {
       index: "01",
       title: "Sequence before transaction",
-      copy: "Users arrive through imagery, spacing, and chapter structure before they arrive at purchase language."
+      copy: "Visitors move through image, look number, and material context before they meet purchase language."
     },
     {
       index: "02",
       title: "Object clarity",
-      copy: "Individual product pages state status, scale, and construction directly, then stop."
+      copy: "Every product page states status, size, construction, and inquiry path without extra decoration."
     },
     {
       index: "03",
-      title: "One active asset source",
-      copy: "The rebuilt front end treats the new final image folders and PDFs as canonical and leaves the older template pack inactive."
+      title: "Image as structure",
+      copy: "Photography sets the pace of the page. Typography and rules support the frame rather than competing with it."
     }
   ]
 };

@@ -114,9 +114,9 @@ export async function getCollectionBySlug(slug: string): Promise<CollectionData 
   return {
     slug,
     eyebrow: "Collection chapter",
-    title: "S/S24 is staged as a runway archive before it behaves like a store.",
+    title: "S/S24 reads as a runway archive before it becomes a product route.",
     intro:
-      "The route alternates image weight and text placement so it reads like an editorial sequence instead of a uniform card stack. Each look reconnects to its products without losing the collection rhythm.",
+      "Each look is arranged as plates, notes, and linked garments. The rhythm stays editorial while still making every product path available.",
     looks: data.looks
   };
 }

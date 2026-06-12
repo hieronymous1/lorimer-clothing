@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Archivo_Narrow, Cormorant_Garamond } from "next/font/google";
 
 import { SiteCursor } from "@/components/site-cursor";
 import { SiteFooter } from "@/components/site-footer";
@@ -8,18 +7,6 @@ import { getSiteUrl } from "@/lib/site";
 import { getSiteChromeData } from "@/lib/storefront";
 
 import "./globals.css";
-
-const serif = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-serif"
-});
-
-const sans = Archivo_Narrow({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-sans"
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -51,7 +38,7 @@ export default async function RootLayout({
   const chrome = await getSiteChromeData();
 
   return (
-    <html lang="en" className={`${serif.variable} ${sans.variable}`}>
+    <html lang="en">
       <body className="bg-shell font-[var(--font-sans)] text-ink antialiased">
         <SmoothScrollProvider>
           <SiteCursor />

@@ -6,6 +6,10 @@ import type { ReactNode } from "react";
 
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
     const lenis = new Lenis({ lerp: 0.08, duration: 1.4, smoothWheel: true });
 
     let raf: number;

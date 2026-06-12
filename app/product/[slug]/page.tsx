@@ -7,7 +7,12 @@ import { InquiryForm } from "@/components/inquiry-form";
 import { RouteState } from "@/components/route-state";
 import { SiteImage } from "@/components/site-image";
 import { SiteNav } from "@/components/site-nav";
-import { getAllProducts, getProductBySlug, getRelatedProducts, getSiteChromeData } from "@/lib/storefront";
+import {
+  getAllProducts,
+  getProductBySlug,
+  getRelatedProducts,
+  getSiteChromeData
+} from "@/lib/storefront";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -59,15 +64,19 @@ export default async function ProductPage({ params }: ProductPageProps) {
               sizes="(min-width: 1280px) 58vw, 100vw"
             />
             {detailImages.length ? (
-              <div className="grid gap-5 md:grid-cols-2">
-                {detailImages.map((image) => (
-                  <SiteImage
-                    key={image.src}
-                    src={image.src}
-                    alt={image.alt}
-                    className="aspect-[0.78]"
-                    sizes="(min-width: 1280px) 28vw, 100vw"
-                  />
+              <div className="grid gap-3 md:grid-cols-2">
+                {detailImages.map((image, index) => (
+                  <figure key={image.src}>
+                    <SiteImage
+                      src={image.src}
+                      alt={image.alt}
+                      className="aspect-[0.78]"
+                      sizes="(min-width: 1280px) 28vw, 100vw"
+                    />
+                    <figcaption className="mt-2 meta-label">
+                      Detail {String(index + 1).padStart(2, "0")}
+                    </figcaption>
+                  </figure>
                 ))}
               </div>
             ) : (
@@ -82,27 +91,27 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <aside className="xl:sticky xl:top-32 xl:self-start">
             <div className="space-y-6">
-              <p className="text-[0.74rem] uppercase tracking-[0.18em] text-fog">{product.season}</p>
-              <h1 className="text-balance text-[2.8rem] leading-[0.9] md:text-[4.5rem]">
+              <p className="meta-label">{product.season}</p>
+              <h1 className="text-balance text-[3.4rem] uppercase leading-[0.82] md:text-[5rem]">
                 {product.title}
               </h1>
               <div className="space-y-2 text-fog">
                 <p className="text-lg">{product.priceLabel}</p>
-                <p className="text-[0.74rem] uppercase tracking-[0.18em]">{product.statusLabel}</p>
+                <p className="meta-label">{product.statusLabel}</p>
               </div>
               <p className="editorial-copy">{product.description}</p>
 
-              <dl className="space-y-4 border-y border-line py-6 text-sm text-fog">
-                <div className="grid gap-2 md:grid-cols-[110px_minmax(0,1fr)]">
-                  <dt className="uppercase tracking-[0.18em] text-ink">State</dt>
+              <dl className="space-y-4 border-y border-line py-6 text-sm leading-6 text-fog">
+                <div className="grid gap-2 md:grid-cols-[120px_minmax(0,1fr)]">
+                  <dt className="meta-label text-ink">State</dt>
                   <dd>{product.statusLabel}</dd>
                 </div>
-                <div className="grid gap-2 md:grid-cols-[110px_minmax(0,1fr)]">
-                  <dt className="uppercase tracking-[0.18em] text-ink">Sizing</dt>
+                <div className="grid gap-2 md:grid-cols-[120px_minmax(0,1fr)]">
+                  <dt className="meta-label text-ink">Sizing</dt>
                   <dd>{productSizes}</dd>
                 </div>
-                <div className="grid gap-2 md:grid-cols-[110px_minmax(0,1fr)]">
-                  <dt className="uppercase tracking-[0.18em] text-ink">Construction</dt>
+                <div className="grid gap-2 md:grid-cols-[120px_minmax(0,1fr)]">
+                  <dt className="meta-label text-ink">Build</dt>
                   <dd>{product.details}</dd>
                 </div>
               </dl>
@@ -119,9 +128,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         <section className="page-section space-y-10">
           <div className="space-y-3">
-            <p className="text-[0.74rem] uppercase tracking-[0.18em] text-fog">Direct inquiry</p>
-            <h2 className="max-w-4xl text-balance text-[2rem] leading-[0.95] md:text-[3rem]">
-              Product questions, archive requests, and sizing conversations stay studio-led.
+            <p className="meta-label">Direct inquiry</p>
+            <h2 className="max-w-4xl text-balance text-[2.6rem] uppercase leading-[0.86] md:text-[4rem]">
+              Product questions and sizing requests go directly to the studio.
             </h2>
           </div>
           <InquiryForm
@@ -133,21 +142,34 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         <section className="page-section space-y-10">
           <div className="space-y-3">
-            <p className="text-[0.74rem] uppercase tracking-[0.18em] text-fog">Style your garment</p>
-            <h2 className="max-w-4xl text-balance text-[2rem] leading-[0.95] md:text-[3rem]">
-              Secondary imagery stays atmospheric and keeps the garment inside the wider chapter.
+            <p className="meta-label">Worn context</p>
+            <h2 className="max-w-4xl text-balance text-[2.6rem] uppercase leading-[0.86] md:text-[4rem]">
+              The garment stays attached to the wider runway chapter.
             </h2>
           </div>
           {product.styleGallery.length ? (
-            <div className="grid gap-5 xl:grid-cols-3">
-              {product.styleGallery.map((image) => (
-                <SiteImage
+            <div className="grid gap-3 xl:grid-cols-12">
+              {product.styleGallery.map((image, index) => (
+                <figure
                   key={image.src}
-                  src={image.src}
-                  alt={image.alt}
-                  className="aspect-[0.78]"
-                  sizes="(min-width: 1280px) 30vw, 100vw"
-                />
+                  className={
+                    index === 0
+                      ? "xl:col-span-5"
+                      : index === 1
+                        ? "xl:col-span-4 xl:mt-16"
+                        : "xl:col-span-3 xl:mt-32"
+                  }
+                >
+                  <SiteImage
+                    src={image.src}
+                    alt={image.alt}
+                    className="aspect-[0.78]"
+                    sizes="(min-width: 1280px) 30vw, 100vw"
+                  />
+                  <figcaption className="mt-2 meta-label">
+                    Context {String(index + 1).padStart(2, "0")}
+                  </figcaption>
+                </figure>
               ))}
             </div>
           ) : (
@@ -162,9 +184,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         <section className="page-section space-y-10">
           <div className="space-y-3">
-            <p className="text-[0.74rem] uppercase tracking-[0.18em] text-fog">Linked products</p>
-            <h2 className="max-w-4xl text-balance text-[2rem] leading-[0.95] md:text-[3rem]">
-              Related products reconnect the object to its surrounding chapter.
+            <p className="meta-label">Linked products</p>
+            <h2 className="max-w-4xl text-balance text-[2.6rem] uppercase leading-[0.86] md:text-[4rem]">
+              Adjacent garments from the same chapter.
             </h2>
           </div>
           {related.length ? (

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 import { SiteImage } from "@/components/site-image";
 import { RouteState } from "@/components/route-state";
@@ -13,6 +13,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 export function HeroSection({ heroImages }: { heroImages: HeroImage[] }) {
   const [showScroll, setShowScroll] = useState(true);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const onScroll = () => {
@@ -23,78 +24,101 @@ export function HeroSection({ heroImages }: { heroImages: HeroImage[] }) {
   }, []);
 
   return (
-    <section className="relative flex min-h-[calc(100vh-96px)] flex-col justify-between border-b border-line/80 py-10 xl:py-16">
-      <div className="grid gap-10 xl:grid-cols-hero xl:gap-16">
+    <section className="relative flex min-h-[calc(100vh-64px)] flex-col justify-between border-b border-line py-6 md:py-10 xl:py-12">
+      <div className="grid gap-8 xl:grid-cols-hero xl:gap-12">
         <motion.div
-          className="flex flex-col justify-between gap-8 xl:min-h-[70vh]"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col justify-between gap-8 xl:min-h-[72vh]"
+          initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+          animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease }}
         >
-          <div className="space-y-6">
+          <div className="space-y-5">
             <motion.p
-              className="text-[0.7rem] tracking-[0.12em] text-fog"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              className="meta-label"
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={reduceMotion ? undefined : { opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.1, ease }}
             >
-              RUNWAY ARCHIVE / MADRID
+              MADRID / RUNWAY ARCHIVE / 2024
             </motion.p>
             <motion.h1
-              className="editorial-title"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              className="editorial-title max-w-[9ch]"
+              initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+              animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
               transition={{ duration: 1.1, delay: 0.2, ease }}
             >
-              Lorimer stages clothing as an archive first and commerce second.
+              Lorimer
             </motion.h1>
             <motion.p
-              className="editorial-copy"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
+              className="max-w-lg text-[1rem] leading-7 text-ink md:text-[1.1rem]"
+              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+              animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.4, ease }}
             >
-              The storefront keeps the PDF-led composition inside a proper application shell with
-              catalog, CMS, and commerce boundaries prepared for launch.
+              Constructed garments, runway plates, and product records arranged as a working archive.
             </motion.p>
           </div>
           <motion.div
-            className="flex flex-wrap gap-6 text-[0.72rem] tracking-[0.12em]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            className="grid gap-6 border-t border-line pt-6 text-[0.72rem] uppercase tracking-[0.18em] text-fog md:grid-cols-3"
+            initial={reduceMotion ? false : { opacity: 0 }}
+            animate={reduceMotion ? undefined : { opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6, ease }}
           >
-            <Link href="/shop" className="border-b border-ink pb-1 transition hover:opacity-60">
-              OPEN PRODUCTS
-            </Link>
-            <Link href="/ss24" className="border-b border-ink/30 pb-1 text-fog transition hover:text-ink hover:border-ink">
-              VIEW S/S24
-            </Link>
+            <div>
+              <p className="text-ink">Season</p>
+              <p>S/S24</p>
+            </div>
+            <div>
+              <p className="text-ink">Mode</p>
+              <p>Archive / Studio</p>
+            </div>
+            <div className="flex flex-col items-start gap-3">
+              <Link href="/shop" className="archive-link">
+                Open products
+              </Link>
+              <Link href="/ss24" className="archive-link border-ink/30 text-fog">
+                View S/S24
+              </Link>
+            </div>
           </motion.div>
         </motion.div>
 
         {heroImages.length ? (
           <motion.div
-            className="grid gap-4 md:grid-cols-12"
-            initial={{ opacity: 0, scale: 1.04 }}
-            animate={{ opacity: 1, scale: 1 }}
+            className="grid gap-3 md:grid-cols-12 md:items-end"
+            initial={reduceMotion ? false : { opacity: 0, scale: 1.02 }}
+            animate={reduceMotion ? undefined : { opacity: 1, scale: 1 }}
             transition={{ duration: 1.4, delay: 0.15, ease }}
           >
             {heroImages.map((image, index) => (
-              <SiteImage
+              <figure
                 key={image.src}
-                src={image.src}
-                alt={image.alt}
                 className={
                   index === 0
-                    ? "aspect-[0.76] md:col-span-5"
+                    ? "md:col-span-8"
                     : index === 1
-                      ? "aspect-[0.76] md:col-span-4 md:mt-16"
-                      : "aspect-[0.76] md:col-span-3 md:mt-32"
+                      ? "md:col-span-4"
+                      : "md:col-span-7 md:col-start-6"
                 }
-                priority={index === 0}
-                sizes="(min-width: 1024px) 48vw, 100vw"
-              />
+              >
+                <SiteImage
+                  src={image.src}
+                  alt={image.alt}
+                  className={
+                    index === 0
+                      ? "aspect-[1.12]"
+                      : index === 1
+                        ? "aspect-[0.76]"
+                        : "aspect-[1.55]"
+                  }
+                  priority={index === 0}
+                  sizes="(min-width: 1280px) 42vw, 100vw"
+                />
+                <figcaption className="mt-2 flex justify-between gap-4 text-[0.62rem] uppercase tracking-[0.16em] text-fog">
+                  <span>Plate {String(index + 1).padStart(2, "0")}</span>
+                  <span>{index === 0 ? "Runway" : index === 1 ? "Detail" : "Sequence"}</span>
+                </figcaption>
+              </figure>
             ))}
           </motion.div>
         ) : (
@@ -111,15 +135,15 @@ export function HeroSection({ heroImages }: { heroImages: HeroImage[] }) {
       {showScroll && (
         <motion.div
           className="mt-10 flex items-center gap-3 self-start xl:mt-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={reduceMotion ? false : { opacity: 0 }}
+          animate={reduceMotion ? undefined : { opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, delay: 1.2, ease }}
         >
           <span className="text-[0.64rem] tracking-[0.18em] text-fog/60">SCROLL</span>
           <motion.span
             className="block h-[1px] w-6 bg-fog/40"
-            animate={{ scaleX: [1, 1.5, 1] }}
+            animate={reduceMotion ? undefined : { scaleX: [1, 1.5, 1] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
         </motion.div>

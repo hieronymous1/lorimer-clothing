@@ -36,6 +36,16 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next",
+    ".playwright-mcp",
+    ".vercel",
+    "generated",
+    "FINAL PICS WEBSITE",
+    "cargo references",
+    "images",
+    "references/external-captures",
+    "swisstransfer_*",
+    "wetransfer_*"
   ]
 }

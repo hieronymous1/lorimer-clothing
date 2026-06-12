@@ -15,22 +15,27 @@ export default async function ShopPage() {
       <main className="page-shell pb-32 xl:pb-48">
         <FadeInSection>
           <section className="page-section space-y-6">
-          <SectionHeading
-            eyebrow="Shop"
-            title="The catalog is staged as an authored field instead of a neutral product grid."
-            description="Products stay grouped by collection logic and maintain their archive, inquiry, or purchase state without changing the visual tone of the route."
-          />
+            <SectionHeading
+              eyebrow="Shop"
+              title="The catalog keeps every garment tied to its look, state, and studio handling."
+              description="Browse by chapter. Availability is visible up front so the shop can hold archive pieces, inquiry pieces, and checkout pieces without changing tone."
+            />
           </section>
         </FadeInSection>
 
         <section className="page-section grid gap-10 xl:grid-cols-shop xl:gap-14">
           <aside className="space-y-5 xl:sticky xl:top-32 xl:self-start">
-            <p className="text-[0.74rem] uppercase tracking-[0.18em] text-fog">Look index</p>
+            <p className="meta-label">Product index</p>
             {data.categories.length ? (
-              <nav className="flex flex-col gap-3 text-sm text-fog">
+              <nav className="flex flex-col gap-3 text-sm uppercase tracking-[0.12em] text-fog">
                 {data.categories.map((category) => (
-                  <a key={category.id} href={`#${category.id}`} className="transition hover:text-ink">
-                    {category.title}
+                  <a
+                    key={category.id}
+                    href={`#${category.id}`}
+                    className="flex justify-between gap-4 border-t border-line pt-3 transition hover:text-ink"
+                  >
+                    <span>{category.title}</span>
+                    <span>{String(category.slugs.length).padStart(2, "0")}</span>
                   </a>
                 ))}
               </nav>
@@ -49,31 +54,33 @@ export default async function ShopPage() {
 
                 return (
                   <FadeInSection key={category.id}>
-                  <section id={category.id} className="space-y-8">
-                    <div className="grid gap-4 border-b border-line pb-6 xl:grid-cols-[160px_minmax(0,1fr)]">
-                      <p className="text-[0.74rem] uppercase tracking-[0.18em] text-fog">{category.label}</p>
-                      <div className="space-y-3">
-                        <h2 className="text-[2rem] leading-none text-ink md:text-[2.5rem]">
-                          {category.title}
-                        </h2>
-                        <p className="max-w-3xl text-lg leading-8 text-fog">{category.description}</p>
+                    <section id={category.id} className="space-y-8">
+                      <div className="grid gap-4 border-b border-line pb-6 xl:grid-cols-[160px_minmax(0,1fr)]">
+                        <p className="meta-label">{category.label}</p>
+                        <div className="space-y-3">
+                          <h2 className="text-[3rem] uppercase leading-[0.82] text-ink md:text-[5rem]">
+                            {category.title}
+                          </h2>
+                          <p className="max-w-2xl text-base leading-7 text-fog">
+                            {category.description}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    {products.length ? (
-                      <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-3">
-                        {products.map((product) => (
-                          <ProductCard key={product!.slug} product={product!} />
-                        ))}
-                      </div>
-                    ) : (
-                      <RouteState
-                        eyebrow={category.label}
-                        title={`${category.title} is temporarily between edits.`}
-                        description="The chapter remains listed, but its products are being reassigned or prepared for release."
-                        inset
-                      />
-                    )}
-                  </section>
+                      {products.length ? (
+                        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+                          {products.map((product, index) => (
+                            <ProductCard key={product!.slug} product={product!} index={index} />
+                          ))}
+                        </div>
+                      ) : (
+                        <RouteState
+                          eyebrow={category.label}
+                          title={`${category.title} is temporarily between edits.`}
+                          description="The chapter remains listed, but its products are being reassigned or prepared for release."
+                          inset
+                        />
+                      )}
+                    </section>
                   </FadeInSection>
                 );
               })
