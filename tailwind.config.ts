@@ -9,23 +9,30 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        shell: "#f7f7f2",
-        ink: "#050505",
-        fog: "#5e5e58",
-        line: "rgba(5, 5, 5, 0.16)",
-        panel: "#e8e8df",
-        acid: "#d7ff2f"
+        paper: "#f1efe9",
+        ink: "#0b0b0a",
+        fog: "#75736b",
+        line: "#d9d6cc",
+        acid: "#d7ff2f",
+        coal: "#0c0c0b",
+        "coal-2": "#161614",
+        /* legacy aliases — old draft components reference these; retire in polish pass */
+        shell: "#f1efe9",
+        panel: "#e3e1d8"
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)", "Archivo", "sans-serif"],
+        mono: ["var(--font-mono)", "IBM Plex Mono", "monospace"],
+        serif: ["var(--font-serif)", "Cormorant Garamond", "serif"]
       },
       maxWidth: {
         shell: "1720px"
       },
-      letterSpacing: {
-        editorial: "0.18em"
+      transitionTimingFunction: {
+        editorial: "cubic-bezier(0.77, 0, 0.18, 1)"
       },
-      gridTemplateColumns: {
-        hero: "minmax(0,5fr) minmax(0,7fr)",
-        product: "minmax(0,7fr) minmax(320px,4fr)",
-        shop: "240px minmax(0,1fr)"
+      letterSpacing: {
+        meta: "0.18em"
       }
     }
   },

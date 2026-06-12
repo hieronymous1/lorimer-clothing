@@ -1,15 +1,12 @@
 import { notFound, redirect } from "next/navigation";
 
 import { RouteState } from "@/components/route-state";
-import { SiteNav } from "@/components/site-nav";
-import { getSiteChromeData } from "@/lib/storefront";
 
 type CollectionRouteProps = {
   params: Promise<{ slug: string }>;
 };
 
 export default async function CollectionAliasPage({ params }: CollectionRouteProps) {
-  const chrome = await getSiteChromeData();
   const { slug } = await params;
 
   if (slug === "ss24") {
@@ -19,8 +16,7 @@ export default async function CollectionAliasPage({ params }: CollectionRoutePro
   if (slug === "aw24") {
     return (
       <>
-        <SiteNav pathname="" logoSrc={chrome.logoSrc} />
-        <main className="page-shell pb-24">
+        <main className="page-shell pb-24 pt-28">
           <div className="page-section">
             <RouteState
               eyebrow="Collection pending"

@@ -1,71 +1,66 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
 
 import { SiteImage } from "@/components/site-image";
 import type { StorefrontProduct } from "@/lib/types";
 
-const ease = [0.22, 1, 0.36, 1] as const;
-
-export function ProductCard({ product, index = 0 }: { product: StorefrontProduct; index?: number }) {
-  const reduceMotion = useReducedMotion();
+/**
+ * A garment as an archive record: indexed, labelled, state visible.
+ * Hover swaps to the styled context frame and flips the state chip.
+ */
+export function ProductCard({
+  product,
+  index = 0
+}: {
+  product: StorefrontProduct;
+  index?: number;
+}) {
   const preview =
     product.gallery.find((image) => image.src !== product.cover) ?? product.styleGallery[0];
-  const stateLabel =
-    product.state === "available"
-      ? "Available"
-      : product.state === "inquiry-only"
-        ? "Inquiry"
-        : "Archive";
 
   return (
-    <motion.article
-      initial={reduceMotion ? false : { opacity: 0, y: 40 }}
-      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.9, delay: index * 0.1, ease }}
-      className="group border-t border-line pt-3"
-    >
+    <article className="group border-t border-ink/80 pt-2.5">
       <Link
         href={`/product/${product.slug}`}
-        className="block space-y-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-acid"
+        data-cursor="VIEW"
+        className="block space-y-3.5"
       >
-        <div className="relative overflow-hidden" data-cursor-expand>
-          <motion.div
-            whileHover={reduceMotion ? undefined : { scale: 1.015 }}
-            transition={{ duration: 0.8, ease }}
-            className="origin-center bg-panel"
-          >
+        <div className="flex items-baseline justify-between">
+          <span className="font-mono text-[0.66rem] tracking-meta text-fog">
+            REC_{String(index + 1).padStart(2, "0")}
+          </span>
+          <span className="meta-label text-fog">{product.season.toUpperCase()}</span>
+        </div>
+
+        <div className="relative overflow-hidden">
+          <SiteImage
+            src={product.cover}
+            alt={product.coverAlt}
+            className="aspect-[0.78]"
+            imageClassName="transition-transform duration-700 ease-editorial group-hover:scale-[1.03]"
+            sizes="(min-width: 1280px) 28vw, (min-width: 768px) 40vw, 92vw"
+          />
+          {preview ? (
             <SiteImage
-              src={product.cover}
-              alt={product.coverAlt}
-              className="aspect-[0.78]"
+              src={preview.src}
+              alt={preview.alt}
+              className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
               sizes="(min-width: 1280px) 28vw, (min-width: 768px) 40vw, 92vw"
             />
-            {preview ? (
-              <SiteImage
-                src={preview.src}
-                alt={preview.alt}
-                className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100"
-                sizes="(min-width: 1280px) 28vw, (min-width: 768px) 40vw, 92vw"
-              />
-            ) : null}
-          </motion.div>
+          ) : null}
         </div>
-        <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-start">
-          <div className="space-y-1.5">
-            <p className="meta-label">{product.season}</p>
-            <h3 className="max-w-[24ch] text-[1.35rem] leading-[1.02] text-ink">
-              {product.title}
-            </h3>
-          </div>
-          <div className="flex gap-4 text-right text-[0.68rem] uppercase tracking-[0.16em] text-fog md:flex-col md:gap-1">
-            <p>{product.priceLabel}</p>
-            <p className="text-ink">{stateLabel}</p>
+
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="editorial-wide max-w-[24ch] text-[1.05rem] leading-[1.05]">
+            {product.title}
+          </h3>
+          <div className="flex shrink-0 flex-col items-end gap-1.5">
+            <span className="meta-label text-fog">{product.priceLabel}</span>
+            <span className="state-chip">{product.statusLabel}</span>
           </div>
         </div>
       </Link>
-    </motion.article>
+    </article>
   );
 }

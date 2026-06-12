@@ -1,14 +1,9 @@
 import { RouteState } from "@/components/route-state";
-import { SiteNav } from "@/components/site-nav";
-import { getSiteChromeData } from "@/lib/storefront";
 
 export default async function NotFound() {
-  const chrome = await getSiteChromeData();
-
   return (
     <>
-      <SiteNav pathname="" logoSrc={chrome.logoSrc} />
-      <main className="page-shell py-24">
+      <main className="page-shell py-24 pt-28">
         <div className="page-section">
           <RouteState
             eyebrow="Not found"

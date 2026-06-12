@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { InquiryForm } from "@/components/inquiry-form";
 import { ProductCard } from "@/components/product-card";
 import { ProductCta } from "@/components/product-cta";
-import { InquiryForm } from "@/components/inquiry-form";
-import { RouteState } from "@/components/route-state";
+import { Reveal } from "@/components/reveal";
 import { SiteImage } from "@/components/site-image";
-import { SiteNav } from "@/components/site-nav";
-import {
-  getAllProducts,
-  getProductBySlug,
-  getRelatedProducts,
-  getSiteChromeData
-} from "@/lib/storefront";
+import { getFolioGarments } from "@/lib/folio";
+import { getAllProducts, getProductBySlug, getRelatedProducts } from "@/lib/storefront";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -25,10 +21,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
-
-  if (!product) {
-    return {};
-  }
+  if (!product) return {};
 
   return {
     title: product.title,
@@ -37,175 +30,202 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const chrome = await getSiteChromeData();
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const garments = await getFolioGarments();
+  const recordIndex = garments.findIndex((garment) => garment.slug === slug);
+  const record = recordIndex >= 0 ? garments[recordIndex] : null;
 
-  if (!product) {
+  if (!record) {
     notFound();
   }
 
-  const related = await getRelatedProducts(product);
-  const primaryImage = product.gallery[0];
-  const detailImages = product.gallery.slice(1);
-  const productSizes = product.sizes.length ? product.sizes.join(" / ") : "Sizing shared on request";
+  const related = await getRelatedProducts(record);
+  const prev = garments[(recordIndex - 1 + garments.length) % garments.length];
+  const next = garments[(recordIndex + 1) % garments.length];
+  const primaryImage = record.gallery[0];
+  const detailImages = record.gallery.slice(1);
+  const sizes = record.sizes.length ? record.sizes.join(" / ") : "Shared on request";
 
   return (
-    <>
-      <SiteNav pathname="/shop" logoSrc={chrome.logoSrc} />
-      <main className="page-shell pb-24">
-        <section className="page-section grid gap-12 xl:grid-cols-product xl:gap-16">
-          <div className="space-y-5">
+    <main className="page-shell pb-28 pt-28 md:pt-32">
+      {/* record header strip */}
+      <div className="flex items-baseline justify-between border-b border-ink pb-3">
+        <span className="meta-label text-fog">
+          RECORD {String(recordIndex + 1).padStart(2, "0")} /{" "}
+          {String(garments.length).padStart(2, "0")}
+        </span>
+        <span className="meta-label text-fog">{record.season.toUpperCase()}</span>
+        <Link href="/shop" data-cursor="BACK" className="lnk-sweep meta-label">
+          The Archive
+        </Link>
+      </div>
+
+      {/* the spread: image left, data right — the folio's data page, unbound */}
+      <section className="grid gap-12 py-12 xl:grid-cols-[minmax(0,7fr)_minmax(340px,4fr)] xl:gap-16">
+        <div className="space-y-4">
+          <Reveal effect="clip">
             <SiteImage
-              src={primaryImage?.src ?? product.cover}
-              alt={primaryImage?.alt ?? product.coverAlt}
+              src={primaryImage?.src ?? record.cover}
+              alt={primaryImage?.alt ?? record.coverAlt}
               className="aspect-[0.74]"
               priority
               sizes="(min-width: 1280px) 58vw, 100vw"
             />
-            {detailImages.length ? (
-              <div className="grid gap-3 md:grid-cols-2">
-                {detailImages.map((image, index) => (
-                  <figure key={image.src}>
+          </Reveal>
+          {detailImages.length ? (
+            <div className="grid gap-4 md:grid-cols-2">
+              {detailImages.map((image, index) => (
+                <Reveal effect="fade" key={image.src}>
+                  <figure>
                     <SiteImage
                       src={image.src}
                       alt={image.alt}
                       className="aspect-[0.78]"
                       sizes="(min-width: 1280px) 28vw, 100vw"
                     />
-                    <figcaption className="mt-2 meta-label">
-                      Detail {String(index + 1).padStart(2, "0")}
+                    <figcaption className="meta-label mt-2 text-fog">
+                      DETAIL {String(index + 1).padStart(2, "0")}
                     </figcaption>
                   </figure>
+                </Reveal>
+              ))}
+            </div>
+          ) : null}
+        </div>
+
+        <aside className="xl:sticky xl:top-28 xl:self-start">
+          <div className="space-y-6">
+            <Reveal effect="clip" as="h1" className="editorial-mega text-balance text-[clamp(2.6rem,5vw,4.6rem)]">
+              {record.title}
+            </Reveal>
+
+            <Reveal effect="fade" className="flex items-baseline gap-4">
+              <span className="font-mono text-[1rem] tracking-[0.06em]">{record.priceLabel}</span>
+              <span className="state-chip state-chip-hot">{record.statusLabel}</span>
+            </Reveal>
+
+            <Reveal effect="fade" as="p" className="serif-voice text-[1.15rem] leading-relaxed text-ink/80">
+              {record.description}
+            </Reveal>
+
+            <Reveal effect="fade">
+              <dl className="border-y border-line">
+                {(
+                  [
+                    ["MATERIAL", record.material],
+                    ["SIZING", sizes],
+                    ["LOOK", record.lookNumber ? `LOOK ${String(record.lookNumber).padStart(2, "0")} — S/S24` : "S/S24"],
+                    ["BUILD", record.details]
+                  ] as const
+                ).map(([label, value]) => (
+                  <div
+                    key={label}
+                    className="grid grid-cols-[100px_minmax(0,1fr)] gap-3 border-b border-line py-3 last:border-b-0"
+                  >
+                    <dt className="meta-label text-fog">{label}</dt>
+                    <dd className="font-mono text-[0.72rem] uppercase leading-5 tracking-[0.06em]">
+                      {value}
+                    </dd>
+                  </div>
                 ))}
-              </div>
-            ) : (
-              <RouteState
-                eyebrow="Detail sequence pending"
-                title="Secondary product studies have not been staged for this garment yet."
-                description="The primary frame remains available while supporting close views are assembled."
-                inset
-              />
-            )}
-          </div>
-
-          <aside className="xl:sticky xl:top-32 xl:self-start">
-            <div className="space-y-6">
-              <p className="meta-label">{product.season}</p>
-              <h1 className="text-balance text-[3.4rem] uppercase leading-[0.82] md:text-[5rem]">
-                {product.title}
-              </h1>
-              <div className="space-y-2 text-fog">
-                <p className="text-lg">{product.priceLabel}</p>
-                <p className="meta-label">{product.statusLabel}</p>
-              </div>
-              <p className="editorial-copy">{product.description}</p>
-
-              <dl className="space-y-4 border-y border-line py-6 text-sm leading-6 text-fog">
-                <div className="grid gap-2 md:grid-cols-[120px_minmax(0,1fr)]">
-                  <dt className="meta-label text-ink">State</dt>
-                  <dd>{product.statusLabel}</dd>
-                </div>
-                <div className="grid gap-2 md:grid-cols-[120px_minmax(0,1fr)]">
-                  <dt className="meta-label text-ink">Sizing</dt>
-                  <dd>{productSizes}</dd>
-                </div>
-                <div className="grid gap-2 md:grid-cols-[120px_minmax(0,1fr)]">
-                  <dt className="meta-label text-ink">Build</dt>
-                  <dd>{product.details}</dd>
-                </div>
               </dl>
+            </Reveal>
 
-              <div className="flex flex-wrap gap-6 text-[0.82rem] uppercase tracking-[0.18em]">
-                <ProductCta product={product} />
-                <a href="/shop" className="border-b border-ink/40 pb-1 text-fog transition hover:text-ink">
-                  Back to products
-                </a>
-              </div>
-            </div>
-          </aside>
-        </section>
-
-        <section className="page-section space-y-10">
-          <div className="space-y-3">
-            <p className="meta-label">Direct inquiry</p>
-            <h2 className="max-w-4xl text-balance text-[2.6rem] uppercase leading-[0.86] md:text-[4rem]">
-              Product questions and sizing requests go directly to the studio.
-            </h2>
-          </div>
-          <InquiryForm
-            defaultSubject={`Lorimer inquiry: ${product.title}`}
-            productSlug={product.slug}
-            productTitle={product.title}
-          />
-        </section>
-
-        <section className="page-section space-y-10">
-          <div className="space-y-3">
-            <p className="meta-label">Worn context</p>
-            <h2 className="max-w-4xl text-balance text-[2.6rem] uppercase leading-[0.86] md:text-[4rem]">
-              The garment stays attached to the wider runway chapter.
-            </h2>
-          </div>
-          {product.styleGallery.length ? (
-            <div className="grid gap-3 xl:grid-cols-12">
-              {product.styleGallery.map((image, index) => (
-                <figure
-                  key={image.src}
-                  className={
-                    index === 0
-                      ? "xl:col-span-5"
-                      : index === 1
-                        ? "xl:col-span-4 xl:mt-16"
-                        : "xl:col-span-3 xl:mt-32"
-                  }
+            <Reveal effect="fade" className="flex flex-wrap items-center gap-6">
+              <ProductCta product={record} />
+              {record.lookNumber ? (
+                <Link
+                  href={`/ss24#plate-${record.lookNumber}`}
+                  data-cursor="OPEN"
+                  className="lnk-sweep meta-label"
                 >
-                  <SiteImage
-                    src={image.src}
-                    alt={image.alt}
-                    className="aspect-[0.78]"
-                    sizes="(min-width: 1280px) 30vw, 100vw"
-                  />
-                  <figcaption className="mt-2 meta-label">
-                    Context {String(index + 1).padStart(2, "0")}
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-          ) : (
-            <RouteState
-              eyebrow="Atmosphere pending"
-              title="The wider styling sequence is still in edit."
-              description="The garment record is live, but the contextual runway imagery for this page has not been restored yet."
-              inset
-            />
-          )}
-        </section>
-
-        <section className="page-section space-y-10">
-          <div className="space-y-3">
-            <p className="meta-label">Linked products</p>
-            <h2 className="max-w-4xl text-balance text-[2.6rem] uppercase leading-[0.86] md:text-[4rem]">
-              Adjacent garments from the same chapter.
-            </h2>
+                  See plate {String(record.lookNumber).padStart(2, "0")} in the folio
+                </Link>
+              ) : null}
+            </Reveal>
           </div>
-          {related.length ? (
-            <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-3">
-              {related.map((relatedProduct) => (
-                <ProductCard key={relatedProduct.slug} product={relatedProduct} />
-              ))}
-            </div>
-          ) : (
-            <RouteState
-              eyebrow="Linkage pending"
-              title="No adjacent garments are attached to this page yet."
-              description="Related pieces will appear once this object is reconnected to its surrounding collection chapter."
-              actions={[{ href: "/shop", label: "Browse all products" }]}
-              inset
-            />
-          )}
+        </aside>
+      </section>
+
+      {/* worn context */}
+      {record.styleGallery.length ? (
+        <section className="border-t border-line py-14">
+          <Reveal effect="fade" as="p" className="meta-label mb-8 text-fog">
+            WORN CONTEXT — THE GARDEN SHOW
+          </Reveal>
+          <div className="grid gap-4 xl:grid-cols-12">
+            {record.styleGallery.map((image, index) => (
+              <Reveal
+                effect="fade"
+                key={image.src}
+                className={
+                  index === 0
+                    ? "xl:col-span-5"
+                    : index === 1
+                      ? "xl:col-span-4 xl:mt-14"
+                      : "xl:col-span-3 xl:mt-28"
+                }
+              >
+                <SiteImage
+                  src={image.src}
+                  alt={image.alt}
+                  className="aspect-[0.78]"
+                  sizes="(min-width: 1280px) 30vw, 100vw"
+                />
+              </Reveal>
+            ))}
+          </div>
         </section>
-      </main>
-    </>
+      ) : null}
+
+      {/* inquiry */}
+      <section className="border-t border-line py-14">
+        <Reveal effect="fade" as="p" className="meta-label mb-3 text-fog">
+          DIRECT INQUIRY
+        </Reveal>
+        <Reveal
+          effect="fade"
+          as="h2"
+          className="serif-voice mb-8 max-w-3xl text-[clamp(1.4rem,2.6vw,2.2rem)] leading-snug"
+        >
+          Questions and sizing requests go directly to the studio.
+        </Reveal>
+        <InquiryForm
+          defaultSubject={`Lorimer inquiry: ${record.title}`}
+          productSlug={record.slug}
+          productTitle={record.title}
+        />
+      </section>
+
+      {/* adjacent records */}
+      {related.length ? (
+        <section className="border-t border-line py-14">
+          <Reveal effect="fade" as="p" className="meta-label mb-8 text-fog">
+            ADJACENT RECORDS
+          </Reveal>
+          <div className="grid gap-x-7 gap-y-12 md:grid-cols-2 xl:grid-cols-3">
+            {related.map((relatedProduct, index) => (
+              <ProductCard key={relatedProduct.slug} product={relatedProduct} index={index} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {/* prev / next */}
+      <nav className="grid grid-cols-2 border-t border-ink pt-5" aria-label="Adjacent garments">
+        <Link href={`/product/${prev.slug}`} data-cursor="PREV" className="group">
+          <span className="meta-label text-fog">← PREVIOUS RECORD</span>
+          <p className="editorial-wide mt-1.5 max-w-[26ch] text-[1rem] leading-tight group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
+            {prev.title}
+          </p>
+        </Link>
+        <Link href={`/product/${next.slug}`} data-cursor="NEXT" className="group text-right">
+          <span className="meta-label text-fog">NEXT RECORD →</span>
+          <p className="editorial-wide ml-auto mt-1.5 max-w-[26ch] text-[1rem] leading-tight group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4">
+            {next.title}
+          </p>
+        </Link>
+      </nav>
+    </main>
   );
 }

@@ -22,7 +22,7 @@ export function SiteImage({
   sizes = "100vw"
 }: SiteImageProps) {
   return (
-    <div className={cn("relative overflow-hidden bg-panel", className)}>
+    <div className={cn("relative overflow-hidden bg-line/60", className)}>
       <Image
         alt={alt}
         className={cn("h-full w-full object-cover", imageClassName)}

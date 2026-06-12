@@ -1,95 +1,96 @@
-import { FadeInSection } from "@/components/fade-in-section";
+import type { Metadata } from "next";
+
+import { DarkChapter } from "@/components/dark-chapter";
 import { InquiryForm } from "@/components/inquiry-form";
-import { RouteState } from "@/components/route-state";
-import { SectionHeading } from "@/components/section-heading";
-import { SiteImage } from "@/components/site-image";
-import { SiteNav } from "@/components/site-nav";
-import { getSiteChromeData, getStorefrontData } from "@/lib/storefront";
+import { LogoSlices } from "@/components/logo-slices";
+import { Reveal } from "@/components/reveal";
+import { getStorefrontData } from "@/lib/storefront";
+
+export const metadata: Metadata = {
+  title: "About",
+  description:
+    "Lorimer treats garments as constructed documents before they are treated as products. Studio notes, principles, and direct contact."
+};
 
 export default async function AboutPage() {
-  const chrome = await getSiteChromeData();
   const data = await getStorefrontData();
 
   return (
-    <>
-      <SiteNav pathname="/about" logoSrc={chrome.logoSrc} />
-      <main className="page-shell pb-32 xl:pb-48">
-        <FadeInSection>
-          <section className="page-section space-y-6">
-            <SectionHeading
-              eyebrow="Studio note"
-              title="Lorimer treats garments as constructed documents before they are treated as products."
-              description="The site uses the same rule set: direct imagery, sparse metadata, hard spacing, and no decorative commerce layer between the viewer and the garment."
-            />
-          </section>
-        </FadeInSection>
+    <main className="pt-28 md:pt-32">
+      {/* quiet manifesto */}
+      <section className="page-shell pb-[14vh]">
+        <Reveal effect="fade" as="p" className="meta-label mb-8 text-fog">
+          STUDIO NOTE — 01
+        </Reveal>
+        <Reveal
+          effect="words"
+          as="p"
+          className="max-w-5xl font-serif text-[clamp(1.9rem,4.4vw,3.8rem)] leading-[1.25]"
+        >
+          Lorimer treats garments as constructed documents before they are treated
+          as products. Surface, repair, proportion, and context stay visible before
+          the object is reduced to a sale unit.
+        </Reveal>
+        <Reveal effect="fade" className="mt-10 flex flex-wrap gap-x-10 gap-y-2">
+          <span className="meta-label text-fog">EST. BROOKLYN</span>
+          <span className="meta-label text-fog">BASE — {data.contact.base.toUpperCase()}</span>
+          <span className="meta-label text-fog">SHOWN 09.05.2024 — THE GARDEN</span>
+        </Reveal>
+      </section>
 
-        <FadeInSection>
-          <section className="page-section grid gap-8 xl:grid-cols-2 xl:gap-16">
-            <div className="space-y-6">
-              <SiteImage
-                src={chrome.logoSrc}
-                alt="Lorimer logo"
-                className="aspect-[3.2/1] max-w-[240px] bg-transparent"
-                priority
-              />
-              <p className="editorial-copy">
-                Lorimer works with clothing as a record of construction: surface, repair, proportion,
-                and context are allowed to stay visible before the object is reduced to a sale unit.
+      {/* principles */}
+      <section className="page-shell border-t border-line py-[10vh]">
+        <Reveal effect="clip" as="h2" className="editorial-mega mb-12 text-[clamp(2.8rem,7vw,6rem)]">
+          The Rules
+        </Reveal>
+        <div className="grid gap-10 md:grid-cols-3">
+          {data.aboutPrinciples.map((principle) => (
+            <Reveal effect="fade" key={principle.index} as="article" className="border-t border-ink pt-4">
+              <p className="font-mono text-[0.7rem] tracking-meta text-fog">{principle.index}</p>
+              <h3 className="editorial-wide mt-3 text-[1.3rem] leading-[1]">{principle.title}</h3>
+              <p className="serif-voice mt-4 text-[1.05rem] leading-relaxed text-ink/75">
+                {principle.copy}
               </p>
-            </div>
-            <div className="space-y-6 border-t border-line pt-6">
-              <p className="meta-label">Material register</p>
-              <h2 className="text-balance text-[2.8rem] uppercase leading-[0.84] md:text-[4.5rem]">
-                Texture, cut, and sequence stay ahead of commercial chrome.
-              </h2>
-              <p className="editorial-copy">
-                Text only clarifies what proportion, crop, and adjacency cannot already state through
-                the imagery.
-              </p>
-            </div>
-          </section>
-        </FadeInSection>
+            </Reveal>
+          ))}
+        </div>
+      </section>
 
-        <FadeInSection>
-          <section className="page-section space-y-10">
-            <SectionHeading
-              eyebrow="Three principles"
-              title="The same archive rules carry across home, products, and collection pages."
-            />
-            {data.aboutPrinciples.length ? (
-              <div className="grid gap-8 md:grid-cols-3">
-                {data.aboutPrinciples.map((principle) => (
-                  <article key={principle.index} className="space-y-3 border-t border-line pt-5">
-                    <p className="meta-label">
-                      {principle.index}
-                    </p>
-                    <h3 className="text-[1.6rem] uppercase leading-[0.95] text-ink">{principle.title}</h3>
-                    <p className="text-base leading-7 text-fog">{principle.copy}</p>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <RouteState
-                eyebrow="Studio notes pending"
-                title="The principle register is between revisions."
-                description="This route remains open for direct contact while the longer editorial notes are rewritten."
-                inset
-              />
-            )}
-          </section>
-        </FadeInSection>
+      {/* the concrete studies */}
+      <DarkChapter image={data.home.heroImages[1] ?? data.home.heroImages[0]} className="min-h-[90svh]">
+        <div className="flex min-h-[90svh] flex-col items-center justify-center gap-7 px-5 py-[14vh] text-center">
+          <Reveal effect="fade" as="span" className="meta-label text-paper/50">
+            THE CONCRETE STUDIES
+          </Reveal>
+          <Reveal
+            effect="fade"
+            as="p"
+            className="serif-voice max-w-[26ch] text-[clamp(1.5rem,3.2vw,2.8rem)] leading-[1.3]"
+          >
+            The clothes are cut for the city that stays up — then recorded in the
+            ruins it leaves behind.
+          </Reveal>
+          <Reveal effect="fade" className="w-[min(360px,64vw)]">
+            <LogoSlices inverted slices={14} amplitude={16} />
+          </Reveal>
+        </div>
+      </DarkChapter>
 
-        <FadeInSection>
-          <section className="page-section space-y-10">
-            <SectionHeading
-              eyebrow="Direct contact"
-              title="Appointments, archive questions, and product requests can move through one studio form."
-            />
-            <InquiryForm defaultSubject="Lorimer studio inquiry" />
-          </section>
-        </FadeInSection>
-      </main>
-    </>
+      {/* contact */}
+      <section className="page-shell py-[10vh]">
+        <Reveal effect="fade" as="p" className="meta-label mb-3 text-fog">
+          DIRECT CONTACT
+        </Reveal>
+        <Reveal
+          effect="fade"
+          as="h2"
+          className="serif-voice mb-10 max-w-3xl text-[clamp(1.4rem,2.6vw,2.2rem)] leading-snug"
+        >
+          Appointments, archive questions, and garment requests move through one
+          studio channel.
+        </Reveal>
+        <InquiryForm defaultSubject="Lorimer studio inquiry" />
+      </section>
+    </main>
   );
 }
