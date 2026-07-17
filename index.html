@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LORIMER®</title>
+  <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sometype+Mono:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
@@ -26,50 +27,51 @@
 
   <section class="hero">
     <div class="hero__sticky">
-      <div class="hero__col">
+      <div class="hero__reveal reveal" data-manual-reveal>
+        <img class="hero__reveal-logo" src="./assets/logo.png" alt="LORIMER®">
+        <nav class="hero__reveal-nav reveal reveal-delay-1">
+          <a href="ss24.html">SS/24</a>
+          <a href="shop.html">SHOP</a>
+          <a href="#">ABOUT</a>
+        </nav>
+      </div>
+      <div class="hero__col hero__col--left">
         <div class="hero__col-images">
-          <img src="./FINAL PICS WEBSITE/photos/PRODUCTS/Deconstructesd Bomber Jacket/1.png" alt="Look 1">
-          <img src="./FINAL PICS WEBSITE/photos/PRODUCTS/Layered Denim Distressed Jeans/IMG_7844.JPG" alt="Look 2">
-          <img src="./FINAL PICS WEBSITE/photos/PRODUCTS/University of Lorimer Striped Sweatshirt - Look 2 Top/20.jpg" alt="Look 3">
+          <video class="hero__col-video" autoplay muted loop playsinline preload="metadata" poster="./assets/video/poster.jpg">
+            <source src="./assets/video/MAH00426.MP4" type="video/mp4">
+          </video>
+          <img src="./assets/photos/PRODUCTS/Layered Denim Distressed Jeans/IMG_7844.JPG" alt="Look 2">
+          <img src="./assets/photos/PRODUCTS/University of Lorimer Striped Sweatshirt - Look 2 Top/20.jpg" alt="Look 3">
         </div>
       </div>
-      <div class="hero__col">
+      <div class="hero__col hero__col--right">
         <div class="hero__col-images">
-          <img src="./FINAL PICS WEBSITE/photos/PRODUCTS/Womens Wide Cut Trousers - Look 5 Bottoms/19.jpg" alt="Look A">
-          <img src="./FINAL PICS WEBSITE/photos/PRODUCTS/Asymmetrical White Top - Look 4 Top/IMG_0655_VSCO.JPG" alt="Look B">
-          <img src="./FINAL PICS WEBSITE/photos/PRODUCTS/SS24 Dress/IMG_0716_VSCO.JPG" alt="Look C">
+          <img src="./assets/photos/PRODUCTS/Womens Wide Cut Trousers - Look 5 Bottoms/19.jpg" alt="Look A">
+          <img src="./assets/photos/PRODUCTS/Asymmetrical White Top - Look 4 Top/IMG_0655_VSCO.JPG" alt="Look B">
+          <img src="./assets/photos/PRODUCTS/SS24 Dress/IMG_0716_VSCO.JPG" alt="Look C">
         </div>
       </div>
     </div>
-  </section>
-
-  <section class="wordmark-section reveal">
-    <img src="./FINAL PICS WEBSITE/logo.png" alt="LORIMER®">
-    <nav class="wordmark-nav reveal reveal-delay-1">
-      <a href="ss24.html">SS/24</a>
-      <a href="shop.html">SHOP</a>
-      <a href="#">ABOUT</a>
-    </nav>
   </section>
 
   <section class="product-preview">
     <div class="product-preview__grid">
       <a class="preview-card reveal" href="product-detail.html?id=deconstructed-bomber">
         <div class="card-media">
-          <img src="./FINAL PICS WEBSITE/photos/PRODUCTS/Deconstructesd Bomber Jacket/1.png" alt="Deconstructed Bomber Jacket">
+          <img src="./assets/photos/PRODUCTS/Deconstructesd Bomber Jacket/1.png" alt="Deconstructed Bomber Jacket">
         </div>
         <p class="preview-card__name">Deconstructed Bomber Jacket</p>
       </a>
       <a class="preview-card reveal reveal-delay-1" href="product-detail.html?id=university-striped-sweatshirt">
         <div class="card-media">
-          <img src="./FINAL PICS WEBSITE/photos/PRODUCTS/University of Lorimer Striped Sweatshirt - Look 2 Top/20.jpg" alt="University of Lorimer Striped Sweatshirt">
+          <img src="./assets/photos/PRODUCTS/University of Lorimer Striped Sweatshirt - Look 2 Top/20.jpg" alt="University of Lorimer Striped Sweatshirt">
         </div>
         <p class="preview-card__name">University of Lorimer Striped Sweatshirt</p>
         <p class="preview-card__badge">[Coming Soon]</p>
       </a>
       <a class="preview-card reveal reveal-delay-2" href="product-detail.html?id=layered-denim-jeans">
         <div class="card-media">
-          <img src="./FINAL PICS WEBSITE/photos/PRODUCTS/Layered Denim Distressed Jeans/IMG_7844.JPG" alt="Layered Denim Distressed Jeans">
+          <img src="./assets/photos/PRODUCTS/Layered Denim Distressed Jeans/IMG_7844.JPG" alt="Layered Denim Distressed Jeans">
         </div>
         <p class="preview-card__name">Layered Denim Distressed Jeans</p>
       </a>
@@ -82,9 +84,14 @@
   </section>
 
   <section class="look-section">
-    <p class="look-section__label reveal">Look 1</p>
-    <p class="look-section__text reveal reveal-delay-1">If Benjamin Netanyahu was a rapper his rap name would be Nettspend</p>
-    <a class="look-section__link reveal reveal-delay-2" href="ss24.html">View in Products</a>
+    <div class="look-section__content">
+      <p class="look-section__label reveal">Look 1</p>
+      <p class="look-section__text reveal reveal-delay-1">If Benjamin Netanyahu was a rapper his rap name would be Nettspend</p>
+      <a class="look-section__link reveal reveal-delay-2" href="ss24.html">View in Products</a>
+    </div>
+    <div class="look-section__media reveal reveal-delay-1">
+      <img src="./assets/photos/extras/still-lorimer-shoot.png" alt="Lorimer shoot still">
+    </div>
   </section>
 
   <footer class="footer reveal">

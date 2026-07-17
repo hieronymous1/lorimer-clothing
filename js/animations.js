@@ -33,7 +33,7 @@ function initScrollReveals() {
     });
   }, { threshold: 0.12 });
 
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  document.querySelectorAll('.reveal:not([data-manual-reveal])').forEach(el => observer.observe(el));
 }
 
 /* Called by shop.js after dynamic render to observe new cards */
@@ -47,5 +47,5 @@ function observeNewReveals() {
     });
   }, { threshold: 0.12 });
 
-  document.querySelectorAll('.reveal:not(.is-revealed)').forEach(el => observer.observe(el));
+  document.querySelectorAll('.reveal:not(.is-revealed):not([data-manual-reveal])').forEach(el => observer.observe(el));
 }
