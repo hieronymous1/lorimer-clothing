@@ -33,7 +33,7 @@ Products repeated by the reference may appear more than once in the editorial se
 
 Each indexed chapter is a self-contained section with a compact Lorimer index at the left and media at the right. The reference shows a six-label editorial index that includes audience groupings unavailable in the current product model. The implementation therefore intentionally retains the catalog's five supported controls — All, Jackets, Tops, Bottoms, Accessories — while matching the reference's typography, position, and repetition. All is the explicit full/unfiltered state.
 
-The first chapter uses two tall portrait product cards. Its detail-strip row crops secondary product images into shallow horizontal bands. Subsequent product chapters use three visual columns, even when a column is a campaign still rather than a product.
+The first chapter uses two tall portrait product cards. Its detail-strip row reuses those featured files as alternate shallow horizontal crops. Subsequent product chapters use three visual columns, even when a column is a campaign still rather than a product.
 
 Product images use transparent or neutral-background garment photography where the matching files exist. The renderer permits an explicit image override per catalog slot, so the Shop can follow the reference without changing product-detail galleries.
 
@@ -46,7 +46,7 @@ The implementation uses this slot-to-file map:
 | Featured jeans | `PRODUCTS/Layered Denim Distressed Jeans/IMG_7844.JPG` | portrait, intrinsic ratio |
 | Featured wax jacket | `PRODUCTS/DENIM1 - Lorimer Womens Wax Coated Denim Jacket/IMG_9001.JPG` | portrait, intrinsic ratio |
 | Featured detail strips | the same two files | `5 / 1` crop, bottom-centered |
-| First still pair | `Horizontals/2_VSCO 7.JPG`; `Horizontals/2_VSCO 4.JPG` | `3 / 2`, cover |
+| First still pair | `shop/still-01.png`; `shop/still-02.png` | supplied Still1/Still2 images, `3 / 2`, cover |
 | Small garment trio | `Deconstructesd Bomber Jacket/4.png`; `Zip Up Utility Vest/2.jpg`; `Westworld Short Sleeve Button Up/3.jpg` | `4 / 3`, contain |
 | Large garment trio | `Deconstructesd Bomber Jacket/1.png`; `Zip Up Utility Vest/2.jpg`; `Westworld Short Sleeve Button Up/8.png` | intrinsic portrait, contain |
 | Bottoms | `Layerered Denim Distressed Shorts/6.jpg`; `Layered Denim Distressed Jeans/4.jpg`; `Mens Straight Cut Trousers - Look 2 Bottoms/21.jpg` | `4 / 5`, contain |
@@ -61,7 +61,7 @@ The implementation uses this slot-to-file map:
 | Utility still | `extras/IMG_3040.jpeg` | `3 / 4`, cover |
 | Closing still | `extras/23.png` | `3 / 4`, cover |
 
-The remaining product images in the final five groups use the first matching product image in `products-data.js`, except for the mapped campaign-still column.
+The remaining product images in the final six groups — Look, Collegiate, Panel, Light, Utility, and Closing — use the first matching product image in `products-data.js`, except for the mapped campaign-still column.
 
 Campaign stills are decorative editorial interruptions: they are not links and use empty alternative text. Product photography remains meaningful and uses the associated product name as alternative text.
 
@@ -90,7 +90,7 @@ At the existing 768px breakpoint:
 
 The Shop renderer constructs links, images, labels, and filters with DOM APIs and `textContent`; it does not interpolate product data through `innerHTML` or inline event handlers. Product IDs and category names come only from the local catalog and are encoded when placed in URLs.
 
-Every product image uses the product name as its alternative text. Campaign stills use concise scene descriptions. Missing product images render an accessible neutral placeholder. Later images use native lazy loading and asynchronous decoding; the first featured image loads eagerly.
+Every product image uses the product name as its alternative text. Campaign stills are decorative editorial interruptions and consistently use empty alternative text. Missing product images render an accessible neutral placeholder. Later images use native lazy loading and asynchronous decoding; the first featured image loads eagerly.
 
 ## Files and responsibilities
 
