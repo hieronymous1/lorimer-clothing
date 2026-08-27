@@ -13,12 +13,13 @@ Refine the shared storefront navigation and footer, and restyle the homepage SS2
 - Display the cart quantity at all times inside parentheses. An empty cart reads `CART (0)`; populated carts read the summed item quantity, such as `CART (3)`.
 - Retain keyboard focus states, current-page indication, and the existing cart-drawer button behavior.
 - Apply the shared navigation structure consistently to all storefront pages.
-- On narrow screens, retain all essential destinations and allow smaller type/spacing without hiding the logo or cart count.
+- On screens down to 320px wide, use one five-column row with equal-width tracks in the same visual and tab order: `S/S_24`, `SHOP`, `LORIMER®`, `ABOUT`, `CART (0)`. Keep the logo in column three, reduce type and internal spacing as needed, give every item the full 44px navbar height as its touch target, and prevent horizontal overflow.
 
 ## Homepage SS24 Preview
 
 - Replace the large split-screen editorial treatment with the compact horizontal composition in the supplied reference.
 - Use the existing final runway image (`assets/photos/home/ss24-editorial.jpg`) on the left.
+- Give the runway image meaningful alt text identifying models walking the Lorimer Spring/Summer 2024 runway.
 - Place the text immediately to its right: label `Spring/Summer 24` and copy `SS24 Featuring 6 original looks available for viewing in Shop and S/S24 page`.
 - Place an underlined `View in S/S24` link at the far right, aligned toward the lower edge of the module.
 - Keep the module comfortably within one viewport and stack it cleanly on small screens without overlap.
@@ -42,4 +43,5 @@ Refine the shared storefront navigation and footer, and restyle the homepage SS2
 - Automated checks confirm every page omits the old HOME link, includes the centered home-linked logo, and contains a visible parenthesized cart count.
 - Verify the count starts at zero and changes when product quantities change.
 - Verify the homepage SS24 preview and footer copy, image, links, and layout.
-- In a live browser, confirm equal desktop nav spacing, true logo centering, no section overlap, responsive stacking, and working cart drawer behavior.
+- In a live browser, confirm equal desktop nav spacing, true logo centering, no section overlap, responsive stacking, meaningful runway alt text, and working cart drawer behavior.
+- At 320px wide, confirm the five navigation items retain the approved order, each uses the full 44px navbar height, the logo remains in the center track, and the page has no horizontal overflow.
