@@ -6,7 +6,7 @@ Refine the homepage below the hero while preserving its current typography, hove
 
 ## Vertical Rhythm
 
-- Introduce `--home-section-gap: clamp(180px, 45svh, 480px)` and use it between the bottom of the featured two-card section and the top of the six-product grid, and between the bottom of the six-product grid and the top of the SS24 preview. This matches the large hero-to-featured rhythm in the approved reference while remaining bounded on short screens.
+- Introduce `--home-section-gap: clamp(180px, 45svh, 480px)` and use it between the bottom of the featured two-card section and the top of the six-product grid, and between the bottom of the six-product grid and the top of the SS24 preview. This reproduces the same large visual rhythm shown in the approved reference. At viewport widths of 768px and below, override the token with `clamp(120px, 24svh, 180px)` so narrow layouts retain proportionally smaller whitespace.
 - Match the generous whitespace shown in the supplied ideal-spacing screenshots without allowing adjacent sections to overlap.
 - Keep content inside each section naturally sized rather than clipping it with a smaller containing box.
 - Reduce the gap proportionally on narrow screens while retaining clear separation.
