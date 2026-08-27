@@ -6,28 +6,30 @@ Refine the homepage below the hero while preserving its current typography, hove
 
 ## Vertical Rhythm
 
-- Introduce one responsive homepage section-gap token and use it between the featured two-card section, the six-product grid, and the SS24 preview.
+- Introduce `--home-section-gap: clamp(72px, 10svh, 120px)` and use it between the bottom of the featured two-card section and the top of the six-product grid, and between the bottom of the six-product grid and the top of the SS24 preview.
 - Match the generous whitespace shown in the supplied ideal-spacing screenshots without allowing adjacent sections to overlap.
 - Keep content inside each section naturally sized rather than clipping it with a smaller containing box.
 - Reduce the gap proportionally on narrow screens while retaining clear separation.
 
 ## Six-Product Grid
 
-Replace the six editorial/look cards with these Shop products, in the order established by the supplied product-template PNG:
+Replace the six editorial/look cards with the PNG products mapped to the existing Shop catalog records. The live catalog's exact IDs and names remain the source of truth:
 
-1. Lorimer Selvedge Denim Jeans
-2. Waxed Cropped Denim Jacket
-3. Deconstructed Bomber Jacket
-4. Zip-Up Utility Vest
-5. Westworld Short Sleeve Button Up
-6. Layered Denim Distressed Shorts
+| Order | Catalog ID | Exact display name | Catalog image | Detail URL |
+| --- | --- | --- | --- | --- |
+| 1 | `layered-denim-jeans` | Layered Denim Distressed Jeans | `assets/photos/PRODUCTS/Layered Denim Distressed Jeans/IMG_7844.JPG` | `product-detail.html?id=layered-denim-jeans` |
+| 2 | `denim1-wax-jacket` | Lorimer Women's Wax Coated Denim Jacket | `assets/photos/PRODUCTS/DENIM1 - Lorimer Womens Wax Coated Denim Jacket/IMG_9001.JPG` | `product-detail.html?id=denim1-wax-jacket` |
+| 3 | `deconstructed-bomber` | Deconstructed Bomber Jacket | `assets/photos/PRODUCTS/Deconstructesd Bomber Jacket/1.png` | `product-detail.html?id=deconstructed-bomber` |
+| 4 | `zip-up-utility-vest` | Zip Up Utility Vest | `assets/photos/PRODUCTS/Zip Up Utility Vest/2.jpg` | `product-detail.html?id=zip-up-utility-vest` |
+| 5 | `westworld-button-up` | Westworld Short Sleeve Button Up | `assets/photos/PRODUCTS/Westworld Short Sleeve Button Up/IMG_2947.jpeg` | `product-detail.html?id=westworld-button-up` |
+| 6 | `layered-denim-shorts` | Layered Denim Distressed Shorts | `assets/photos/PRODUCTS/Layerered Denim Distressed Shorts/IMG_7641.JPG` | `product-detail.html?id=layered-denim-shorts` |
 
-Each card must use the matching product image already used by the Shop catalog, the Shop product name, and the correct product-detail URL. Preserve the existing charcoal hover overlay and underlined `View in products` action.
+The PNG labels “Lorimer Selvedge Denim Jeans” and “Waxed Cropped Denim Jacket” map to the existing `layered-denim-jeans` and `denim1-wax-jacket` catalog records; no duplicate records are added. Each card uses meaningful alt text naming the product. Preserve the charcoal overlay and underlined `View in products` action on both pointer hover and keyboard focus.
 
 ## Removed Element
 
 - Remove the standalone `View all products` row and its horizontal rules entirely.
-- Do not leave an empty spacer or border where the row was.
+- Do not leave an empty spacer, border, or margin belonging to the removed row.
 
 ## SS24 Preview
 
@@ -38,7 +40,7 @@ Each card must use the matching product image already used by the Shop catalog, 
 
 ## Verification
 
-- Automated checks verify the six IDs, names, image sources, and order against the Shop catalog.
+- Automated checks verify the six IDs, exact names, image sources, and order against the Shop catalog.
 - Automated checks confirm `product-preview__all` and `View all products` are absent.
-- Automated checks verify the corrected SS24 image path and shared spacing token.
-- Browser checks at desktop and mobile widths verify consistent inter-section spacing, centered SS24 content, no overlap, and no horizontal overflow.
+- Automated checks verify meaningful product alt text, focus-visible overlay behavior, the corrected SS24 image path, and the exact shared spacing token.
+- Browser checks at desktop and mobile widths verify both defined section boundaries use the computed token value (within 1px), there is no leftover spacer after row removal, the SS24 content is centered, and there is no overlap or horizontal overflow.
