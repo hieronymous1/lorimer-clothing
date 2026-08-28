@@ -27,7 +27,7 @@ The selected direction is **Compact Utility**.
 - The drawer is 380px wide on desktop and full-width on mobile.
 - It slides from the right over a dimmed page overlay.
 - Styling uses white and black surfaces, hard one-pixel rules, compact mono labels, and no cards, shadows, gradients, or rounded containers.
-- The header contains `Cart (quantity)` and an explicit close control.
+- The header contains `Cart (quantity)` and an explicit close control. Quantity always means total units across all lines, matching the navigation count.
 - Product rows use a 72 × 96px image, product name, selected size, line price, quantity stepper, and remove action.
 - Product rows scroll independently when necessary.
 - A fixed footer contains the subtotal and checkout action.
@@ -46,7 +46,8 @@ If size validation fails, the existing inline size error remains visible and the
 
 ### Editing
 
-- Increment increases a line's quantity by one, subject to the cart quantity limit.
+- Increment increases a line's quantity by one, subject to the per-line limit of 99 and aggregate limit of 4,950 units (50 normalized lines × 99). At a quantity limit the operation is a no-op, the drawer remains open, and an inline limit message is announced.
+- The cart accepts at most 50 distinct normalized lines. Adding a distinct 51st line returns `{ ok: false, cart: lastConfirmed, error: "line-limit" }`; it does not write a truncated cart, announce success, or auto-open the drawer. The product page shows an inline error and announces it through the live region.
 - Decrement decreases quantity by one; decrementing from one removes the line.
 - Remove deletes the line regardless of quantity.
 - Each successful edit updates the navigation count, line total, and subtotal.
@@ -58,16 +59,16 @@ The drawer closes through its close control, overlay click, or Escape key. It do
 
 ### Checkout
 
-- In preview mode, checkout is visibly unavailable and does not navigate to a simulated checkout or collect customer data.
+- In preview mode, the footer renders a disabled `Checkout unavailable` control with the adjacent explanation `Secure checkout will be available when the store launches.` It does not link to the existing review-only `checkout.html`, simulate checkout, or collect customer data.
 - After Shopify is configured, checkout requests the current Shopify cart `checkoutUrl` and navigates to Shopify's hosted checkout.
 - Checkout is unavailable for an empty cart, while cart state is loading, or when Shopify configuration is incomplete.
 
 ## Accessibility
 
 - The drawer is an accessible modal dialog with a programmatic label and modal semantics.
-- Opening stores the triggering element, moves focus into the drawer, prevents background scrolling, and makes background content unavailable to keyboard and assistive-technology navigation.
-- Focus is trapped within the open drawer.
-- Closing restores focus to the element that opened it.
+- Opening stores the triggering element, moves focus to the close button, prevents background scrolling, and applies `inert` plus `aria-hidden="true"` to page regions outside the drawer and overlay. The overlay remains interactive so it can close the drawer. Prior `inert` and `aria-hidden` values are restored exactly on close.
+- Focus is trapped within the open drawer from opening until the closing transition completes.
+- Closing restores focus to the element that opened it when that element remains connected and focusable; otherwise focus moves to the first available navigation cart button, then to `body` as the final fallback.
 - Close, increment, decrement, remove, and checkout have descriptive accessible names and visible focus states.
 - Cart changes are announced through a polite live region without moving focus.
 - Reduced-motion preference removes the sliding and item-entry animation.
@@ -80,23 +81,35 @@ The drawer module owns modal behavior and safe DOM rendering. It receives normal
 
 ### Cart service
 
+All service operations return Promises so preview and Shopify adapters have the same semantics. Mutations resolve to a discriminated result: `{ ok: true, cart }` or `{ ok: false, cart, error }`. The returned cart is always the last confirmed normalized state. `beginCheckout()` resolves to `{ ok: true, url }` or `{ ok: false, error }`; the drawer controller owns navigation after it validates the returned URL against an explicit configured HTTPS checkout-host allowlist.
+
+Normalized state uses these shapes:
+
+- `Money`: `{ amountMinor: non-negative safe integer, currencyCode: ISO 4217 code }`.
+- `CartLine`: `{ lineKey, productId, merchandiseId, name, size, image, unitPrice, quantity, lineTotal }`.
+- `CartState`: `{ lines, totalQuantity, subtotal, status }` where `status` is `idle`, `loading`, or `error`.
+
+`lineKey` is the sole mutation identity: preview uses the normalized `productId|size` key and Shopify uses its cart-line ID. `merchandiseId` is optional in preview and required by the Shopify adapter. The UI never derives an identity from visible product text.
+
 The service boundary exposes these operations:
 
 - `getCart()`
-- `addLine(product, size)`
-- `updateLineQuantity(id, size, quantity)`
-- `removeLine(id, size)`
+- `addLine({ productId, merchandiseId, name, size, image, unitPrice })`
+- `updateLineQuantity(lineKey, quantity)`
+- `removeLine(lineKey)`
 - `getCount()`
 - `getSubtotal()`
 - `beginCheckout()`
 
-The initial adapter uses the existing validated localStorage representation. A later Shopify adapter maps each size selection to a Shopify merchandise variant, uses Storefront Cart mutations for line changes, treats Shopify's response as authoritative, and returns the current hosted checkout URL.
+The initial adapter uses the existing validated localStorage representation and preview currency `USD`, matching the current product data. It converts current whole-unit prices to integer minor units at its boundary. A later Shopify adapter maps each size selection to a Shopify merchandise variant, converts Shopify decimal money strings and currency codes to normalized minor units without floating-point arithmetic, uses Storefront Cart mutations for line changes, treats Shopify's response as authoritative, and returns the current hosted checkout URL. Display uses `Intl.NumberFormat` with the money currency; unit price and extended line total are labeled distinctly. One cart must contain a single currency.
 
 The public Storefront API credential may be present in browser code when Shopify is connected, but private Admin API credentials, webhook secrets, and payment secrets must never enter the client bundle or repository.
 
 ## State and Error Handling
 
-The local preview adapter updates synchronously. The future Shopify adapter will:
+The local preview adapter snapshots the last confirmed cart before every mutation. Storage writes are treated as fallible: if a write throws or cannot be confirmed, it resolves with `{ ok: false }`, restores the snapshot, shows an inline retry message, and does not announce success. A failed Add to Cart does not auto-open the drawer.
+
+The future Shopify adapter will:
 
 - Disable the affected controls while a mutation is pending.
 - Coalesce or reject repeated interactions for the same pending line.
@@ -109,8 +122,8 @@ Stored cart content remains untrusted. Product text is rendered with text nodes,
 
 ## Responsive Behavior
 
-- Above the mobile breakpoint, the drawer is 380px wide.
-- At the mobile breakpoint and below, the drawer occupies the viewport width.
+- Above 720px, the drawer is 380px wide.
+- At 720px and below, the drawer occupies the viewport width.
 - The footer remains visible above the mobile browser's safe-area inset.
 - Product controls retain at least 44px interactive targets without making the rows visually bulky.
 
@@ -123,13 +136,16 @@ Automated tests cover:
 - Close button, overlay, and Escape behavior.
 - Focus entry, focus trap, background isolation, and focus restoration.
 - Increment, decrement, removal, count, line-total, and subtotal updates.
-- Empty-state transition and unavailable checkout state.
+- Empty-state transition and the disabled `Checkout unavailable` state with its launch explanation.
 - Safe rendering of hostile or malformed stored values.
 - Quantity and monetary bounds.
+- Distinct-line limit rejection without truncation, success announcement, or auto-open.
 - Desktop and mobile CSS contracts.
 - Reduced-motion behavior.
 
 Browser verification covers desktop and mobile presentation, scroll containment, keyboard-only operation, and the complete add-edit-remove flow.
+
+The empty-state action is `Return to shop`. On pages other than `shop.html` it navigates to `shop.html`; on `shop.html` it closes the drawer and returns focus using the standard close fallback.
 
 ## Shopify Connection Follow-up
 
