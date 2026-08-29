@@ -13,12 +13,22 @@ function loadProduct() {
   document.title = product.name + ' — LORIMER®';
 
   document.getElementById('product-name').textContent = product.name;
-  document.getElementById('product-price').textContent = product.available ? '$' + product.price : 'Sold Out';
+  document.getElementById('product-price').textContent =
+    product.notForSale ? 'Not For Sale' : product.available ? '€' + product.price : 'Sold Out';
   document.getElementById('product-desc').textContent = product.description;
-  document.getElementById('product-material').textContent = 'Material: ' + product.material;
+
+  const meta = [];
+  if (product.material) meta.push('Material: ' + product.material);
+  if (product.origin) meta.push(product.origin);
+  if (product.oneOfOne) meta.push('1 of 1');
+  document.getElementById('product-material').textContent = meta.join('  ·  ');
+
+  // Not-for-sale pieces have no purchasable size selection.
+  const sizeSection = document.getElementById('size-section');
+  if (sizeSection) sizeSection.hidden = !!product.notForSale;
 
   renderGallery(product);
-  renderSizes(product);
+  if (!product.notForSale) renderSizes(product);
   initAddToCart(product);
 }
 
@@ -111,6 +121,15 @@ function initAddToCart(product) {
   const btn = document.getElementById('add-to-cart');
   if (!btn) return;
 
+  if (product.notForSale) {
+    btn.textContent = 'Inquiry';
+    const subject = encodeURIComponent('Inquiry: ' + product.name);
+    btn.addEventListener('click', () => {
+      window.location.href = `mailto:contact@lorimer.com?subject=${subject}`;
+    });
+    return;
+  }
+
   if (!product.available) {
     btn.textContent = 'Sold Out';
     btn.disabled = true;
@@ -131,7 +150,7 @@ function initAddToCart(product) {
       name: product.name,
       size: selected.dataset.size,
       image: product.images[0] || '',
-      unitPrice: { amountMinor: Math.round(product.price * 100), currencyCode: 'USD' },
+      unitPrice: { amountMinor: Math.round(product.price * 100), currencyCode: 'EUR' },
     });
     btn.disabled = false;
     if (!result.ok) {

@@ -10,7 +10,7 @@ const SHOP_ROWS = [
   { type: 'divider', images: ['./assets/photos/shop/still-03.jpg', './assets/photos/shop/still-04.jpg'] },
   { type: 'look', products: ['dual-texture-knit-vest', 'adjustable-button-trousers'], look: 1, href: 'ss24.html#look-1', image: './assets/ss24/Look%201/37AC10C7-072C-4FFC-B401-D905B2D72774.JPG' },
   { type: 'look', products: ['university-striped-sweatshirt', 'mens-straight-trousers'], look: 2, href: 'ss24.html#look-2', image: './assets/ss24/Look%202/1A7930C9-3066-4EFC-AD1A-6E448A42D2E2.JPG' },
-  { type: 'products', products: ['3d-panel-bomber', 'denim-leather-trousers'] },
+  { type: 'products', products: ['3d-panel-bomber', 'denim-leather-trousers', 'lorimer-selvedge-denim-black'] },
   { type: 'look', products: ['asymmetrical-white-top', 'white-layered-skirt'], look: 4, href: 'ss24.html#look-4', image: './assets/ss24/Look%204/USETHIS.JPG' },
   { type: 'look', products: ['zip-up-top', 'womens-wide-trousers'], look: 5, href: 'ss24.html#look-5', image: './assets/ss24/Look%205/52E2F432-A737-47D7-B6C2-FFB46E494D6D.JPG' },
   { type: 'look', products: ['ss24-dress'], look: 6, href: 'ss24.html#look-6', image: './assets/ss24/Look%206/2AFEAA6F-061C-44D0-BC05-42F5C8ADED17.JPG' },
@@ -80,8 +80,9 @@ function createProductCard(product, eager) {
   name.className = 'product-card__name';
   name.textContent = product.name;
   const price = document.createElement('p');
-  price.className = `product-card__price${product.available ? '' : ' product-card__price--sold-out'}`;
-  price.textContent = product.available ? formatPrice(product.price) : 'Sold Out';
+  const soldOut = !product.available && !product.notForSale;
+  price.className = `product-card__price${soldOut ? ' product-card__price--sold-out' : ''}`;
+  price.textContent = product.notForSale ? 'Inquiry' : product.available ? formatPrice(product.price) : 'Sold Out';
   details.append(name, price);
   link.appendChild(details);
   return link;
@@ -202,5 +203,5 @@ function focusHashProduct() {
 }
 
 function formatPrice(price) {
-  return `$${Number.isFinite(price) ? price : 0}`;
+  return `€${Number.isFinite(price) ? price : 0}`;
 }

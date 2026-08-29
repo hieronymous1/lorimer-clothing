@@ -1,9 +1,12 @@
 const PRODUCTS = [
   {
     id: 'deconstructed-bomber',
-    name: 'Deconstructed Bomber Jacket',
+    name: 'Reconstructed Leather Patchwork Bomber Jacket',
     category: 'Tops',
     price: 320,
+    notForSale: true,
+    oneOfOne: true,
+    origin: 'Made in Spain / Finland',
     images: [
       './assets/photos/PRODUCTS/Deconstructesd Bomber Jacket/1.jpg',
       './assets/photos/PRODUCTS/Deconstructesd Bomber Jacket/1.png',
@@ -12,8 +15,8 @@ const PRODUCTS = [
       './assets/photos/PRODUCTS/Deconstructesd Bomber Jacket/5.png',
       './assets/photos/PRODUCTS/Deconstructesd Bomber Jacket/6.png',
     ],
-    description: 'A signature Lorimer reconstruction piece. Deconstructed silhouette with exposed seams and raw edge detailing. Crafted from premium woven fabric.',
-    material: '100% Cotton Shell / Recycled Lining',
+    description: 'A one-of-a-kind reconstructed bomber built from patchworked leather panels, with exposed seams and raw-edge detailing. A unique archive piece — available by inquiry only.',
+    material: 'Reconstructed Leather Patchwork',
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
   },
   {
@@ -49,16 +52,31 @@ const PRODUCTS = [
   },
   {
     id: 'lorimer-selvedge-denim',
-    name: 'Lorimer Selvedge Denim',
+    name: 'Lorimer Selvedge Denim — Blue',
     category: 'Bottoms',
-    price: 260,
+    colorway: 'Blue',
+    price: 80,
     images: [
       './assets/photos/home/denim-feature-02.jpg',
       './assets/photos/PRODUCTS/DENIM1 - Lorimer Womens Wax Coated Denim Jacket/DENIM1_SelvedgeDenim.JPG',
     ],
-    description: 'Lorimer selvedge denim cut with a clean, structured silhouette and considered finishing throughout.',
-    material: '100% Cotton Selvedge Denim',
-    sizes: ['26', '27', '28', '29', '30', '32'],
+    description: 'Lorimer selvedge denim cut with a clean, structured silhouette and considered finishing throughout. Waxed and fabric-painted by hand — each pair develops its own character with wear.',
+    material: 'Waxed / Fabric-Painted Selvedge Denim',
+    sizes: ['30×30', '30×32', '32×30', '32×32', '32×34', '34×32', '34×34'],
+  },
+  {
+    id: 'lorimer-selvedge-denim-black',
+    name: 'Lorimer Selvedge Denim — Black',
+    category: 'Bottoms',
+    colorway: 'Black',
+    price: 80,
+    images: [
+      './assets/photos/PRODUCTS/DENIM1 - Lorimer Womens Wax Coated Denim Jacket/DENIM1_SelvedgeDenim.JPG',
+      './assets/photos/home/denim-feature-02.jpg',
+    ],
+    description: 'Lorimer selvedge denim in black — cut with a clean, structured silhouette and considered finishing throughout. Waxed and fabric-painted by hand, developing its own character with wear.',
+    material: 'Waxed / Fabric-Painted Selvedge Denim',
+    sizes: ['30×30', '30×32', '32×30', '32×32', '32×34', '34×32', '34×34'],
   },
   {
     id: 'reconstructed-button-up-1',
@@ -352,7 +370,7 @@ const PRODUCTS = [
   },
 ].map(product => ({
   ...product,
-  available: product.id === 'phyllite-jacket' || product.id === 'lorimer-selvedge-denim',
+  available: ['phyllite-jacket', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'].includes(product.id),
 }));
 
 if (typeof module !== 'undefined') module.exports = PRODUCTS;

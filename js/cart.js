@@ -161,11 +161,11 @@ function clearCart() {
   localStorage.removeItem(CART_KEY);
 }
 
-function createMoney(amountMinor, currencyCode = 'USD') {
+function createMoney(amountMinor, currencyCode = 'EUR') {
   const amount = Number.isSafeInteger(amountMinor) ? amountMinor : 0;
   const currency = typeof currencyCode === 'string' && /^[A-Z]{3}$/.test(currencyCode)
     ? currencyCode
-    : 'USD';
+    : 'EUR';
   return { amountMinor: Math.max(0, amount), currencyCode: currency };
 }
 
