@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — LORIMER®</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sometype+Mono:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page-body">
+
+  <nav class="navbar">
+    <a class="navbar__item" href="ss24.html">S/S_24</a>
+    <a class="navbar__item" href="shop.html">SHOP</a>
+    <a class="navbar__logo" href="index.html"><img src="./assets/logo.png" alt="LORIMER®"></a>
+    <a class="navbar__item" href="about.html">ABOUT</a>
+    <button class="cart-btn open-cart">CART <span class="cart-count">(0)</span></button>
+  </nav>
+
+  <main>
+    <div class="checkout-layout">
+
+      <!-- Left: safe preview state -->
+      <div class="checkout-unavailable reveal">
+        <p class="checkout-unavailable__eyebrow">Store Preview</p>
+        <h1>Online checkout is currently unavailable</h1>
+        <p>Your selections will stay in your cart while this storefront is being prepared for launch. No personal or payment information is collected.</p>
+        <a href="shop.html">Return to Shop</a>
+      </div>
+
+      <!-- Right: Order Summary -->
+      <div class="checkout-summary reveal reveal-delay-1">
+        <h2>Order Summary</h2>
+        <div class="summary-items" id="summary-items">
+          <!-- Rendered by checkout.js -->
+        </div>
+        <div class="summary-totals">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="summary-subtotal">$0</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span>Free</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="summary-total">$0</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer" id="about">
+    <div class="footer__col"><p>ABOUT</p><p>© Lorimer 2026</p><p>Helsinki, 00750</p></div>
+    <div class="footer__col footer__col--right"><p>NEWSLETTER</p><a href="mailto:contact@lorimer.com">contact@lorimer.com</a><a href="https://www.instagram.com/lorimer.clo/" rel="noopener noreferrer">@Lorimer.Clo</a></div>
+  </footer>
+
+  <script src="js/products-data.js"></script>
+  <script src="js/cart.js?v=4"></script>
+  <script src="js/main.js?v=4"></script>
+  <script src="js/checkout.js"></script>
+  <script src="js/animations.js"></script>
+
+</body>
+</html>

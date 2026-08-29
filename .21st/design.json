@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "project": {
+    "name": "Lorimer2",
+    "productType": "editorial fashion storefront",
+    "stack": ["static HTML", "CSS", "vanilla JavaScript"]
+  },
+  "sources": {
+    "tokens": ["css/styles.css"],
+    "components": [],
+    "assets": [
+      "assets"
+    ],
+    "instructions": []
+  },
+  "design": {
+    "colorMode": "unknown",
+    "colors": {},
+    "typography": {},
+    "spacing": {},
+    "radius": {},
+    "shadows": {},
+    "motion": {},
+    "density": "unknown"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": [],
+    "patterns": []
+  },
+  "constraints": {
+    "must": [],
+    "avoid": []
+  },
+  "decisions": [
+    "Shop uses flat editorial rows: two columns for the available launch pair and dividers, three columns for catalog and SS24 look rows, with no card chrome or gray image gutters.",
+    "Sold-out status replaces price text and purchase controls while keeping every garment detail page accessible."
+  ],
+  "evidence": [],
+  "generatedAt": "2026-08-28T18:00:56.050Z"
+}
