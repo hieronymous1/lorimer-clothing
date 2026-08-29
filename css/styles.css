@@ -573,12 +573,12 @@ ul { list-style: none; }
 .product-tile { display: block; }
 .product-tile__name,
 .preview-card__name {
-  margin-top: 14px;
-  font-family: var(--font-title);
-  font-size: clamp(11px, .78vw, 13px);
-  letter-spacing: .06em;
-  line-height: 1.45;
-  text-transform: uppercase;
+  margin-top: 16px;
+  font-family: var(--font-serif);
+  font-size: clamp(13px, .95vw, 16px);
+  letter-spacing: .01em;
+  line-height: 1.5;
+  text-align: center;
 }
 .card-media {
   position: relative;
@@ -609,8 +609,8 @@ ul { list-style: none; }
 }
 .product-tile:hover .card-media img,
 .preview-card:hover .card-media img { transform: scale(1.025); }
-.product-tile:hover .card-media__action,
-.product-tile:focus-visible .card-media__action,
+/* Charcoal "View in products" box only on the Product Preview cards
+   (the two hero feature tiles get no hover box). */
 .preview-card:hover .card-media__action,
 .preview-card:focus-visible .card-media__action { opacity: 1; }
 .product-tile:focus-visible,
@@ -635,11 +635,11 @@ ul { list-style: none; }
   aspect-ratio: 3 / 4;
 }
 .preview-card__name {
-  font-family: var(--font-title);
-  font-size: clamp(10px, .72vw, 12px);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-family: var(--font-serif);
+  font-size: clamp(12px, .8vw, 14px);
+  letter-spacing: 0.01em;
   line-height: 1.5;
+  text-align: center;
 }
 .preview-card__badge {
   font-family: var(--font-title);
