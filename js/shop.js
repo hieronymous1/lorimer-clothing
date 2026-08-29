@@ -61,7 +61,18 @@ function createProductCard(product, eager) {
   link.href = `product-detail.html?id=${encodeURIComponent(product.id)}`;
   link.dataset.category = product.category;
   link.dataset.productId = product.id;
-  link.appendChild(createProductImage(product.images?.[0], product.name, eager));
+
+  const media = document.createElement('div');
+  media.className = 'product-card__media';
+  media.appendChild(createProductImage(product.images?.[0], product.name, eager));
+  const secondarySrc = product.images?.[1];
+  if (secondarySrc) {
+    const secondary = createProductImage(secondarySrc, '', false);
+    secondary.classList.add('product-card__img--secondary');
+    secondary.setAttribute('aria-hidden', 'true');
+    media.appendChild(secondary);
+  }
+  link.appendChild(media);
 
   const details = document.createElement('div');
   details.className = 'product-card__info';
@@ -145,12 +156,29 @@ function applyFilter(filter) {
     button.setAttribute('aria-pressed', String(active));
   });
 
+  const ss24Only = filter === 'S/S 24';
   let visibleCount = 0;
   document.querySelectorAll('.shop-row').forEach(row => {
     if (row.dataset.rowType === 'divider') {
       row.hidden = filter !== 'All';
       return;
     }
+
+    // S/S 24 filter surfaces the complete-look rows in full.
+    if (ss24Only) {
+      const isLook = row.dataset.rowType === 'look';
+      row.hidden = !isLook;
+      if (isLook) {
+        row.querySelectorAll('.product-card').forEach(card => {
+          card.hidden = false;
+          if (card.dataset.productId) visibleCount += 1;
+        });
+        const lookCard = row.querySelector('.shop-look-card');
+        if (lookCard) lookCard.hidden = false;
+      }
+      return;
+    }
+
     let visibleProducts = 0;
     row.querySelectorAll('.product-card').forEach(card => {
       card.hidden = filter !== 'All' && card.dataset.category !== filter;

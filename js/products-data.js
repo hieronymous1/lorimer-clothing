@@ -2,7 +2,7 @@ const PRODUCTS = [
   {
     id: 'deconstructed-bomber',
     name: 'Deconstructed Bomber Jacket',
-    category: 'Jackets',
+    category: 'Tops',
     price: 320,
     images: [
       './assets/photos/PRODUCTS/Deconstructesd Bomber Jacket/1.jpg',
@@ -19,7 +19,7 @@ const PRODUCTS = [
   {
     id: '3d-panel-bomber',
     name: '3D Panel Cropped Bomber Jacket',
-    category: 'Jackets',
+    category: 'Tops',
     price: 340,
     images: [
       './assets/photos/PRODUCTS/3D Panel Bomber Jacket - Look 3 Top/24.jpg',
@@ -34,7 +34,7 @@ const PRODUCTS = [
   {
     id: 'phyllite-jacket',
     name: 'Phyllite Jacket',
-    category: 'Jackets',
+    category: 'Tops',
     price: 290,
     images: [
       './assets/photos/home/denim-feature-01.jpg',
@@ -325,7 +325,7 @@ const PRODUCTS = [
   {
     id: 'trigall-dress',
     name: 'Trigall Dress',
-    category: 'Accessories',
+    category: 'Dresses',
     price: 380,
     images: [
       './assets/photos/PRODUCTS/Trigall Dress/13.jpg',
@@ -339,7 +339,7 @@ const PRODUCTS = [
   {
     id: 'ss24-dress',
     name: 'S/S24 Dress',
-    category: 'Accessories',
+    category: 'Dresses',
     price: 360,
     images: [
       './assets/photos/PRODUCTS/SS24 Dress/26.jpg',
