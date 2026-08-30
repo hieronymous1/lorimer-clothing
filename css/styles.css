@@ -207,6 +207,7 @@ ul { list-style: none; }
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 55px;
+  margin-top: var(--about-space-gallery);
   margin-bottom: var(--about-space-gallery);
 }
 .about-gallery__image {
@@ -222,6 +223,18 @@ ul { list-style: none; }
 .about-section + .about-section { margin-top: var(--about-space-section); }
 .about-returns { padding-bottom: 0; }
 .about-footer { padding-top: var(--about-space-section); }
+
+/* Toolbar + footer text set in Lora on the About page */
+.about-page .navbar__item,
+.about-page .navbar__logo,
+.about-page .cart-btn,
+.about-page .cart-count {
+  font-family: var(--font-serif);
+}
+.about-footer .footer__col p,
+.about-footer .footer__col a {
+  font-family: var(--font-serif);
+}
 
 @media (max-width: 768px) {
   .navbar__logo { display: none; }
@@ -239,6 +252,7 @@ ul { list-style: none; }
   .about-gallery {
     grid-template-columns: 1fr;
     gap: 16px;
+    margin-top: var(--about-space-gallery);
     margin-bottom: var(--about-space-gallery);
   }
   .about-terms { margin-bottom: var(--about-space-section); }
