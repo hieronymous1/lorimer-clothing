@@ -15,7 +15,7 @@ function loadProduct() {
   document.getElementById('product-name').textContent = product.name;
   document.getElementById('product-price').textContent =
     product.notForSale ? 'Not For Sale' : product.available ? '€' + product.price : 'Sold Out';
-  document.getElementById('product-desc').textContent = product.description;
+  renderLongDescription(product);
 
   const meta = [];
   if (product.material) meta.push('Material: ' + product.material);
@@ -28,8 +28,95 @@ function loadProduct() {
   if (sizeSection) sizeSection.hidden = !!product.notForSale;
 
   renderGallery(product);
+  renderColorVariants(product);
+  renderStyleWith(product);
   if (!product.notForSale) renderSizes(product);
   initAddToCart(product);
+}
+
+function renderLongDescription(product) {
+  const container = document.getElementById('product-desc');
+  if (!container) return;
+  container.replaceChildren();
+
+  const paragraphs = [product.description, product.longDescription].filter(Boolean);
+  paragraphs.forEach(text => {
+    const p = document.createElement('p');
+    p.textContent = text;
+    container.appendChild(p);
+  });
+}
+
+function renderStyleWith(product) {
+  const section = document.getElementById('style-with-section');
+  const grid = document.getElementById('style-with-grid');
+  if (!section || !grid) return;
+
+  const ids = Array.isArray(product.styleWith) ? product.styleWith : [];
+  const items = ids.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
+
+  if (items.length === 0) {
+    section.hidden = true;
+    return;
+  }
+
+  section.hidden = false;
+  grid.replaceChildren();
+
+  items.forEach(item => {
+    const link = document.createElement('a');
+    link.className = 'style-with-card';
+    link.href = `product-detail.html?id=${encodeURIComponent(item.id)}`;
+
+    const image = document.createElement('img');
+    image.className = 'style-with-card__img';
+    image.src = item.images?.[0] || '';
+    image.alt = item.name;
+    image.loading = 'lazy';
+    image.decoding = 'async';
+    link.appendChild(image);
+
+    const name = document.createElement('p');
+    name.className = 'style-with-card__name';
+    name.textContent = item.name;
+    link.appendChild(name);
+
+    grid.appendChild(link);
+  });
+}
+
+function renderColorVariants(product) {
+  const colorSection = document.getElementById('color-section');
+  const swatchRow = document.getElementById('color-swatches');
+  if (!colorSection || !swatchRow) return;
+
+  const variantIds = Array.isArray(product.colorVariants) ? product.colorVariants : [];
+  const variants = variantIds
+    .map(id => PRODUCTS.find(p => p.id === id))
+    .filter(Boolean);
+
+  if (variants.length < 2) {
+    colorSection.hidden = true;
+    return;
+  }
+
+  colorSection.hidden = false;
+  swatchRow.replaceChildren();
+
+  variants.forEach(variant => {
+    const link = document.createElement('a');
+    link.className = 'color-swatch' + (variant.id === product.id ? ' selected' : '');
+    link.href = `product-detail.html?id=${encodeURIComponent(variant.id)}`;
+    link.setAttribute('aria-label', variant.colorway || variant.name);
+    link.title = variant.colorway || variant.name;
+
+    const dot = document.createElement('span');
+    dot.className = 'color-swatch__dot';
+    dot.style.backgroundColor = variant.swatch || '#ccc';
+    link.appendChild(dot);
+
+    swatchRow.appendChild(link);
+  });
 }
 
 function renderGallery(product) {

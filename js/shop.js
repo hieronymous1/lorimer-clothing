@@ -8,12 +8,11 @@ const SHOP_ROWS = [
   { type: 'products', products: ['reconstructed-button-up-1', 'reconstructed-button-up-2', 'reinforced-pinstripe-trousers'] },
   { type: 'products', products: ['upcycled-two-piece', 'trigall-dress', 'overlapped-fray-skirt'] },
   { type: 'divider', images: ['./assets/photos/shop/still-03.jpg', './assets/photos/shop/still-04.jpg'] },
-  { type: 'look', products: ['dual-texture-knit-vest', 'adjustable-button-trousers'], look: 1, href: 'ss24.html#look-1', image: './assets/ss24/Look%201/37AC10C7-072C-4FFC-B401-D905B2D72774.JPG' },
-  { type: 'look', products: ['university-striped-sweatshirt', 'mens-straight-trousers'], look: 2, href: 'ss24.html#look-2', image: './assets/ss24/Look%202/1A7930C9-3066-4EFC-AD1A-6E448A42D2E2.JPG' },
-  { type: 'products', products: ['3d-panel-bomber', 'denim-leather-trousers', 'lorimer-selvedge-denim-black'] },
-  { type: 'look', products: ['asymmetrical-white-top', 'white-layered-skirt'], look: 4, href: 'ss24.html#look-4', image: './assets/ss24/Look%204/USETHIS.JPG' },
-  { type: 'look', products: ['zip-up-top', 'womens-wide-trousers'], look: 5, href: 'ss24.html#look-5', image: './assets/ss24/Look%205/52E2F432-A737-47D7-B6C2-FFB46E494D6D.JPG' },
-  { type: 'look', products: ['ss24-dress'], look: 6, href: 'ss24.html#look-6', image: './assets/ss24/Look%206/2AFEAA6F-061C-44D0-BC05-42F5C8ADED17.JPG' },
+  { type: 'products', products: ['dual-texture-knit-vest', 'adjustable-button-trousers'], ss24: true },
+  { type: 'products', products: ['university-striped-sweatshirt', 'mens-straight-trousers'], ss24: true },
+  { type: 'products', products: ['3d-panel-bomber', 'denim-leather-trousers'] },
+  { type: 'products', products: ['asymmetrical-white-top', 'white-layered-skirt', 'ss24-dress'], ss24: true },
+  { type: 'products', products: ['zip-up-top', 'womens-wide-trousers'], ss24: true },
 ];
 
 if (typeof document !== 'undefined') {
@@ -37,9 +36,11 @@ function renderShop() {
 
   SHOP_ROWS.forEach((row, rowIndex) => {
     const element = document.createElement('div');
-    element.className = `shop-row shop-row--${rowIndex === 0 ? 'two' : row.type === 'divider' ? 'two' : 'three'}`;
+    const columns = rowIndex === 0 ? 'two' : row.type === 'divider' ? 'two' : 'three';
+    element.className = `shop-row shop-row--${columns}`;
     element.dataset.rowType = row.type;
     element.dataset.rowIndex = String(rowIndex + 1);
+    if (row.ss24) element.dataset.ss24 = 'true';
 
     if (row.type === 'divider') {
       row.images.forEach(src => element.appendChild(createDividerImage(src)));
@@ -48,7 +49,6 @@ function renderShop() {
         const product = productById(id);
         element.appendChild(product ? createProductCard(product, rowIndex === 0 && productIndex === 0) : createProductPlaceholder(id));
       });
-      if (row.type === 'look') element.appendChild(createLookCard(row));
     }
     grid.appendChild(element);
   });
@@ -60,6 +60,7 @@ function createProductCard(product, eager) {
   link.id = product.id;
   link.href = `product-detail.html?id=${encodeURIComponent(product.id)}`;
   link.dataset.category = product.category;
+  if (product.subcategory) link.dataset.subcategory = product.subcategory;
   link.dataset.productId = product.id;
 
   const media = document.createElement('div');
@@ -125,25 +126,6 @@ function createDividerImage(src) {
   return image;
 }
 
-function createLookCard(row) {
-  const link = document.createElement('a');
-  link.className = 'shop-look-card';
-  link.href = row.href;
-  link.setAttribute('aria-label', `View SS24 Look ${row.look}`);
-  const image = document.createElement('img');
-  image.className = 'shop-look-card__image';
-  image.src = row.image;
-  image.alt = `Complete SS24 Look ${row.look}`;
-  image.loading = 'lazy';
-  image.decoding = 'async';
-  image.addEventListener('error', () => image.replaceWith(createImagePlaceholder(`SS24 Look ${row.look}`)));
-  const text = document.createElement('span');
-  text.className = 'shop-look-card__link';
-  text.textContent = 'View Look';
-  link.append(image, text);
-  return link;
-}
-
 function bindFilters() {
   document.querySelectorAll('.filter-btn').forEach(button => {
     button.addEventListener('click', () => applyFilter(button.dataset.filter));
@@ -167,26 +149,22 @@ function applyFilter(filter) {
 
     // S/S 24 filter surfaces the complete-look rows in full.
     if (ss24Only) {
-      const isLook = row.dataset.rowType === 'look';
-      row.hidden = !isLook;
-      if (isLook) {
+      const isSS24 = row.dataset.ss24 === 'true';
+      row.hidden = !isSS24;
+      if (isSS24) {
         row.querySelectorAll('.product-card').forEach(card => {
           card.hidden = false;
           if (card.dataset.productId) visibleCount += 1;
         });
-        const lookCard = row.querySelector('.shop-look-card');
-        if (lookCard) lookCard.hidden = false;
       }
       return;
     }
 
     let visibleProducts = 0;
     row.querySelectorAll('.product-card').forEach(card => {
-      card.hidden = filter !== 'All' && card.dataset.category !== filter;
+      card.hidden = filter !== 'All' && card.dataset.category !== filter && card.dataset.subcategory !== filter;
       if (!card.hidden && card.dataset.productId) visibleProducts += 1;
     });
-    const lookCard = row.querySelector('.shop-look-card');
-    if (lookCard) lookCard.hidden = filter !== 'All';
     row.hidden = visibleProducts === 0;
     visibleCount += visibleProducts;
   });
