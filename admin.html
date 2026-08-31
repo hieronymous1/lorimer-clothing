@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — LORIMER®</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+  <div id="admin-login" class="admin-login">
+    <h1>LORIMER Admin</h1>
+    <form id="admin-login-form">
+      <input type="password" id="admin-password" placeholder="Password" required>
+      <button type="submit">Log in</button>
+    </form>
+    <p id="admin-login-error" class="admin-error" hidden></p>
+  </div>
+
+  <div id="admin-panel" class="admin-panel" hidden>
+    <nav class="admin-tabs">
+      <button data-tab="products" class="admin-tab admin-tab--active">Products</button>
+      <button data-tab="inventory" class="admin-tab">Inventory</button>
+      <button data-tab="orders" class="admin-tab">Orders</button>
+      <button data-tab="content" class="admin-tab">Content</button>
+      <button id="admin-logout" class="admin-tab admin-tab--logout" type="button">Log out</button>
+    </nav>
+
+    <section id="admin-tab-products" class="admin-tab-panel"></section>
+    <section id="admin-tab-inventory" class="admin-tab-panel" hidden></section>
+    <section id="admin-tab-orders" class="admin-tab-panel" hidden></section>
+    <section id="admin-tab-content" class="admin-tab-panel" hidden></section>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

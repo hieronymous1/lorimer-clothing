@@ -58,3 +58,19 @@ test('content-remote.js patches every [data-cms-key] element from /api/content',
   assert.match(js, /fetch\('\/api\/content'/);
   assert.match(js, /data-cms-key/);
 });
+
+test('admin.html has a login form and all four tabs', () => {
+  const html = read('admin.html');
+  assert.match(html, /id="admin-login-form"/);
+  ['products', 'inventory', 'orders', 'content'].forEach(tab => {
+    assert.match(html, new RegExp(`data-tab="${tab}"`), `admin.html is missing the ${tab} tab`);
+    assert.match(html, new RegExp(`id="admin-tab-${tab}"`), `admin.html is missing the ${tab} panel`);
+  });
+});
+
+test('admin.js calls every admin API route', () => {
+  const js = read('js/admin.js');
+  ['/api/admin/login', '/api/admin/products', '/api/admin/inventory', '/api/admin/orders', '/api/admin/content'].forEach(route => {
+    assert.match(js, new RegExp(route.replace(/\//g, '\\/')), `admin.js never calls ${route}`);
+  });
+});
