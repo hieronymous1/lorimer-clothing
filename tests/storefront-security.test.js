@@ -34,19 +34,20 @@ function loadCart(storedValue) {
   };
 }
 
-test('checkout is a review-only page and collects no personal or payment data', () => {
+test('checkout page collects no card or personal data directly — payment happens on Stripe', () => {
   const html = read('checkout.html');
-  assert.match(html, /Online checkout is currently unavailable/i);
-  assert.match(html, /href="shop\.html"/);
+  // Card/address entry happens on Stripe's own hosted Checkout page, never here.
   assert.doesNotMatch(html, /<(?:form|input|select|textarea)\b/i);
-  assert.doesNotMatch(html, /(?:place order|order confirmed|card number|cvc|customer information)/i);
+  assert.doesNotMatch(html, /(?:card number|cvc|customer information)/i);
 });
 
-test('checkout behavior cannot submit, clear the cart, or fabricate success', () => {
+test('checkout.js only redirects to a server-issued Stripe URL, never fabricates success itself', () => {
   const source = read('js/checkout.js');
+  // A real click handler, not a <form> submit — Stripe never sees a same-origin form post.
   assert.doesNotMatch(source, /addEventListener\s*\(\s*['"]submit['"]/);
-  assert.doesNotMatch(source, /\bclearCart\s*\(/);
-  assert.doesNotMatch(source, /order-success|Order Confirmed/i);
+  // The redirect target comes from the /api/checkout response, not a hardcoded success URL.
+  assert.match(source, /window\.location\.href\s*=\s*data\.url/);
+  assert.doesNotMatch(source, /window\.location\.href\s*=\s*['"]/);
 });
 
 test('stored cart rows are not rendered through innerHTML', () => {

@@ -19,3 +19,21 @@ test('checkout.js posts to /api/checkout and clears the cart on success', () => 
   assert.match(js, /fetch\('\/api\/checkout'/);
   assert.match(js, /clearCart\(\)/);
 });
+
+test('every storefront page defers to products-remote.js before its page script', () => {
+  const pages = [
+    ['index.html', 'js/home.js'],
+    ['about.html', 'js/main.js?v=7'],
+    ['shop.html', 'js/shop.js?v=10'],
+    ['product-detail.html', 'js/product.js?v=8'],
+    ['ss24.html', 'js/ss24.js?v=9'],
+    ['checkout.html', 'js/checkout.js'],
+  ];
+
+  pages.forEach(([page, pageScript]) => {
+    const html = read(page);
+    assert.match(html, /window\.__LORIMER_SCRIPTS_AFTER__ = \[/, `${page} is missing the deferred script list`);
+    assert.match(html, new RegExp(pageScript.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${page} is missing ${pageScript} in its deferred list`);
+    assert.match(html, /<script src="js\/products-remote\.js"><\/script>/, `${page} is missing products-remote.js`);
+  });
+});
