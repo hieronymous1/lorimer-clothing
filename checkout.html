@@ -27,12 +27,21 @@
   <main>
     <div class="checkout-layout">
 
-      <!-- Left: safe preview state -->
-      <div class="checkout-unavailable reveal">
-        <p class="checkout-unavailable__eyebrow">Store Preview</p>
-        <h1>Online checkout is currently unavailable</h1>
-        <p>Your selections will stay in your cart while this storefront is being prepared for launch. No personal or payment information is collected.</p>
-        <a href="shop.html">Return to Products</a>
+      <!-- Left: payment -->
+      <div class="checkout-pay reveal">
+        <div id="checkout-success" class="checkout-banner checkout-banner--success" hidden>
+          <h1>Thank you — your order is confirmed.</h1>
+          <p>A receipt has been sent to your email. Your cart has been cleared.</p>
+        </div>
+        <div id="checkout-canceled" class="checkout-banner checkout-banner--canceled" hidden>
+          <p>Checkout was canceled. Your cart is still here whenever you're ready.</p>
+        </div>
+        <div id="checkout-form" class="checkout-form">
+          <h1>Checkout</h1>
+          <p>Shipping is calculated at the next step based on your country.</p>
+          <button id="checkout-pay-btn" class="checkout-pay__button" type="button">Pay Now</button>
+          <p id="checkout-error" class="checkout-error" hidden></p>
+        </div>
       </div>
 
       <!-- Right: Order Summary -->

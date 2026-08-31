@@ -1,8 +1,78 @@
-/* checkout.js — safe, review-only order summary */
+/* checkout.js — real Stripe Checkout handoff */
 
 document.addEventListener('DOMContentLoaded', () => {
   renderOrderSummary();
+  handleRedirectState();
+  wirePayButton();
 });
+
+function handleRedirectState() {
+  const params = new URLSearchParams(window.location.search);
+  const successEl = document.getElementById('checkout-success');
+  const canceledEl = document.getElementById('checkout-canceled');
+  const formEl = document.getElementById('checkout-form');
+
+  if (params.get('success') === '1') {
+    if (successEl) successEl.hidden = false;
+    if (formEl) formEl.hidden = true;
+    if (typeof clearCart === 'function') clearCart();
+    renderOrderSummary();
+  } else if (params.get('canceled') === '1') {
+    if (canceledEl) canceledEl.hidden = false;
+  }
+}
+
+function wirePayButton() {
+  const button = document.getElementById('checkout-pay-btn');
+  const errorEl = document.getElementById('checkout-error');
+  if (!button) return;
+
+  button.addEventListener('click', async () => {
+    const cart = getCart();
+    if (errorEl) errorEl.hidden = true;
+
+    if (cart.length === 0) {
+      if (errorEl) {
+        errorEl.textContent = 'Your cart is empty.';
+        errorEl.hidden = false;
+      }
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Redirecting to payment…';
+
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cart: cart.map(item => ({ id: item.id, size: item.size, quantity: item.quantity })),
+        }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (errorEl) {
+          errorEl.textContent = data.error || 'Something went wrong. Please try again.';
+          errorEl.hidden = false;
+        }
+        button.disabled = false;
+        button.textContent = 'Pay Now';
+        return;
+      }
+
+      window.location.href = data.url;
+    } catch {
+      if (errorEl) {
+        errorEl.textContent = 'Something went wrong. Please try again.';
+        errorEl.hidden = false;
+      }
+      button.disabled = false;
+      button.textContent = 'Pay Now';
+    }
+  });
+}
 
 function renderOrderSummary() {
   const itemsEl = document.getElementById('summary-items');

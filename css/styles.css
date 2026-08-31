@@ -2017,3 +2017,19 @@ html.has-custom-cursor * {
   .lookbook-look__copy a { align-self: flex-start !important; text-align: left !important; }
   .lookbook-end { margin: 70px auto 54px; }
 }
+
+.checkout-banner { margin-bottom: 24px; }
+.checkout-banner--success h1 { margin-bottom: 8px; }
+.checkout-pay__button {
+  display: inline-block;
+  padding: 14px 32px;
+  background: #111;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.checkout-pay__button:disabled { opacity: 0.6; cursor: default; }
+.checkout-error { color: #b00020; margin-top: 12px; }
