@@ -39,22 +39,24 @@ async function handler(req, res) {
     return;
   }
 
-  if (event.type === 'checkout.session.completed') {
+  if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
     const session = event.data.object;
-    const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
-      expand: ['line_items.data.price.product'],
-    });
+    if (session.payment_status === 'paid') {
+      const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
+        expand: ['line_items.data.price.product'],
+      });
 
-    for (const item of fullSession.line_items?.data || []) {
-      const metadata = item.price?.product?.metadata || {};
-      const productId = metadata.product_id;
-      const size = metadata.size;
-      if (!productId || !size) continue;
+      for (const item of fullSession.line_items?.data || []) {
+        const metadata = item.price?.product?.metadata || {};
+        const productId = metadata.product_id;
+        const size = metadata.size;
+        if (!productId || !size) continue;
 
-      await sql`
-        update inventory set stock = greatest(stock - ${item.quantity}, 0)
-        where product_id = ${productId} and size = ${size}
-      `;
+        await sql`
+          update inventory set stock = greatest(stock - ${item.quantity}, 0)
+          where product_id = ${productId} and size = ${size}
+        `;
+      }
     }
   }
 
