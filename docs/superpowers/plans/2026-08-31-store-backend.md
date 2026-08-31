@@ -707,10 +707,13 @@ git commit -m "feat(backend): add checkout API with server-side stock/price vali
 const Stripe = require('stripe');
 const { getDb } = require('./_lib/db');
 
-async function buffer(readable) {
-  const chunks = [];
-  for await (const chunk of readable) chunks.push(chunk);
-  return Buffer.concat(chunks);
+function buffer(readable) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    readable.on('data', chunk => chunks.push(chunk));
+    readable.on('end', () => resolve(Buffer.concat(chunks)));
+    readable.on('error', reject);
+  });
 }
 
 async function handler(req, res) {
@@ -1140,9 +1143,12 @@ async function handler(req, res) {
     return;
   }
 
-  const chunks = [];
-  for await (const chunk of req) chunks.push(chunk);
-  const body = Buffer.concat(chunks);
+  const body = await new Promise((resolve, reject) => {
+    const chunks = [];
+    req.on('data', chunk => chunks.push(chunk));
+    req.on('end', () => resolve(Buffer.concat(chunks)));
+    req.on('error', reject);
+  });
 
   const blob = await put(filename, body, {
     access: 'public',
