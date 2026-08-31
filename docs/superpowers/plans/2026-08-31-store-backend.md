@@ -745,23 +745,25 @@ async function handler(req, res) {
     return;
   }
 
-  if (event.type === 'checkout.session.completed') {
+  if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
     const session = event.data.object;
-    const stripeForExpand = new Stripe(process.env.STRIPE_SECRET_KEY);
-    const fullSession = await stripeForExpand.checkout.sessions.retrieve(session.id, {
-      expand: ['line_items.data.price.product'],
-    });
+    if (session.payment_status === 'paid') {
+      const stripeForExpand = new Stripe(process.env.STRIPE_SECRET_KEY);
+      const fullSession = await stripeForExpand.checkout.sessions.retrieve(session.id, {
+        expand: ['line_items.data.price.product'],
+      });
 
-    for (const item of fullSession.line_items?.data || []) {
-      const metadata = item.price?.product?.metadata || {};
-      const productId = metadata.product_id;
-      const size = metadata.size;
-      if (!productId || !size) continue;
+      for (const item of fullSession.line_items?.data || []) {
+        const metadata = item.price?.product?.metadata || {};
+        const productId = metadata.product_id;
+        const size = metadata.size;
+        if (!productId || !size) continue;
 
-      await sql`
-        update inventory set stock = greatest(stock - ${item.quantity}, 0)
-        where product_id = ${productId} and size = ${size}
-      `;
+        await sql`
+          update inventory set stock = greatest(stock - ${item.quantity}, 0)
+          where product_id = ${productId} and size = ${size}
+        `;
+      }
     }
   }
 
@@ -2297,7 +2299,7 @@ Run: `vercel env add STRIPE_SECRET_KEY production`, `vercel env add STRIPE_WEBHO
 
 - [ ] **Step 8: Register the production webhook in Stripe**
 
-Run: `stripe webhook_endpoints create --url https://<production-domain>/api/stripe-webhook --enabled-events checkout.session.completed`
+Run: `stripe webhook_endpoints create --url https://<production-domain>/api/stripe-webhook --enabled-events checkout.session.completed --enabled-events checkout.session.async_payment_succeeded`
 Expected: prints a new endpoint with a `whsec_...` secret — set that as the production `STRIPE_WEBHOOK_SECRET` (Step 7) if it differs from the one used locally, then redeploy.
 
 - [ ] **Step 9: Repeat Steps 2–5 against the production URL** with a real Stripe **test-mode** key still active (do not switch to live mode until this full pass is confirmed clean), then flip `STRIPE_SECRET_KEY`/`STRIPE_WEBHOOK_SECRET` to live-mode values for launch.
