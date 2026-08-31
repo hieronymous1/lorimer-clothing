@@ -1,0 +1,12 @@
+{
+  "name": "lorimer-clothing",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/ tests/lib/"
+  },
+  "dependencies": {
+    "stripe": "^17.4.0",
+    "@neondatabase/serverless": "^0.10.4",
+    "@vercel/blob": "^2.8.0"
+  }
+}
