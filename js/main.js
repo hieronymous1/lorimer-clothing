@@ -133,14 +133,29 @@ function renderCartDrawer() {
   const subtotalElement = document.getElementById('cart-subtotal-amount');
   if (!itemsElement) return;
   const state = getCartState();
-  itemsElement.replaceChildren();
   updateCartBadge();
-  if (state.lines.length === 0) renderEmptyCart(itemsElement);
-  else {
-    const fragment = document.createDocumentFragment();
-    state.lines.forEach((line, index) => fragment.append(createCartRow(line, index)));
-    itemsElement.append(fragment);
+
+  if (state.lines.length === 0) {
+    itemsElement.replaceChildren();
+    renderEmptyCart(itemsElement);
+  } else {
+    if (itemsElement.querySelector('.cart-empty')) itemsElement.replaceChildren();
+    // Only genuinely new/removed lines animate — an existing row is updated
+    // in place so a quantity change on one line doesn't replay every row's
+    // entrance animation.
+    const existingRows = new Map(
+      [...itemsElement.querySelectorAll('.cart-item')].map(row => [row.dataset.lineKey, row]),
+    );
+    const seenKeys = new Set();
+    state.lines.forEach((line, index) => {
+      seenKeys.add(line.lineKey);
+      const existing = existingRows.get(line.lineKey);
+      if (existing) updateCartRow(existing, line);
+      else itemsElement.appendChild(createCartRow(line, index));
+    });
+    existingRows.forEach((row, key) => { if (!seenKeys.has(key)) row.remove(); });
   }
+
   if (subtotalElement) subtotalElement.textContent = formatMoney(state.subtotal);
 }
 
@@ -164,14 +179,15 @@ function renderEmptyCart(itemsElement) {
 function createCartRow(line, index) {
   const row = document.createElement('article');
   row.className = 'cart-item';
+  row.dataset.lineKey = line.lineKey;
+  row.dataset.lineName = line.name;
   row.style.setProperty('--i', index);
   const info = document.createElement('div');
   info.className = 'cart-item__info';
-  info.append(
-    createTextElement('h3', 'cart-item__name', line.name),
-    createTextElement('p', 'cart-item__size', `Size ${line.size}`),
-    createTextElement('p', 'cart-item__price', `${formatMoney(line.unitPrice)} each · ${formatMoney(line.lineTotal)} total`),
-  );
+  const nameEl = createTextElement('h3', 'cart-item__name', line.name);
+  const sizeEl = createTextElement('p', 'cart-item__size', `Size ${line.size}`);
+  const priceEl = createTextElement('p', 'cart-item__price', `${formatMoney(line.unitPrice)} each · ${formatMoney(line.lineTotal)} total`);
+  info.append(nameEl, sizeEl, priceEl);
   const actions = document.createElement('div');
   actions.className = 'cart-item__actions';
   const quantity = document.createElement('div');
@@ -180,19 +196,34 @@ function createCartRow(line, index) {
   const decrement = createQuantityButton('cart-item__quantity-decrement', '−', `Decrease ${line.name} quantity`);
   const amount = createTextElement('span', 'cart-item__quantity-value', String(line.quantity));
   const increment = createQuantityButton('cart-item__quantity-increment', '+', `Increase ${line.name} quantity`);
-  decrement.addEventListener('click', () => mutateCartLine(decrement, () => cartService.updateLineQuantity(line.lineKey, line.quantity - 1), line.quantity === 1 ? `${line.name} removed.` : `${line.name} quantity decreased.`));
-  increment.addEventListener('click', () => mutateCartLine(increment, () => cartService.updateLineQuantity(line.lineKey, line.quantity + 1), `${line.name} quantity increased.`));
+  decrement.addEventListener('click', () => {
+    const current = Number(amount.textContent) || 0;
+    mutateCartLine(decrement, () => cartService.updateLineQuantity(row.dataset.lineKey, current - 1), current === 1 ? `${row.dataset.lineName} removed.` : `${row.dataset.lineName} quantity decreased.`);
+  });
+  increment.addEventListener('click', () => {
+    const current = Number(amount.textContent) || 0;
+    mutateCartLine(increment, () => cartService.updateLineQuantity(row.dataset.lineKey, current + 1), `${row.dataset.lineName} quantity increased.`);
+  });
   quantity.append(decrement, amount, increment);
   const remove = document.createElement('button');
   remove.className = 'cart-item__remove';
   remove.type = 'button';
   remove.setAttribute('aria-label', `Remove ${line.name}`);
   remove.textContent = 'Remove';
-  remove.addEventListener('click', () => mutateCartLine(remove, () => cartService.removeLine(line.lineKey), `${line.name} removed.`));
+  remove.addEventListener('click', () => mutateCartLine(remove, () => cartService.removeLine(row.dataset.lineKey), `${row.dataset.lineName} removed.`));
   actions.append(quantity, remove);
   info.append(actions);
   row.append(createSafeCartImage(line, 'cart-item__img'), info);
+  row._refs = { priceEl, amount };
   return row;
+}
+
+function updateCartRow(row, line) {
+  row.dataset.lineName = line.name;
+  const refs = row._refs;
+  if (!refs) return;
+  refs.priceEl.textContent = `${formatMoney(line.unitPrice)} each · ${formatMoney(line.lineTotal)} total`;
+  refs.amount.textContent = String(line.quantity);
 }
 
 function createQuantityButton(className, text, label) {

@@ -22,6 +22,7 @@ if (typeof document !== 'undefined') {
     bindFilters();
     applyFilter('All');
     focusHashProduct();
+    observeNewReveals();
   });
 }
 
@@ -47,16 +48,16 @@ function renderShop() {
     } else {
       row.products.forEach((id, productIndex) => {
         const product = productById(id);
-        element.appendChild(product ? createProductCard(product, rowIndex === 0 && productIndex === 0) : createProductPlaceholder(id));
+        element.appendChild(product ? createProductCard(product, rowIndex === 0 && productIndex === 0, productIndex) : createProductPlaceholder(id));
       });
     }
     grid.appendChild(element);
   });
 }
 
-function createProductCard(product, eager) {
+function createProductCard(product, eager, index = 0) {
   const link = document.createElement('a');
-  link.className = 'product-card';
+  link.className = `product-card reveal reveal-delay-${(index % 3) + 1}`;
   link.id = product.id;
   link.href = `product-detail.html?id=${encodeURIComponent(product.id)}`;
   link.dataset.category = product.category;
@@ -117,7 +118,7 @@ function createProductPlaceholder(id) {
 
 function createDividerImage(src) {
   const image = document.createElement('img');
-  image.className = 'shop-divider__image';
+  image.className = 'shop-divider__image reveal';
   image.src = src;
   image.alt = '';
   image.loading = 'lazy';

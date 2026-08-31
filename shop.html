@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Products — LORIMER®</title>
-  <link rel="icon" href="data:,">
+  <link rel="icon" href="./assets/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
@@ -22,9 +25,8 @@
 
   <main class="shop-layout">
     <aside class="shop-sidebar" aria-label="Shop filters">
-      <p class="shop-sidebar__title">Shop All</p>
+      <button class="shop-sidebar__title filter-btn filter-btn--all active" type="button" data-filter="All" aria-pressed="true">Shop All</button>
       <div class="shop-filters" role="group" aria-label="Filter products">
-        <button class="filter-btn active" type="button" data-filter="All" aria-pressed="true">All</button>
         <button class="filter-btn" type="button" data-filter="Tops" aria-pressed="false">Tops</button>
         <div class="shop-subfilters" role="group" aria-label="Tops subcategories">
           <button class="filter-btn filter-btn--sub" type="button" data-filter="Shirts" aria-pressed="false">Shirts</button>
@@ -55,11 +57,12 @@
     <div class="footer__col footer__col--right"><p>NEWSLETTER</p><a href="mailto:contact@lorimer.com">contact@lorimer.com</a><a href="https://www.instagram.com/lorimer.clo/" rel="noopener noreferrer">@Lorimer.Clo</a></div>
   </footer>
 
-  <script src="js/products-data.js?v=9"></script>
+  <script src="js/products-data.js?v=11"></script>
   <script src="js/cart.js?v=6"></script>
-  <script src="js/main.js?v=6"></script>
-  <script src="js/shop.js?v=8"></script>
+  <script src="js/main.js?v=7"></script>
+  <script src="js/shop.js?v=10"></script>
   <script src="js/animations.js"></script>
+  <script src="js/cursor.js"></script>
 
 </body>
 </html>

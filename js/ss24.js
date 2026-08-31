@@ -6,10 +6,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initLookbookGallery(gallery) {
-  const image = gallery.querySelector('.lookbook-gallery__image');
+  const frontImage = gallery.querySelector('.lookbook-gallery__image');
   const images = (gallery.dataset.galleryImages || '').split('|').filter(Boolean);
   const look = gallery.dataset.look;
-  if (!image || images.length < 2) return;
+  if (!frontImage || images.length < 2) return;
+
+  // Two stacked layers so the opacity transition actually has something to
+  // crossfade between, instead of swapping .src on a single <img>.
+  frontImage.classList.add('is-visible');
+  const backImage = frontImage.cloneNode(false);
+  backImage.removeAttribute('src');
+  backImage.alt = '';
+  backImage.classList.remove('is-visible');
+  gallery.insertBefore(backImage, frontImage.nextSibling);
+  const layers = [frontImage, backImage];
+  let frontIndex = 0;
 
   const dotsWrap = document.createElement('div');
   dotsWrap.className = 'lookbook-gallery__dots';
@@ -36,17 +47,21 @@ function initLookbookGallery(gallery) {
 
   let index = 0;
   let touchStartX = null;
-  const render = () => {
-    image.src = images[index];
-    image.alt = `Model wearing Lorimer SS24 Look ${look}, image ${index + 1} of ${images.length}`;
+  const updateChrome = () => {
     counter.textContent = `${index + 1} / ${images.length}`;
     dotsWrap.querySelectorAll('span').forEach((dot, i) => dot.classList.toggle('is-active', i === index));
   };
   const move = direction => {
     index = (index + direction + images.length) % images.length;
-    render();
+    const back = layers[1 - frontIndex];
+    back.src = images[index];
+    back.alt = `Model wearing Lorimer SS24 Look ${look}, image ${index + 1} of ${images.length}`;
+    back.classList.add('is-visible');
+    layers[frontIndex].classList.remove('is-visible');
+    frontIndex = 1 - frontIndex;
+    updateChrome();
   };
-  render();
+  updateChrome();
 
   prevBtn.addEventListener('click', event => { event.stopPropagation(); move(-1); });
   nextBtn.addEventListener('click', event => { event.stopPropagation(); move(1); });

@@ -14,7 +14,7 @@ function loadProduct() {
 
   document.getElementById('product-name').textContent = product.name;
   document.getElementById('product-price').textContent =
-    product.notForSale ? 'Not For Sale' : product.available ? '€' + product.price : 'Sold Out';
+    product.notForSale ? 'Sold Out' : product.available ? '€' + product.price : 'Sold Out';
   renderLongDescription(product);
 
   const meta = [];
@@ -29,9 +29,39 @@ function loadProduct() {
 
   renderGallery(product);
   renderColorVariants(product);
+  renderFinishes(product);
   renderStyleWith(product);
   if (!product.notForSale) renderSizes(product);
   initAddToCart(product);
+  initSizeGuide(product);
+}
+
+function renderFinishes(product) {
+  const section = document.getElementById('finish-section');
+  const grid = document.getElementById('finish-grid');
+  if (!section || !grid) return;
+
+  const finishes = Array.isArray(product.finishes) ? product.finishes : [];
+  if (finishes.length === 0) {
+    section.hidden = true;
+    return;
+  }
+
+  section.hidden = false;
+  grid.replaceChildren();
+
+  finishes.forEach((finish, index) => {
+    const button = document.createElement('button');
+    button.className = 'finish-btn' + (index === 0 ? ' selected' : '');
+    button.type = 'button';
+    button.dataset.finish = finish;
+    button.textContent = finish;
+    button.addEventListener('click', () => {
+      grid.querySelectorAll('.finish-btn').forEach(b => b.classList.remove('selected'));
+      button.classList.add('selected');
+    });
+    grid.appendChild(button);
+  });
 }
 
 function renderLongDescription(product) {
@@ -239,8 +269,8 @@ function initAddToCart(product) {
       image: product.images[0] || '',
       unitPrice: { amountMinor: Math.round(product.price * 100), currencyCode: 'EUR' },
     });
-    btn.disabled = false;
     if (!result.ok) {
+      btn.disabled = false;
       const error = document.getElementById('size-error');
       if (error) {
         error.textContent = cartErrorMessage(result.error);
@@ -249,6 +279,138 @@ function initAddToCart(product) {
       return;
     }
     updateCartBadge();
-    openCartDrawer(btn);
+    confirmAddToCart(btn, () => openCartDrawer(btn));
   });
+}
+
+function confirmAddToCart(btn, onDone) {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) {
+    btn.disabled = false;
+    onDone();
+    return;
+  }
+  btn.classList.add('is-added');
+  window.setTimeout(() => {
+    onDone();
+    btn.classList.remove('is-added');
+    btn.disabled = false;
+  }, 550);
+}
+
+const SIZE_GUIDE_TOPS = [
+  ['XS', '32–34', '17'],
+  ['S', '35–37', '17.5'],
+  ['M', '38–40', '18'],
+  ['L', '41–43', '18.5'],
+  ['XL', '44–46', '19'],
+];
+const SIZE_GUIDE_BOTTOMS_NUMERIC = [
+  ['26', '26–27', '35–36'],
+  ['27', '27–28', '36–37'],
+  ['28', '28–29', '37–38'],
+  ['29', '29–30', '38–39'],
+  ['30', '30–31', '39–40'],
+  ['32', '32–33', '41–42'],
+  ['34', '34–35', '43–44'],
+  ['36', '36–37', '45–46'],
+];
+const SIZE_GUIDE_BOTTOMS_WAIST = [
+  ['30×30', '30', '30'],
+  ['30×32', '30', '32'],
+  ['32×30', '32', '30'],
+  ['32×32', '32', '32'],
+  ['32×34', '32', '34'],
+  ['34×32', '34', '32'],
+  ['34×34', '34', '34'],
+];
+
+function sizeGuideTable(product) {
+  const isBottoms = product.category === 'Bottoms';
+  if (isBottoms && product.sizes.some(size => size.includes('×'))) {
+    return { headers: ['Size', 'Waist (in)', 'Inseam (in)'], rows: SIZE_GUIDE_BOTTOMS_WAIST };
+  }
+  if (isBottoms) {
+    return { headers: ['Size', 'Waist (in)', 'Hip (in)'], rows: SIZE_GUIDE_BOTTOMS_NUMERIC };
+  }
+  return { headers: ['Size', 'Chest (in)', 'Sleeve (in)'], rows: SIZE_GUIDE_TOPS };
+}
+
+function initSizeGuide(product) {
+  const trigger = document.getElementById('size-guide-trigger');
+  if (!trigger) return;
+  injectSizeGuideModal();
+
+  const overlay = document.getElementById('size-guide-overlay');
+  const modal = document.getElementById('size-guide-modal');
+  const closeButtons = [document.getElementById('size-guide-close'), overlay];
+
+  const open = () => {
+    renderSizeGuideTable(product);
+    overlay.classList.add('open');
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => document.getElementById('size-guide-close')?.focus());
+  };
+  const close = () => {
+    overlay.classList.remove('open');
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    trigger.focus();
+  };
+
+  trigger.hidden = !!product.notForSale;
+  trigger.addEventListener('click', open);
+  closeButtons.forEach(el => el?.addEventListener('click', close));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && modal.classList.contains('open')) close();
+  });
+}
+
+function renderSizeGuideTable(product) {
+  const container = document.getElementById('size-guide-table');
+  if (!container) return;
+  const { headers, rows } = sizeGuideTable(product);
+
+  container.replaceChildren();
+  const table = document.createElement('table');
+  table.className = 'size-guide-table';
+
+  const thead = document.createElement('thead');
+  const headRow = document.createElement('tr');
+  headers.forEach(text => {
+    const th = document.createElement('th');
+    th.textContent = text;
+    headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  rows.forEach(row => {
+    const tr = document.createElement('tr');
+    row.forEach(text => {
+      const td = document.createElement('td');
+      td.textContent = text;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
+function injectSizeGuideModal() {
+  if (document.getElementById('size-guide-overlay')) return;
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="size-guide-overlay" id="size-guide-overlay" aria-hidden="true"></div>
+    <div class="size-guide-modal" id="size-guide-modal" role="dialog" aria-modal="true" aria-labelledby="size-guide-heading">
+      <div class="size-guide-modal__header">
+        <h2 id="size-guide-heading">Size Guide</h2>
+        <button class="size-guide-modal__close" id="size-guide-close" type="button" aria-label="Close size guide">×</button>
+      </div>
+      <div class="size-guide-modal__body" id="size-guide-table"></div>
+      <p class="size-guide-modal__note">Measurements are body measurements in inches. For an in-between size, we recommend sizing up.</p>
+    </div>
+  `);
 }
