@@ -142,6 +142,19 @@ const PRODUCTS = [
     sizes: ['S', 'M', 'L', 'XL'],
   },
   {
+    id: 'distressed-lorimer-cap',
+    name: 'Distressed Lorimer Cap',
+    category: 'Accessories',
+    subcategory: 'Hats',
+    price: 85,
+    images: [
+      './assets/photos/PRODUCTS/Distressed Lorimer Cap/1.png',
+    ],
+    description: 'Worn-in cotton cap with hand-frayed edges and tonal Lorimer script embroidery. One size, adjustable strap.',
+    material: '100% Cotton',
+    sizes: ['One Size'],
+  },
+  {
     id: 'zip-up-top',
     name: '1/3 Zip Up Top',
     category: 'Tops',
