@@ -21,13 +21,14 @@
     <a class="navbar__logo" href="index.html"><img src="./assets/logo.png" alt="LORIMER®"></a>
     <a class="navbar__item" href="about.html">ABOUT</a>
     <button class="cart-btn open-cart">CART <span class="cart-count">(0)</span></button>
+    <button class="navbar__hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
   </nav>
 
   <main class="shop-layout">
     <aside class="shop-sidebar" aria-label="Shop filters">
       <button class="shop-sidebar__title filter-btn filter-btn--all active" type="button" data-filter="All" aria-pressed="true">Shop All</button>
       <div class="shop-filters" role="group" aria-label="Filter products">
-        <button class="filter-btn" type="button" data-filter="Tops" aria-pressed="false">Tops</button>
+        <button class="filter-btn" type="button" data-filter="Tops" aria-pressed="false" aria-expanded="false">Tops</button>
         <div class="shop-subfilters" role="group" aria-label="Tops subcategories">
           <button class="filter-btn filter-btn--sub" type="button" data-filter="Shirts" aria-pressed="false">Shirts</button>
           <button class="filter-btn filter-btn--sub" type="button" data-filter="Women's Tops" aria-pressed="false">Women's Tops</button>
@@ -35,7 +36,7 @@
           <button class="filter-btn filter-btn--sub" type="button" data-filter="Sweatshirts" aria-pressed="false">Sweatshirts</button>
           <button class="filter-btn filter-btn--sub" type="button" data-filter="Vests" aria-pressed="false">Vests</button>
         </div>
-        <button class="filter-btn" type="button" data-filter="Bottoms" aria-pressed="false">Bottoms</button>
+        <button class="filter-btn" type="button" data-filter="Bottoms" aria-pressed="false" aria-expanded="false">Bottoms</button>
         <div class="shop-subfilters" role="group" aria-label="Bottoms subcategories">
           <button class="filter-btn filter-btn--sub" type="button" data-filter="Skirts" aria-pressed="false">Skirts</button>
           <button class="filter-btn filter-btn--sub" type="button" data-filter="Trousers" aria-pressed="false">Trousers</button>

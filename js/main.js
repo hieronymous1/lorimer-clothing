@@ -6,7 +6,62 @@ const cartBackgroundState = new Map();
 
 document.addEventListener('DOMContentLoaded', () => {
   updateCartBadge(); injectCartDrawer(); initCartDrawer(); setNavActive();
+  injectMobileMenu(); initMobileMenu();
 });
+
+let mobileMenuTrigger = null;
+
+function injectMobileMenu() {
+  if (document.getElementById('mobile-menu')) return;
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay" aria-hidden="true"></div>
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
+      <button class="mobile-menu__close" id="mobile-menu-close" type="button" aria-label="Close menu">×</button>
+      <a href="index.html">Home</a>
+      <a href="ss24.html">S/S_24</a>
+      <a href="shop.html">Products</a>
+      <a href="about.html">About</a>
+    </nav>
+  `);
+}
+
+function initMobileMenu() {
+  const overlay = document.getElementById('mobile-menu-overlay');
+  const menu = document.getElementById('mobile-menu');
+  if (!overlay || !menu) return;
+  document.querySelectorAll('.navbar__hamburger').forEach(button => {
+    button.addEventListener('click', () => openMobileMenu(button));
+  });
+  overlay.addEventListener('click', closeMobileMenu);
+  document.getElementById('mobile-menu-close')?.addEventListener('click', closeMobileMenu);
+  menu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMobileMenu));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && menu.classList.contains('open')) closeMobileMenu();
+  });
+}
+
+function openMobileMenu(trigger) {
+  const overlay = document.getElementById('mobile-menu-overlay');
+  const menu = document.getElementById('mobile-menu');
+  if (!overlay || !menu) return;
+  mobileMenuTrigger = trigger;
+  trigger.setAttribute('aria-expanded', 'true');
+  overlay.classList.add('open');
+  menu.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => document.getElementById('mobile-menu-close')?.focus());
+}
+
+function closeMobileMenu() {
+  const overlay = document.getElementById('mobile-menu-overlay');
+  const menu = document.getElementById('mobile-menu');
+  if (!overlay || !menu || !menu.classList.contains('open')) return;
+  overlay.classList.remove('open');
+  menu.classList.remove('open');
+  document.body.style.overflow = '';
+  document.querySelectorAll('.navbar__hamburger').forEach(button => button.setAttribute('aria-expanded', 'false'));
+  mobileMenuTrigger?.focus();
+}
 
 function updateCartBadge() {
   const count = getCount();

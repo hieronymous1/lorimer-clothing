@@ -21,11 +21,18 @@
     <a class="navbar__logo" href="index.html"><img src="./assets/logo.png" alt="LORIMER®"></a>
     <a class="navbar__item" href="about.html">ABOUT</a>
     <button class="cart-btn open-cart">CART <span class="cart-count">(0)</span></button>
+    <button class="navbar__hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
   </nav>
 
   <main class="product-layout">
     <!-- Left: Scrolling image gallery -->
-    <div class="product-gallery" id="product-gallery" aria-label="Product images"></div>
+    <div class="product-gallery-wrap">
+      <div class="product-mobile-bar" id="product-mobile-bar">
+        <p class="product-mobile-bar__name" id="mobile-product-name"></p>
+        <p class="product-mobile-bar__price" id="mobile-product-price"></p>
+      </div>
+      <div class="product-gallery" id="product-gallery" aria-label="Product images"></div>
+    </div>
 
     <!-- Right: Product Info -->
     <div class="product-info">

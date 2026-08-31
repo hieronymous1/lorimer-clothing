@@ -1,10 +1,10 @@
 /* shop.js — declarative editorial catalog */
 
 const SHOP_ROWS = [
-  { type: 'products', products: ['phyllite-jacket', 'lorimer-selvedge-denim'] },
+  { type: 'products', products: ['lorimer-selvedge-denim', 'phyllite-jacket'] },
   { type: 'divider', images: ['./assets/photos/shop/still-01.jpg', './assets/photos/shop/still-02.jpg'] },
-  { type: 'products', products: ['deconstructed-bomber', 'zip-up-utility-vest', 'westworld-button-up'] },
-  { type: 'products', products: ['layered-denim-shorts', 'layered-denim-jeans', 'westworld-straight-jeans'] },
+  { type: 'products', products: ['deconstructed-bomber', 'layered-denim-jeans', 'zip-up-utility-vest'] },
+  { type: 'products', products: ['layered-denim-shorts', 'westworld-button-up', 'westworld-straight-jeans'] },
   { type: 'products', products: ['reconstructed-button-up-1', 'reconstructed-button-up-2', 'reinforced-pinstripe-trousers'] },
   { type: 'products', products: ['upcycled-two-piece', 'trigall-dress', 'overlapped-fray-skirt'] },
   { type: 'divider', images: ['./assets/photos/shop/still-03.jpg', './assets/photos/shop/still-04.jpg'] },
@@ -129,8 +129,31 @@ function createDividerImage(src) {
 
 function bindFilters() {
   document.querySelectorAll('.filter-btn').forEach(button => {
-    button.addEventListener('click', () => applyFilter(button.dataset.filter));
+    button.addEventListener('click', () => {
+      applyFilter(button.dataset.filter);
+      const panel = button.nextElementSibling;
+      const isSubButton = button.classList.contains('filter-btn--sub');
+      if (panel && panel.classList.contains('shop-subfilters')) {
+        toggleSubfilterPanel(button, panel);
+      } else if (!isSubButton) {
+        closeAllSubfilterPanels();
+      }
+    });
   });
+}
+
+function toggleSubfilterPanel(button, panel) {
+  const isOpen = panel.classList.contains('is-open');
+  closeAllSubfilterPanels();
+  if (!isOpen) {
+    panel.classList.add('is-open');
+    button.setAttribute('aria-expanded', 'true');
+  }
+}
+
+function closeAllSubfilterPanels() {
+  document.querySelectorAll('.shop-subfilters.is-open').forEach(panel => panel.classList.remove('is-open'));
+  document.querySelectorAll('.filter-btn[aria-expanded="true"]').forEach(button => button.setAttribute('aria-expanded', 'false'));
 }
 
 function applyFilter(filter) {

@@ -12,9 +12,13 @@ function loadProduct() {
 
   document.title = product.name + ' — LORIMER®';
 
+  const priceText = product.notForSale ? 'Sold Out' : product.available ? '€' + product.price : 'Sold Out';
   document.getElementById('product-name').textContent = product.name;
-  document.getElementById('product-price').textContent =
-    product.notForSale ? 'Sold Out' : product.available ? '€' + product.price : 'Sold Out';
+  document.getElementById('product-price').textContent = priceText;
+  const mobileName = document.getElementById('mobile-product-name');
+  const mobilePrice = document.getElementById('mobile-product-price');
+  if (mobileName) mobileName.textContent = product.name;
+  if (mobilePrice) mobilePrice.textContent = priceText;
   renderLongDescription(product);
 
   const meta = [];

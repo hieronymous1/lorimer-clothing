@@ -2,13 +2,14 @@
 injectCartDrawer();
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.lookbook-gallery').forEach(initLookbookGallery);
+  document.querySelectorAll('.lookbook-gallery, .look-gallery').forEach(initLookbookGallery);
 });
 
 function initLookbookGallery(gallery) {
   const frontImage = gallery.querySelector('.lookbook-gallery__image');
   const images = (gallery.dataset.galleryImages || '').split('|').filter(Boolean);
   const look = gallery.dataset.look;
+  const label = gallery.dataset.galleryLabel || `Look ${look}`;
   if (!frontImage || images.length < 2) return;
 
   // Two stacked layers so the opacity transition actually has something to
@@ -55,7 +56,7 @@ function initLookbookGallery(gallery) {
     index = (index + direction + images.length) % images.length;
     const back = layers[1 - frontIndex];
     back.src = images[index];
-    back.alt = `Model wearing Lorimer SS24 Look ${look}, image ${index + 1} of ${images.length}`;
+    back.alt = `${label}, image ${index + 1} of ${images.length}`;
     back.classList.add('is-visible');
     layers[frontIndex].classList.remove('is-visible');
     frontIndex = 1 - frontIndex;
