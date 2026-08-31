@@ -37,3 +37,24 @@ test('every storefront page defers to products-remote.js before its page script'
     assert.match(html, /<script src="js\/products-remote\.js"><\/script>/, `${page} is missing products-remote.js`);
   });
 });
+
+test('about.html exposes all six editable content regions and the existing section markers still exist', () => {
+  const html = read('about.html');
+  ['about.brand', 'about.terms', 'about.delivery', 'about.payments', 'about.pricing', 'about.returns'].forEach(key => {
+    assert.match(html, new RegExp(`data-cms-key="${key}"`), `about.html is missing data-cms-key="${key}"`);
+  });
+});
+
+test('every footer exposes the copyright and location as editable content', () => {
+  ['index.html', 'about.html', 'shop.html', 'product-detail.html', 'ss24.html', 'checkout.html'].forEach(page => {
+    const html = read(page);
+    assert.match(html, /data-cms-key="footer\.copyright"/, `${page} footer is missing footer.copyright`);
+    assert.match(html, /data-cms-key="footer\.location"/, `${page} footer is missing footer.location`);
+  });
+});
+
+test('content-remote.js patches every [data-cms-key] element from /api/content', () => {
+  const js = read('js/content-remote.js');
+  assert.match(js, /fetch\('\/api\/content'/);
+  assert.match(js, /data-cms-key/);
+});
