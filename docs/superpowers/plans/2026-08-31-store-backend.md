@@ -1434,7 +1434,14 @@ git commit -m "feat(frontend): wire checkout page to real Stripe Checkout"
   var scriptsAfter = window.__LORIMER_SCRIPTS_AFTER__ || [];
 
   function loadNext(index) {
-    if (index >= scriptsAfter.length) return;
+    if (index >= scriptsAfter.length) {
+      // By the time these deferred scripts run, the document's real
+      // DOMContentLoaded has already fired and won't fire again — dispatch
+      // a synthetic one so their own listeners (registered as each script
+      // just executed) still run.
+      document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true, cancelable: true }));
+      return;
+    }
     var script = document.createElement('script');
     script.src = scriptsAfter[index];
     script.onload = function () { loadNext(index + 1); };
