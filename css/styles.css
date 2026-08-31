@@ -241,6 +241,7 @@ ul { list-style: none; }
 }
 
 @media (max-width: 768px) {
+  .navbar { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .navbar__logo { display: none; }
   .about-main {
     width: 100%;
@@ -455,7 +456,7 @@ ul { list-style: none; }
   outline-offset: 2px;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .cart-drawer { width: 100%; }
   .cart-drawer__items { padding-inline: 16px; }
   .cart-drawer__header,
@@ -1819,11 +1820,11 @@ html.has-custom-cursor * {
   .lookbook-look__copy { min-height: 360px; padding-block: 50px 26px; }
   .lookbook-end { margin-top: 100px; }
   .shop-layout { flex-direction: column; }
-  .shop-sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--black); flex: none; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 16px; padding: 16px; }
+  .shop-sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--black); flex: none; flex-direction: column; align-items: flex-start; gap: 12px; padding: 20px 16px; }
   .shop-sidebar__title { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
-  .shop-filters { flex-direction: row; flex-wrap: wrap; gap: 0 12px; }
+  .shop-filters { flex-direction: column; align-items: flex-start; gap: 2px; }
   .filter-btn { min-height: 44px; }
-  .shop-subfilters { flex-direction: row; flex-wrap: wrap; gap: 0 10px; margin: 0; padding-left: 10px; }
+  .shop-subfilters { flex-direction: column; align-items: flex-start; gap: 1px; margin: 2px 0 8px 10px; padding-left: 10px; }
   .shop-grid-wrap { width: 100%; padding: 24px 16px 56px; }
   .shop-grid { gap: 96px; }
   .shop-row { grid-template-columns: 1fr; row-gap: 56px; }
