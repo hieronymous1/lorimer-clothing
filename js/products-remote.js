@@ -26,6 +26,10 @@
       if (typeof override.description === 'string') product.description = override.description;
       if (typeof override.price === 'number') product.price = override.price;
       if (Array.isArray(override.images) && override.images.length) product.images = override.images;
+      if (override.stock_by_size && typeof override.stock_by_size === 'object') {
+        product.stockBySize = override.stock_by_size;
+        product.available = Object.values(override.stock_by_size).some(function (stock) { return stock > 0; });
+      }
     });
   }
 

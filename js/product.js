@@ -225,7 +225,8 @@ function renderSizes(product) {
     button.type = 'button';
     button.dataset.size = size;
     button.textContent = size;
-    button.disabled = !product.available;
+    button.disabled = !product.available || (product.stockBySize && !(product.stockBySize?.[size] > 0));
+    if (button.disabled) button.setAttribute('aria-label', `${size} — Sold Out`);
     sizeGrid.appendChild(button);
   });
 

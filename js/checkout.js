@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderOrderSummary();
   handleRedirectState();
   wirePayButton();
+  wireShippingRegion();
 });
 
 function handleRedirectState() {
@@ -25,6 +26,7 @@ function handleRedirectState() {
 function wirePayButton() {
   const button = document.getElementById('checkout-pay-btn');
   const errorEl = document.getElementById('checkout-error');
+  const regionEl = document.getElementById('checkout-shipping-region');
   if (!button) return;
 
   button.addEventListener('click', async () => {
@@ -34,6 +36,13 @@ function wirePayButton() {
     if (cart.length === 0) {
       if (errorEl) {
         errorEl.textContent = 'Your cart is empty.';
+        errorEl.hidden = false;
+      }
+      return;
+    }
+    if (!regionEl?.value) {
+      if (errorEl) {
+        errorEl.textContent = 'Please select your shipping destination.';
         errorEl.hidden = false;
       }
       return;
@@ -48,6 +57,7 @@ function wirePayButton() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cart: cart.map(item => ({ id: item.id, size: item.size, quantity: item.quantity })),
+          shipping_region: regionEl.value,
         }),
       });
       const data = await res.json();
@@ -74,6 +84,12 @@ function wirePayButton() {
   });
 }
 
+function wireShippingRegion() {
+  const regionEl = document.getElementById('checkout-shipping-region');
+  if (!regionEl) return;
+  regionEl.addEventListener('change', renderOrderSummary);
+}
+
 function renderOrderSummary() {
   const itemsEl = document.getElementById('summary-items');
   const subtotalEl = document.getElementById('summary-subtotal');
@@ -89,8 +105,8 @@ function renderOrderSummary() {
     empty.className = 'checkout-empty';
     empty.textContent = 'Your cart is empty.';
     itemsEl.append(empty);
-    if (subtotalEl) subtotalEl.textContent = '$0';
-    if (totalEl) totalEl.textContent = '$0';
+    if (subtotalEl) subtotalEl.textContent = '€0';
+    if (totalEl) totalEl.textContent = '€0';
     return;
   }
 
@@ -106,7 +122,7 @@ function renderOrderSummary() {
       createTextElement('p', 'summary-item__name', item.name),
       createTextElement('p', 'summary-item__size', `Size: ${item.size}${item.quantity > 1 ? ` × ${item.quantity}` : ''}`),
     );
-    const price = createTextElement('span', 'summary-item__price', `$${getLineTotal(item).toLocaleString()}`);
+    const price = createTextElement('span', 'summary-item__price', `€${getLineTotal(item).toLocaleString()}`);
 
     row.append(image, info, price);
     fragment.append(row);
@@ -114,6 +130,11 @@ function renderOrderSummary() {
   itemsEl.append(fragment);
 
   const total = getTotal();
-  if (subtotalEl) subtotalEl.textContent = '$' + total.toLocaleString();
-  if (totalEl) totalEl.textContent = '$' + total.toLocaleString();
+  const region = document.getElementById('checkout-shipping-region')?.value || '';
+  const shippingByRegion = { FI: 5, EU: 12, ROW: 25 };
+  const shipping = shippingByRegion[region] || 0;
+  const shippingEl = document.getElementById('summary-shipping');
+  if (subtotalEl) subtotalEl.textContent = '€' + total.toLocaleString();
+  if (shippingEl) shippingEl.textContent = region ? `€${shipping}` : 'Select region';
+  if (totalEl) totalEl.textContent = '€' + (total + shipping).toLocaleString();
 }

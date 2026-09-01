@@ -1,6 +1,6 @@
 const Stripe = require('stripe');
 const { getDb } = require('./_lib/db');
-const { buildStripeShippingOptions, ALLOWED_COUNTRIES } = require('./_lib/shipping');
+const { buildStripeShippingOptions, getShippingRegion } = require('./_lib/shipping');
 const PRODUCTS = require('../js/products-data.js');
 
 const LIVE_IDS = ['phyllite-jacket', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'];
@@ -16,9 +16,26 @@ module.exports = async function handler(req, res) {
   }
 
   const cart = Array.isArray(req.body?.cart) ? req.body.cart : [];
+  const shipping_region = req.body?.shipping_region;
+  const shippingRegion = getShippingRegion(shipping_region);
   if (cart.length === 0) {
     res.status(400).json({ error: 'cart is empty' });
     return;
+  }
+  if (!shippingRegion) {
+    res.status(400).json({ error: 'select a valid shipping region' });
+    return;
+  }
+
+  const consolidated = new Map();
+  for (const item of cart) {
+    const id = typeof item?.id === 'string' ? item.id : '';
+    const size = typeof item?.size === 'string' ? item.size : '';
+    const quantity = Number.isInteger(item?.quantity) ? item.quantity : 0;
+    const lineKey = `${id}\u0000${size}`;
+    const existing = consolidated.get(lineKey);
+    if (existing) existing.quantity += quantity;
+    else consolidated.set(lineKey, { id, size, quantity });
   }
 
   const sql = getDb();
@@ -26,7 +43,7 @@ module.exports = async function handler(req, res) {
   const productsById = new Map(productRows.map(row => [row.id, row]));
 
   const lines = [];
-  for (const item of cart) {
+  for (const item of consolidated.values()) {
     const id = typeof item?.id === 'string' ? item.id : '';
     const size = typeof item?.size === 'string' ? item.size : '';
     const quantity = Number.isInteger(item?.quantity) ? item.quantity : 0;
@@ -62,12 +79,22 @@ module.exports = async function handler(req, res) {
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
+    integration_identifier: `lorimer_${randomLetters(8)}`,
     line_items: lines,
-    shipping_address_collection: { allowed_countries: ALLOWED_COUNTRIES },
-    shipping_options: buildStripeShippingOptions(),
+    shipping_address_collection: { allowed_countries: shippingRegion.allowed_countries },
+    shipping_options: buildStripeShippingOptions(shipping_region),
     success_url: `${origin}/checkout.html?success=1&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/checkout.html?canceled=1`,
   });
 
   res.status(200).json({ url: session.url });
 };
+
+function randomLetters(length) {
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+  let value = '';
+  for (let index = 0; index < length; index += 1) {
+    value += alphabet[Math.floor(Math.random() * alphabet.length)];
+  }
+  return value;
+}

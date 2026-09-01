@@ -38,7 +38,14 @@
         </div>
         <div id="checkout-form" class="checkout-form">
           <h1>Checkout</h1>
-          <p>Shipping is calculated at the next step based on your country.</p>
+          <label for="checkout-shipping-region">Shipping destination</label>
+          <select id="checkout-shipping-region" required>
+            <option value="">Select your region</option>
+            <option value="FI">Finland — €5</option>
+            <option value="EU">European Union — €12</option>
+            <option value="ROW">Rest of world — €25</option>
+          </select>
+          <p>Your Stripe delivery address must be within the selected region.</p>
           <button id="checkout-pay-btn" class="checkout-pay__button" type="button">Pay Now</button>
           <p id="checkout-error" class="checkout-error" hidden></p>
         </div>
@@ -57,7 +64,7 @@
           </div>
           <div class="summary-row">
             <span>Shipping</span>
-            <span>Free</span>
+            <span id="summary-shipping">Select region</span>
           </div>
           <div class="summary-row total">
             <span>Total</span>

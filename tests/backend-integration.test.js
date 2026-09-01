@@ -6,6 +6,11 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
+test('/admin clean URL is configured for the admin page', () => {
+  const config = JSON.parse(read('vercel.json'));
+  assert.equal(config.cleanUrls, true);
+});
+
 test('checkout page no longer shows the "coming soon" placeholder', () => {
   const html = read('checkout.html');
   assert.doesNotMatch(html, /Online checkout is currently unavailable/);

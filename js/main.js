@@ -330,8 +330,7 @@ function injectCartDrawer() {
       <div class="cart-drawer__items" id="cart-items"></div>
       <div class="cart-drawer__footer">
         <div class="cart-subtotal"><span>Subtotal</span><span id="cart-subtotal-amount">$0</span></div>
-        <button class="btn-checkout" type="button" disabled>Checkout unavailable</button>
-        <p class="cart-checkout-note">Secure checkout will be available when the store launches.</p>
+        <a class="btn-checkout" href="checkout.html">Checkout</a>
       </div>
     </aside>
   `);

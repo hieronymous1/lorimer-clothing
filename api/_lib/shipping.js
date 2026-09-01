@@ -16,13 +16,19 @@ const REST_OF_WORLD_COUNTRIES = [
 const ALLOWED_COUNTRIES = [FINLAND, ...EU_COUNTRIES, ...REST_OF_WORLD_COUNTRIES];
 
 const SHIPPING_OPTIONS = [
-  { region: 'FI', label: 'Finland', amount_cents: 500 },
-  { region: 'EU', label: 'European Union', amount_cents: 1200 },
-  { region: 'ROW', label: 'Rest of world', amount_cents: 2500 },
+  { region: 'FI', label: 'Finland', amount_cents: 500, allowed_countries: [FINLAND] },
+  { region: 'EU', label: 'European Union', amount_cents: 1200, allowed_countries: EU_COUNTRIES },
+  { region: 'ROW', label: 'Rest of world', amount_cents: 2500, allowed_countries: REST_OF_WORLD_COUNTRIES },
 ];
 
-function buildStripeShippingOptions() {
-  return SHIPPING_OPTIONS.map(option => ({
+function getShippingRegion(region) {
+  return SHIPPING_OPTIONS.find(option => option.region === region) || null;
+}
+
+function buildStripeShippingOptions(region) {
+  const selected = getShippingRegion(region);
+  if (!selected) return [];
+  return [selected].map(option => ({
     shipping_rate_data: {
       type: 'fixed_amount',
       fixed_amount: { amount: option.amount_cents, currency: 'eur' },
@@ -31,4 +37,4 @@ function buildStripeShippingOptions() {
   }));
 }
 
-module.exports = { FINLAND, EU_COUNTRIES, REST_OF_WORLD_COUNTRIES, ALLOWED_COUNTRIES, SHIPPING_OPTIONS, buildStripeShippingOptions };
+module.exports = { FINLAND, EU_COUNTRIES, REST_OF_WORLD_COUNTRIES, ALLOWED_COUNTRIES, SHIPPING_OPTIONS, getShippingRegion, buildStripeShippingOptions };

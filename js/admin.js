@@ -1,4 +1,5 @@
 const API = {
+  session: () => fetch('/api/admin/login').then(r => r.json()),
   login: password => fetch('/api/admin/login', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }),
   }),
@@ -27,6 +28,9 @@ const API = {
       method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry),
     }),
   },
+  upload: file => fetch(`/api/admin/upload?filename=${encodeURIComponent(file.name)}`, {
+    method: 'POST', headers: { 'Content-Type': file.type }, body: file,
+  }),
 };
 
 function escapeHtml(value) {
@@ -41,6 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const panelView = document.getElementById('admin-panel');
   const loginForm = document.getElementById('admin-login-form');
   const loginError = document.getElementById('admin-login-error');
+
+  API.session().then(session => {
+    if (!session.authenticated) return;
+    loginView.hidden = true;
+    panelView.hidden = false;
+    renderProducts();
+  }).catch(() => {});
 
   loginForm.addEventListener('submit', async event => {
     event.preventDefault();
@@ -87,18 +98,29 @@ document.addEventListener('DOMContentLoaded', () => {
         <label>Description<textarea name="description">${escapeHtml(product.description)}</textarea></label>
         <label>Price (EUR)<input name="price" type="number" step="0.01" value="${(product.price_cents / 100).toFixed(2)}"></label>
         <label>Images (one URL per line)<textarea name="images">${(product.images || []).join('\n')}</textarea></label>
+        <label>Add image<input name="image" type="file" accept="image/*"></label>
         <button type="submit">Save</button>
         <span class="admin-save-status"></span>
       `;
       form.addEventListener('submit', async event => {
         event.preventDefault();
         const data = new FormData(form);
+        const imageFile = data.get('image');
+        const imageUrls = data.get('images').split('\n').map(s => s.trim()).filter(Boolean);
+        if (imageFile?.size) {
+          const uploadRes = await API.upload(imageFile);
+          if (!uploadRes.ok) {
+            form.querySelector('.admin-save-status').textContent = 'Image upload failed';
+            return;
+          }
+          imageUrls.push((await uploadRes.json()).url);
+        }
         const payload = {
           id: product.id,
           name: data.get('name'),
           description: data.get('description'),
           price_cents: Math.round(parseFloat(data.get('price')) * 100),
-          images: data.get('images').split('\n').map(s => s.trim()).filter(Boolean),
+          images: imageUrls,
         };
         const res = await API.products.save(payload);
         form.querySelector('.admin-save-status').textContent = res.ok ? 'Saved' : 'Error';

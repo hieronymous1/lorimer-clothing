@@ -22,7 +22,7 @@ When you're done, click **Log out** in the top-right corner — especially on a 
 4. Click **Save** at the bottom of that product's card
 5. Refresh the live site to see your change — it's instant, no waiting
 
-**About images:** the "Images" box holds a web address (URL) per line, not a file. To swap in a new photo, ask your developer for the new image's address, or use an image hosting step they've set up for you — this current version doesn't yet let you upload a photo directly from this screen.
+**About images:** use **Add image** to upload a JPG, PNG, WebP, or other browser-supported image up to 10 MB. Existing image addresses remain listed in the Images box, one per line; remove a line and save if you no longer want that image shown.
 
 ---
 

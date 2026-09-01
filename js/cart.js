@@ -38,6 +38,12 @@ function getCanonicalProduct(id) {
   return product?.available === true ? product : null;
 }
 
+function isSizeAvailable(product, size, quantity = 1) {
+  if (!product || !Array.isArray(product.sizes) || !product.sizes.includes(size)) return false;
+  if (!product.stockBySize) return true;
+  return Number.isInteger(product.stockBySize[size]) && product.stockBySize[size] >= quantity;
+}
+
 function normalizeCart(value) {
   if (!Array.isArray(value)) return [];
 
@@ -50,7 +56,7 @@ function normalizeCart(value) {
     const id = normalizeText(raw.id, CART_LIMITS.id);
     const size = normalizeText(raw.size, CART_LIMITS.size);
     const product = getCanonicalProduct(id);
-    if (!product || !size || !Array.isArray(product.sizes) || !product.sizes.includes(size)) return;
+    if (!product || !size || !isSizeAvailable(product, size)) return;
 
     const price = Math.min(CART_LIMITS.price, Math.max(0, product.price));
     const rawQuantity = typeof raw.quantity === 'number' && Number.isFinite(raw.quantity)
@@ -105,7 +111,7 @@ function trySaveCart(cart) {
 
 function addToCart(product, size) {
   const canonical = getCanonicalProduct(product?.id);
-  if (!canonical || !canonical.sizes.includes(size)) return getCart();
+  if (!canonical || !isSizeAvailable(canonical, size)) return getCart();
   const cart = getCart();
   const existing = cart.find(i => i.id === canonical.id && i.size === size);
   if (existing) {
@@ -208,13 +214,16 @@ const cartService = Object.freeze({
     const size = normalizeText(line?.size, CART_LIMITS.size);
     const product = getCanonicalProduct(productId);
     if (!product) return failedCartResult('product-unavailable');
-    if (!size || !product.sizes.includes(size)) {
+    if (!size || !isSizeAvailable(product, size)) {
       return failedCartResult('invalid-line');
     }
     const amountMinor = Math.round(product.price * 100);
 
     const snapshot = getCart();
     const existing = snapshot.find(item => item.id === productId && item.size === size);
+    if (!isSizeAvailable(product, size, (existing?.quantity || 0) + 1)) {
+      return failedCartResult('product-unavailable');
+    }
     if (!existing && snapshot.length >= CART_LIMITS.items) return failedCartResult('line-limit');
     if (existing && existing.quantity >= CART_LIMITS.quantity) return failedCartResult('quantity-limit');
 
@@ -246,7 +255,8 @@ const cartService = Object.freeze({
     const next = snapshot.map(item => ({ ...item }));
     const item = next.find(entry => `${entry.id}|${entry.size}` === lineKey);
     if (!item) return failedCartResult('line-not-found');
-    if (!getCanonicalProduct(item.id)) return this.removeLine(lineKey);
+    const product = getCanonicalProduct(item.id);
+    if (!product || !isSizeAvailable(product, item.size, quantity)) return failedCartResult('product-unavailable');
     item.quantity = quantity;
     if (!trySaveCart(next)) return failedCartResult('storage-unavailable');
     return { ok: true, cart: getCartState() };

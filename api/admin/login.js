@@ -1,6 +1,10 @@
-const { createSessionCookie, clearSessionCookie } = require('../_lib/session');
+const { createSessionCookie, clearSessionCookie, isAuthenticated } = require('../_lib/session');
 
 module.exports = async function handler(req, res) {
+  if (req.method === 'GET') {
+    res.status(200).json({ authenticated: isAuthenticated(req, process.env.SESSION_SECRET) });
+    return;
+  }
   if (req.method === 'POST') {
     const { password } = req.body || {};
     if (typeof password !== 'string' || password !== process.env.ADMIN_PASSWORD) {

@@ -64,15 +64,15 @@ test('preview cart service exposes promise-based normalized state', async () => 
   const result = await service.run(`cartService.addLine({
     productId: 'jacket', merchandiseId: '', name: 'Jacket', size: 'M',
     image: './assets/photos/jacket.jpg',
-    unitPrice: { amountMinor: 18500, currencyCode: 'USD' }
+    unitPrice: { amountMinor: 18500, currencyCode: 'EUR' }
   })`);
   const value = JSON.parse(JSON.stringify(result));
 
   assert.equal(value.ok, true);
   assert.equal(value.cart.totalQuantity, 1);
-  assert.deepEqual(value.cart.subtotal, { amountMinor: 18500, currencyCode: 'USD' });
+  assert.deepEqual(value.cart.subtotal, { amountMinor: 18500, currencyCode: 'EUR' });
   assert.equal(value.cart.lines[0].lineKey, 'jacket|M');
-  assert.deepEqual(value.cart.lines[0].lineTotal, { amountMinor: 18500, currencyCode: 'USD' });
+  assert.deepEqual(value.cart.lines[0].lineTotal, { amountMinor: 18500, currencyCode: 'EUR' });
 });
 
 test('quantity mutation uses lineKey and returns the confirmed subtotal', async () => {
@@ -124,16 +124,14 @@ test('a distinct fifty-first line is rejected without writing', async () => {
   assert.equal(service.writes.length, 0);
 });
 
-test('drawer source contains modal, quantity, status, and preview checkout controls', () => {
+test('drawer source contains modal, quantity, status, and live checkout controls', () => {
   const source = read('js/main.js');
 
   assert.match(source, /aria-modal="true"/);
   assert.match(source, /class="cart-status"[^>]*aria-live="polite"/);
   assert.match(source, /cart-item__quantity-decrement/);
   assert.match(source, /cart-item__quantity-increment/);
-  assert.match(source, /Checkout unavailable/);
-  assert.match(source, /Secure checkout will be available when the store launches/);
-  assert.match(source, /disabled/);
+  assert.match(source, /class="btn-checkout" href="checkout\.html">Checkout/);
   assert.match(source, /\.inert\s*=/);
   assert.match(source, /trapCartFocus/);
 });
@@ -142,7 +140,7 @@ test('drawer styles implement compact desktop, full-width mobile, focus, and red
   const css = read('css/styles.css');
 
   assert.match(css, /\.cart-drawer\s*\{[\s\S]*?width:\s*380px/);
-  assert.match(css, /@media\s*\(max-width:\s*720px\)[\s\S]*?\.cart-drawer\s*\{\s*width:\s*100%;/);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.cart-drawer\s*\{\s*width:\s*100%;/);
   assert.match(css, /\.cart-drawer\s+[^{}]*:focus-visible|\.cart-drawer[^{}]*:focus-visible/);
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.cart-drawer/);
 });
@@ -150,9 +148,9 @@ test('drawer styles implement compact desktop, full-width mobile, focus, and red
 test('storefront pages version the coupled cart scripts together', () => {
   for (const page of ['index.html', 'shop.html', 'ss24.html', 'about.html', 'checkout.html', 'product-detail.html']) {
     const html = read(page);
-    assert.match(html, /js\/cart\.js\?v=4/);
-    assert.match(html, /js\/main\.js\?v=4/);
+    assert.match(html, /js\/cart\.js\?v=6/);
+    assert.match(html, /js\/main\.js\?v=7/);
     assert.match(html, /js\/products-data\.js/);
   }
-  assert.match(read('product-detail.html'), /js\/product\.js\?v=4/);
+  assert.match(read('product-detail.html'), /js\/product\.js\?v=8/);
 });
