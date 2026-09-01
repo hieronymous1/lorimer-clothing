@@ -247,6 +247,7 @@ const PRODUCTS = [
     price: 220,
     images: [
       './assets/photos/PRODUCTS/Zip Up Utility Vest/2.jpg',
+      './assets/photos/PRODUCTS/Zip Up Utility Vest/IMG_3737.jpg',
     ],
     description: 'Technical utility vest with asymmetric zip and multiple panel seams. Slim structured fit.',
     material: '65% Polyester 35% Cotton',

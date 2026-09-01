@@ -958,6 +958,15 @@ body.is-preloading {
   background: #ecece8;
   outline: none;
 }
+.look-gallery__link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+.look-gallery__link:focus-visible {
+  outline: 2px solid var(--black);
+  outline-offset: -4px;
+}
 
 /* ── SS24 Lookbook ─────────────────────────────────────────── */
 .ss24-page {
@@ -982,14 +991,14 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   display: grid;
   scroll-margin-top: var(--nav-h);
   grid-template-columns: minmax(0, 600px) minmax(0, 1fr);
-  column-gap: clamp(47px, 5.3vw, 113px);
+  column-gap: clamp(32px, 3.2vw, 64px);
   align-items: center;
   margin-bottom: 44px;
 }
 .lookbook-look--reverse { grid-template-columns: minmax(0, 1fr) minmax(0, 600px); }
 .lookbook-look--reverse .lookbook-gallery { order: 2; }
 .lookbook-look--reverse .lookbook-look__copy { order: 1; }
-.lookbook-look:not(.lookbook-look--reverse) .lookbook-look__copy a { align-self: flex-end; text-align: right; }
+.lookbook-look:not(.lookbook-look--reverse) .lookbook-gallery { justify-self: end; }
 .lookbook-gallery {
   position: relative;
   overflow: hidden;
@@ -1060,6 +1069,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   opacity: 0;
   transition: opacity .2s ease;
   cursor: pointer;
+  z-index: 3;
 }
 .lookbook-gallery__nav::after {
   content: '';
@@ -1266,7 +1276,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
 .shop-row:first-child {
   grid-template-columns: repeat(2, minmax(0, min(100%, 592px)));
   justify-content: center;
-  gap: clamp(32px, 8.5vw, 176px);
+  gap: clamp(24px, 4vw, 64px);
 }
 .shop-row[data-row-type="products"]:not(:first-child) {
   width: min(100%, 990px);
@@ -2094,7 +2104,7 @@ html.has-custom-cursor * {
   .lookbook-look,
   .lookbook-look--reverse {
     grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
-    column-gap: clamp(48px, 10vw, 80px);
+    column-gap: clamp(28px, 6vw, 48px);
     min-height: 520px;
   }
   .lookbook-look--reverse { grid-template-columns: minmax(0, 1fr) minmax(0, 280px); }

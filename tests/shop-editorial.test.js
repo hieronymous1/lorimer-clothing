@@ -14,7 +14,7 @@ function loadProducts() {
 }
 
 const expectedRows = [
-  ['products', 'phyllite-jacket', 'lorimer-selvedge-denim'],
+  ['products', 'lorimer-selvedge-denim', 'phyllite-jacket'],
   ['divider'],
   ['products', 'deconstructed-bomber', 'zip-up-utility-vest', 'westworld-button-up'],
   ['products', 'layered-denim-shorts', 'layered-denim-jeans', 'westworld-straight-jeans'],
@@ -22,17 +22,17 @@ const expectedRows = [
   ['products', 'upcycled-two-piece', 'trigall-dress', 'overlapped-fray-skirt'],
   ['divider'],
   ['products', 'dual-texture-knit-vest', 'adjustable-button-trousers'],
-  ['products', 'university-striped-sweatshirt', 'mens-straight-trousers'],
+  ['products', 'university-striped-sweatshirt', 'mens-straight-trousers', 'distressed-lorimer-cap'],
   ['products', '3d-panel-bomber', 'denim-leather-trousers'],
-  ['products', 'asymmetrical-white-top', 'white-layered-skirt', 'ss24-dress'],
-  ['products', 'zip-up-top', 'womens-wide-trousers'],
+  ['products', 'asymmetrical-white-top', 'white-layered-skirt'],
+  ['products', 'zip-up-top', 'womens-wide-trousers', 'ss24-dress'],
 ];
 
-test('catalog has exact 26 garments and only the denim launch pieces are available', () => {
+test('catalog has exact 27 garments and only the denim launch pieces are available', () => {
   const products = loadProducts();
-  assert.equal(products.length, 26);
+  assert.equal(products.length, 27);
   assert.deepEqual(products.filter(product => product.available).map(product => product.id), ['phyllite-jacket', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black']);
-  assert.equal(new Set(products.map(product => product.id)).size, 26);
+  assert.equal(new Set(products.map(product => product.id)).size, 27);
   assert.equal(products.find(product => product.id === 'westworld-button-up').name, 'Westworld');
   assert.equal(products.find(product => product.id === 'ss24-dress').name, 'S/S24 Dress');
   assert.equal(products.find(product => product.id === 'phyllite-jacket').images[0], './assets/photos/home/denim-feature-01.jpg');
@@ -137,9 +137,18 @@ test('opening product pair uses the reference composition and keeps mobile price
   const css = read('css/styles.css');
 
   assert.match(css, /\.shop-row:first-child\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*min\(100%,\s*592px\)\)\)/s);
+  assert.match(css, /\.shop-row:first-child\s*\{[^}]*gap:\s*clamp\(24px,\s*4vw,\s*64px\)/s);
   assert.match(css, /\.shop-row:first-child \.product-card__img\s*\{[^}]*aspect-ratio:\s*5\s*\/\s*7/s);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.shop-row:first-child\s*\{[^}]*grid-template-columns:\s*1fr/s);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.shop-row:first-child \.product-card__info\s*\{[^}]*position:\s*static/s);
+});
+
+test('Zip Up Utility Vest retains its cover and adds the supplied secondary image', () => {
+  const product = loadProducts().find(item => item.id === 'zip-up-utility-vest');
+  assert.deepEqual(product.images.slice(0, 2), [
+    './assets/photos/PRODUCTS/Zip Up Utility Vest/2.jpg',
+    './assets/photos/PRODUCTS/Zip Up Utility Vest/IMG_3737.jpg',
+  ]);
 });
 
 test('product galleries follow the supplied Finder compositions exactly', () => {

@@ -50,21 +50,38 @@ test('homepage uses the approved compact SS24 preview content', () => {
   const section = html.match(/<section class="look-section"[\s\S]*?<\/section>/)?.[0] || '';
 
   assert.match(section, /Spring\/Summer 24/);
-  assert.match(section, /SS24 Featuring 6 original looks available for viewing in Shop and S\/S24 page/);
+  assert.match(section, /SS24 Featuring 6 original looks available for viewing in Products and S\/S24 page/);
   assert.match(section, /View in S\/S24/);
-  assert.match(section, /assets\/ss24\/Group\/F10E840B-0A75-47F7-A778-7E4FCB3E7413\.JPG/);
+  const expectedSlides = ['DSC04197.jpg', 'DSC04200.jpg', 'addition.jpg', 'IMG_6295.jpg', 'DSC_0409.jpg', 'addition4.jpg'];
+  let previousSlide = -1;
+  for (const slide of expectedSlides) {
+    const position = section.indexOf(slide);
+    assert.ok(position > previousSlide, `${slide} is missing or out of order`);
+    previousSlide = position;
+  }
+  assert.match(section, /<a class="look-gallery__link" href="ss24\.html" aria-label="View the Spring\/Summer 2024 collection"><\/a>/);
   assert.match(section, /alt="Models walking the Lorimer Spring\/Summer 2024 runway"/);
+});
+
+test('homepage leads with black selvedge denim and replaces Westworld with pinstripe trousers', () => {
+  const html = read('index.html');
+  const featured = html.match(/<section class="featured-products"[\s\S]*?<\/section>/)?.[0] || '';
+  const preview = html.match(/<section class="product-preview"[\s\S]*?<\/section>/)?.[0] || '';
+
+  assert.match(featured, /product-detail\.html\?id=lorimer-selvedge-denim-black[\s\S]*?Lorimer Selvedge Denim Black - Photoshoot\/IMG_3161\.jpg/);
+  assert.match(preview, /product-detail\.html\?id=reinforced-pinstripe-trousers[\s\S]*?Reinforced Pinstripe Trousers\/12\.jpg[\s\S]*?Reinforced Pinstripe Trousers/);
+  assert.doesNotMatch(preview, /product-detail\.html\?id=westworld-button-up/);
 });
 
 test('homepage six-card grid mirrors the approved Shop catalog products', () => {
   const html = read('index.html');
   const section = html.match(/<section class="product-preview"[\s\S]*?<\/section>/)?.[0] || '';
   const products = [
-    ['layered-denim-jeans', 'Layered Distressed Jeans', 'Layered Denim Distressed Jeans/4.jpg'],
-    ['phyllite-jacket', 'Phyllite Jacket', 'home/denim-feature-01.jpg'],
+    ['reconstructed-button-up-1', 'Reconstructed Button Up 001', 'Reconstructed Button Up 1/10.jpg'],
     ['deconstructed-bomber', 'Deconstructed Bomber Jacket', 'Deconstructesd Bomber Jacket/1.jpg'],
     ['zip-up-utility-vest', 'Zip Up Utility Vest', 'Zip Up Utility Vest/2.jpg'],
-    ['westworld-button-up', 'Westworld', 'Westworld Short Sleeve Button Up/3.jpg'],
+    ['reinforced-pinstripe-trousers', 'Reinforced Pinstripe Trousers', 'Reinforced Pinstripe Trousers/12.jpg'],
+    ['layered-denim-jeans', 'Layered Distressed Jeans', 'Layered Denim Distressed Jeans/4.jpg'],
     ['layered-denim-shorts', 'Layered Distressed Shorts', 'Layerered Denim Distressed Shorts/6.jpg'],
   ];
 

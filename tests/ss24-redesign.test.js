@@ -74,6 +74,17 @@ test('SS24 styles encode editorial ratios, responsive stack, and accessible cont
   assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?\.lookbook-look\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
 });
 
+test('SS24 alternates with one harmonious gap, aligned links, and the new closing image', () => {
+  const html = read('ss24.html');
+  const css = read('css/styles.css');
+
+  assert.match(html, /class="lookbook-end__image" src="assets\/ss24\/reedit\/addition4\.jpg"/);
+  assert.match(css, /\.lookbook-look\s*\{[^}]*column-gap:\s*clamp\(32px,\s*3\.2vw,\s*64px\)/s);
+  assert.match(css, /\.lookbook-look:not\(\.lookbook-look--reverse\) \.lookbook-gallery\s*\{[^}]*justify-self:\s*end/s);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.lookbook-look,[\s\S]*?column-gap:\s*clamp\(28px,\s*6vw,\s*48px\)/s);
+  assert.doesNotMatch(css, /\.lookbook-look:not\(\.lookbook-look--reverse\) \.lookbook-look__copy a\s*\{[^}]*align-self:\s*flex-end/s);
+});
+
 test('SS24 navigation and footer use the shared site chrome scale', () => {
   const css = read('css/styles.css');
 
