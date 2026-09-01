@@ -75,7 +75,7 @@ module.exports = async function handler(req, res) {
   }
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-  const origin = req.headers.origin || `https://${req.headers.host}`;
+  const origin = getSiteOrigin(req);
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
@@ -97,4 +97,10 @@ function randomLetters(length) {
     value += alphabet[Math.floor(Math.random() * alphabet.length)];
   }
   return value;
+}
+
+function getSiteOrigin(req) {
+  const host = String(req.headers.host || '');
+  if (/^(?:localhost|127\.0\.0\.1)(?::\d+)?$/.test(host)) return `http://${host}`;
+  return 'https://www.lorimerclothing.com';
 }

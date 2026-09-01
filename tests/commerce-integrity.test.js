@@ -63,3 +63,19 @@ test('public products expose size stock and the storefront disables sold-out siz
   assert.match(productPage, /product\.stockBySize\?\.\[size\]/);
   assert.match(cart, /product\.stockBySize/);
 });
+
+test('checkout redirect URLs cannot be overridden by an untrusted Origin header', () => {
+  const api = read('api/checkout.js');
+  assert.match(api, /getSiteOrigin\(req\)/);
+  assert.doesNotMatch(api, /req\.headers\.origin\s*\|\|/);
+  assert.match(api, /https:\/\/www\.lorimerclothing\.com/);
+});
+
+test('production responses include baseline security headers', () => {
+  const config = JSON.parse(read('vercel.json'));
+  const headers = config.headers?.flatMap(rule => rule.headers || []) || [];
+  const names = new Set(headers.map(header => header.key.toLowerCase()));
+  assert.ok(names.has('content-security-policy'));
+  assert.ok(names.has('x-content-type-options'));
+  assert.ok(names.has('referrer-policy'));
+});
