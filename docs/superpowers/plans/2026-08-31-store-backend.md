@@ -707,10 +707,13 @@ git commit -m "feat(backend): add checkout API with server-side stock/price vali
 const Stripe = require('stripe');
 const { getDb } = require('./_lib/db');
 
-async function buffer(readable) {
-  const chunks = [];
-  for await (const chunk of readable) chunks.push(chunk);
-  return Buffer.concat(chunks);
+function buffer(readable) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    readable.on('data', chunk => chunks.push(chunk));
+    readable.on('end', () => resolve(Buffer.concat(chunks)));
+    readable.on('error', reject);
+  });
 }
 
 async function handler(req, res) {
@@ -742,23 +745,25 @@ async function handler(req, res) {
     return;
   }
 
-  if (event.type === 'checkout.session.completed') {
+  if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
     const session = event.data.object;
-    const stripeForExpand = new Stripe(process.env.STRIPE_SECRET_KEY);
-    const fullSession = await stripeForExpand.checkout.sessions.retrieve(session.id, {
-      expand: ['line_items.data.price.product'],
-    });
+    if (session.payment_status === 'paid') {
+      const stripeForExpand = new Stripe(process.env.STRIPE_SECRET_KEY);
+      const fullSession = await stripeForExpand.checkout.sessions.retrieve(session.id, {
+        expand: ['line_items.data.price.product'],
+      });
 
-    for (const item of fullSession.line_items?.data || []) {
-      const metadata = item.price?.product?.metadata || {};
-      const productId = metadata.product_id;
-      const size = metadata.size;
-      if (!productId || !size) continue;
+      for (const item of fullSession.line_items?.data || []) {
+        const metadata = item.price?.product?.metadata || {};
+        const productId = metadata.product_id;
+        const size = metadata.size;
+        if (!productId || !size) continue;
 
-      await sql`
-        update inventory set stock = greatest(stock - ${item.quantity}, 0)
-        where product_id = ${productId} and size = ${size}
-      `;
+        await sql`
+          update inventory set stock = greatest(stock - ${item.quantity}, 0)
+          where product_id = ${productId} and size = ${size}
+        `;
+      }
     }
   }
 
@@ -1140,9 +1145,12 @@ async function handler(req, res) {
     return;
   }
 
-  const chunks = [];
-  for await (const chunk of req) chunks.push(chunk);
-  const body = Buffer.concat(chunks);
+  const body = await new Promise((resolve, reject) => {
+    const chunks = [];
+    req.on('data', chunk => chunks.push(chunk));
+    req.on('end', () => resolve(Buffer.concat(chunks)));
+    req.on('error', reject);
+  });
 
   const blob = await put(filename, body, {
     access: 'public',
@@ -1426,7 +1434,14 @@ git commit -m "feat(frontend): wire checkout page to real Stripe Checkout"
   var scriptsAfter = window.__LORIMER_SCRIPTS_AFTER__ || [];
 
   function loadNext(index) {
-    if (index >= scriptsAfter.length) return;
+    if (index >= scriptsAfter.length) {
+      // By the time these deferred scripts run, the document's real
+      // DOMContentLoaded has already fired and won't fire again — dispatch
+      // a synthetic one so their own listeners (registered as each script
+      // just executed) still run.
+      document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true, cancelable: true }));
+      return;
+    }
     var script = document.createElement('script');
     script.src = scriptsAfter[index];
     script.onload = function () { loadNext(index + 1); };
@@ -2291,7 +2306,7 @@ Run: `vercel env add STRIPE_SECRET_KEY production`, `vercel env add STRIPE_WEBHO
 
 - [ ] **Step 8: Register the production webhook in Stripe**
 
-Run: `stripe webhook_endpoints create --url https://<production-domain>/api/stripe-webhook --enabled-events checkout.session.completed`
+Run: `stripe webhook_endpoints create --url https://<production-domain>/api/stripe-webhook --enabled-events checkout.session.completed --enabled-events checkout.session.async_payment_succeeded`
 Expected: prints a new endpoint with a `whsec_...` secret — set that as the production `STRIPE_WEBHOOK_SECRET` (Step 7) if it differs from the one used locally, then redeploy.
 
 - [ ] **Step 9: Repeat Steps 2–5 against the production URL** with a real Stripe **test-mode** key still active (do not switch to live mode until this full pass is confirmed clean), then flip `STRIPE_SECRET_KEY`/`STRIPE_WEBHOOK_SECRET` to live-mode values for launch.
