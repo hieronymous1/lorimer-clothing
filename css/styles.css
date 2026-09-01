@@ -1115,8 +1115,12 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   justify-content: center;
   gap: clamp(32px, 8.5vw, 176px);
 }
-.shop-row:not(:first-child) {
+.shop-row[data-row-type="products"]:not(:first-child) {
   width: min(100%, 990px);
+  align-self: center;
+}
+.shop-row[data-row-type="divider"] {
+  width: min(100%, 1360px);
   align-self: center;
 }
 .shop-row--three {

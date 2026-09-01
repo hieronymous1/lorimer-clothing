@@ -167,3 +167,11 @@ test('SS24 dress sits with the Look 5 top and bottom in the final row', () => {
   assert.deepEqual(rows.at(-2).products, ['asymmetrical-white-top', 'white-layered-skirt']);
   assert.deepEqual(rows.at(-1).products, ['zip-up-top', 'womens-wide-trousers', 'ss24-dress']);
 });
+
+test('editorial still rows track the opening product width across screen sizes', () => {
+  const css = read('css/styles.css');
+
+  assert.match(css, /\.shop-row\[data-row-type="divider"\]\s*\{[^}]*width:\s*min\(100%,\s*1360px\)[^}]*align-self:\s*center/s);
+  assert.match(css, /\.shop-row\[data-row-type="products"\]:not\(:first-child\)\s*\{[^}]*width:\s*min\(100%,\s*990px\)/s);
+  assert.doesNotMatch(css, /\.shop-row:not\(:first-child\)\s*\{[^}]*width:\s*min\(100%,\s*990px\)/s);
+});
