@@ -11,8 +11,8 @@ const SHOP_ROWS = [
   { type: 'products', products: ['dual-texture-knit-vest', 'adjustable-button-trousers'], ss24: true },
   { type: 'products', products: ['university-striped-sweatshirt', 'mens-straight-trousers', 'distressed-lorimer-cap'], ss24: true },
   { type: 'products', products: ['3d-panel-bomber', 'denim-leather-trousers'] },
-  { type: 'products', products: ['asymmetrical-white-top', 'white-layered-skirt', 'ss24-dress'], ss24: true },
-  { type: 'products', products: ['zip-up-top', 'womens-wide-trousers'], ss24: true },
+  { type: 'products', products: ['asymmetrical-white-top', 'white-layered-skirt'], ss24: true },
+  { type: 'products', products: ['zip-up-top', 'womens-wide-trousers', 'ss24-dress'], ss24: true },
 ];
 
 if (typeof document !== 'undefined') {

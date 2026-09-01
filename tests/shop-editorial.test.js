@@ -157,3 +157,13 @@ test('product galleries follow the supplied Finder compositions exactly', () => 
     product.images.forEach(image => assert.ok(fs.existsSync(path.join(ROOT, decodeURIComponent(image))), `missing image ${image}`));
   }
 });
+
+test('SS24 dress sits with the Look 5 top and bottom in the final row', () => {
+  const source = read('js/shop.js');
+  const context = vm.createContext({ module: { exports: {} } });
+  vm.runInContext(`${source}\nmodule.exports = SHOP_ROWS;`, context);
+  const rows = JSON.parse(JSON.stringify(context.module.exports));
+
+  assert.deepEqual(rows.at(-2).products, ['asymmetrical-white-top', 'white-layered-skirt']);
+  assert.deepEqual(rows.at(-1).products, ['zip-up-top', 'womens-wide-trousers', 'ss24-dress']);
+});
