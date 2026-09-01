@@ -52,3 +52,18 @@ Observations captured during task-oriented work. Each entry identifies a potenti
 **Suggested improvement:** Add a preflight command-availability check and explicitly route to equivalent Playwright MCP browser controls when the CLI binary is absent. Installing a new binary should remain optional when existing browser automation can complete verification.
 
 **Principle:** Tool-specific automation skills should define a capability-equivalent fallback so environment packaging differences do not interrupt validation.
+
+### Observation 4: Preflight the Python Playwright dependency before writing a smoke test
+
+**Status:** OPEN
+**Date:** 2026-09-01
+**Session context:** End-to-end verification of a local ecommerce admin and Stripe Checkout flow.
+**Skill:** webapp-testing
+**Type:** open-source
+**Phase/Area:** Environment detection and fallback routing
+
+**Issue:** The skill prescribed native Python Playwright scripts, but the Python `playwright` package was absent while an existing browser-control surface could perform the same local UI validation. A smoke script was written before that dependency gap was detected.
+
+**Suggested improvement:** Add an initial dependency check for both the Python interpreter and `playwright` module. If either is unavailable, route directly to an installed browser-control capability before creating a test script or installing new packages.
+
+**Principle:** Automation workflows should verify their required runtime and library together before generating harness code, then prefer an already-installed capability-equivalent fallback.
