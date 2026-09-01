@@ -123,3 +123,37 @@ test('opening product pair uses the reference composition and keeps mobile price
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.shop-row:first-child\s*\{[^}]*grid-template-columns:\s*1fr/s);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.shop-row:first-child \.product-card__info\s*\{[^}]*position:\s*static/s);
 });
+
+test('product galleries follow the supplied Finder compositions exactly', () => {
+  const products = loadProducts();
+  const imageOrder = {
+    'westworld-button-up': ['3.jpg', 'DSC_0215.jpg', 'DSC_0263.jpg', 'IMG_2953.jpeg', 'IMG_2958.jpeg', 'IMG_3040.jpg'],
+    'westworld-straight-jeans': ['7.jpg', 'DSC_0205.jpg', 'IMG_2945.jpg', 'IMG_2947.jpeg', 'IMG_3045.jpg'],
+    'layered-denim-shorts': ['6.jpg', 'IMG_7821.JPG', 'IMG_7762.JPG', 'IMG_7769.JPG', 'IMG_7785.JPG', 'IMG_7641.JPG', 'IMG_7700.JPG', 'IMG_7814.JPG'],
+    'layered-denim-jeans': ['4.jpg', 'IMG_7885.JPG', 'IMG_8054.JPG', 'IMG_8172.JPG', 'IMG_8175.JPG', 'IMG_7844.JPG', 'IMG_8039.JPG', 'IMG_8068.JPG'],
+    'reconstructed-button-up-1': ['10.jpg', '11.jpg', 'IMG_6251.JPG', 'IMG_6352.JPG', 'IMG_6328.JPG'],
+    'reconstructed-button-up-2': ['8.jpg', '9.jpg', 'IMG_6539.JPG', 'IMG_6624.JPG', 'IMG_6699.JPG'],
+    'reinforced-pinstripe-trousers': ['12.jpg', 'IMG_6393.jpg', 'IMG_6712.JPG'],
+    'upcycled-two-piece': ['15.jpg', 'Upsycle.Photo.Best.jpg', '82699B49-7632-4C84-B578-A3CC458E2F70.JPG'],
+    'overlapped-fray-skirt': ['14.jpg', 'DSC_0107.jpg', 'DSC_0129.jpg', 'IMG_3029.jpeg', 'IMG_2981.jpeg', 'DSC_0279.jpg'],
+    'dual-texture-knit-vest': ['16.jpg', 'DSC04170.jpg', 'IMG_6267.jpg'],
+    'adjustable-button-trousers': ['17.jpg', 'DSC04171.jpg', 'IMG_6269.jpg'],
+    'distressed-lorimer-cap': ['1.png'],
+    'university-striped-sweatshirt': ['20.jpg', '3_VSCO.JPG', 'EditTest.jpg', 'DSC04153.jpg', '76F2B413-5A03-475A-A578-184DE63203E9.JPG'],
+    'mens-straight-trousers': ['21.jpg'],
+    '3d-panel-bomber': ['24.jpg', 'IMG_6298.jpg', '2_VSCO 3.JPG', 'DSC04180.jpg', '4AA042A9-08D3-488A-A147-C9A6784B1D37.JPG'],
+    'denim-leather-trousers': ['25.jpg'],
+    'asymmetrical-white-top': ['22.jpg', '18.png', 'IMG_0686_VSCO.JPG', 'IMG_0655_VSCO.JPG', 'EE2693BD-823D-43C5-8FB6-F2620A8E827B.JPG'],
+    'white-layered-skirt': ['23.jpg', 'Skirtt.png'],
+    'zip-up-top': ['18.jpg', '2_VSCO 5.JPG', 'IMG_0584_VSCO.JPG', '6CB18551-BC69-437A-A16D-4DE974995852.JPG'],
+    'womens-wide-trousers': ['19.jpg', '16.png'],
+    'ss24-dress': ['26.jpg', 'IMG_0742_VSCO.JPG', '942E4476-5B3C-45E8-8140-BD56FB69AC83.JPG'],
+  };
+
+  for (const [id, expectedNames] of Object.entries(imageOrder)) {
+    const product = products.find(item => item.id === id);
+    assert.ok(product, `missing product ${id}`);
+    assert.deepEqual(product.images.map(image => decodeURIComponent(image.split('/').pop())), expectedNames, `${id} image order differs`);
+    product.images.forEach(image => assert.ok(fs.existsSync(path.join(ROOT, decodeURIComponent(image))), `missing image ${image}`));
+  }
+});
