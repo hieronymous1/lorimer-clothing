@@ -88,6 +88,7 @@ test('filters retain matching garments and subcategories while hiding editorial 
   assert.match(source, /row\.dataset\.rowType === 'divider'/);
   assert.match(source, /card\.dataset\.category !== filter && card\.dataset\.subcategory !== filter/);
   assert.match(source, /row\.hidden = visibleProducts === 0/);
+  assert.match(source, /grid\?\.classList\.toggle\('is-filtered',\s*filter !== 'All'\)/);
 });
 
 test('shop sidebar declares Tops and Bottoms subcategory filters', () => {
@@ -96,6 +97,23 @@ test('shop sidebar declares Tops and Bottoms subcategory filters', () => {
   for (const filter of ['Shirts', "Women's Tops", 'Jackets', 'Sweatshirts', 'Vests', 'Skirts', 'Trousers', 'Denim']) {
     assert.match(html, new RegExp(`data-filter="${filter.replace(/'/g, "&#39;|'")}"`));
   }
+});
+
+test('mobile shop filters retain Lorimer black instead of browser accent blue', () => {
+  const css = read('css/styles.css');
+
+  assert.match(css, /\.filter-btn\s*\{[^}]*color:\s*var\(--black\)/s);
+  assert.match(css, /\.filter-btn\s*\{[^}]*appearance:\s*none/s);
+  assert.match(css, /\.filter-btn--sub\s*\{[^}]*color:\s*var\(--gray-mid\)/s);
+  assert.match(css, /\.filter-btn--sub\.active\s*\{[^}]*color:\s*var\(--black\)/s);
+});
+
+test('filtered products leave editorial row boundaries and fill a continuous grid', () => {
+  const css = read('css/styles.css');
+
+  assert.match(css, /\.shop-grid\.is-filtered\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+  assert.match(css, /\.shop-grid\.is-filtered \.shop-row\s*\{[^}]*display:\s*contents/s);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.shop-grid\.is-filtered\s*\{[^}]*grid-template-columns:\s*1fr/s);
 });
 
 test('shop CSS defines row columns, ratios, and mobile stacking', () => {

@@ -1194,6 +1194,11 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
 .filter-btn {
   min-height: 28px;
   padding: 5px 0;
+  color: var(--black);
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-text-fill-color: currentColor;
+  -webkit-tap-highlight-color: transparent;
   font-family: var(--font-title);
   font-size: 11px;
   letter-spacing: .04em;
@@ -1239,6 +1244,17 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   gap: 140px;
   max-width: 1360px;
   margin: 0 auto;
+}
+.shop-grid.is-filtered {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 96px 2px;
+}
+.shop-grid.is-filtered .shop-row { display: contents; }
+.shop-grid.is-filtered .shop-row[hidden] { display: none; }
+.shop-grid.is-filtered .product-card {
+  width: 100%;
+  max-width: none;
 }
 .shop-row {
   display: grid;
@@ -2093,6 +2109,10 @@ html.has-custom-cursor * {
   .shop-subfilters { flex-direction: column; align-items: flex-start; gap: 1px; padding-left: 10px; }
   .shop-grid-wrap { width: 100%; padding: 24px 16px 56px; }
   .shop-grid { gap: 96px; }
+  .shop-grid.is-filtered {
+    grid-template-columns: 1fr;
+    gap: 72px;
+  }
   .shop-row { grid-template-columns: 1fr; row-gap: 56px; }
   .shop-row:first-child {
     grid-template-columns: 1fr;

@@ -157,6 +157,9 @@ function closeAllSubfilterPanels() {
 }
 
 function applyFilter(filter) {
+  const grid = document.querySelector('.shop-grid');
+  grid?.classList.toggle('is-filtered', filter !== 'All');
+
   document.querySelectorAll('.filter-btn').forEach(button => {
     const active = button.dataset.filter === filter;
     button.classList.toggle('active', active);
