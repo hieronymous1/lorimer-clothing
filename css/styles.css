@@ -981,6 +981,23 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   text-underline-offset: 2px;
 }
 .lookbook-look__copy a:hover { opacity: .56; }
+
+/* The opening pair follows the supplied runway compositions: image and copy
+   share one viewport-bounded height, while the text/link gaps stay asymmetric. */
+#look-1,
+#look-2 {
+  --look-composition-height: min(calc(100svh - var(--nav-h) - 76px), 850px);
+}
+#look-1 .lookbook-gallery,
+#look-2 .lookbook-gallery {
+  height: var(--look-composition-height);
+  max-height: none;
+}
+#look-1 .lookbook-look__copy,
+#look-2 .lookbook-look__copy {
+  min-height: var(--look-composition-height);
+  padding-block: clamp(72px, 11svh, 110px) clamp(40px, 5.4svh, 54px);
+}
 .lookbook-end {
   width: min(100%, 700px);
   margin: 280px auto 72px;
@@ -1083,7 +1100,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   display: flex;
   flex-direction: column;
   gap: 140px;
-  max-width: 990px;
+  max-width: 1360px;
   margin: 0 auto;
 }
 .shop-row {
@@ -1093,6 +1110,15 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   scroll-margin-top: var(--nav-h);
 }
 .shop-row--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.shop-row:first-child {
+  grid-template-columns: repeat(2, minmax(0, min(100%, 592px)));
+  justify-content: center;
+  gap: clamp(32px, 8.5vw, 176px);
+}
+.shop-row:not(:first-child) {
+  width: min(100%, 990px);
+  align-self: center;
+}
 .shop-row--three {
   display: flex;
   justify-content: center;
@@ -1117,6 +1143,13 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   aspect-ratio: 3 / 4;
   object-fit: cover;
   background: var(--white);
+}
+.shop-row:first-child .product-card {
+  width: min(100%, calc((100svh - var(--nav-h) - 118px) * 5 / 7), 592px);
+  justify-self: center;
+}
+.shop-row:first-child .product-card__img {
+  aspect-ratio: 5 / 7;
 }
 #distressed-lorimer-cap .product-card__img {
   object-fit: contain;
@@ -1920,6 +1953,18 @@ html.has-custom-cursor * {
   .shop-grid-wrap { width: 100%; padding: 24px 16px 56px; }
   .shop-grid { gap: 96px; }
   .shop-row { grid-template-columns: 1fr; row-gap: 56px; }
+  .shop-row:first-child {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+  .shop-row:first-child .product-card {
+    width: min(100%, calc((100svh - var(--nav-h) - 86px) * 5 / 7));
+    margin-inline: auto;
+  }
+  .shop-row:first-child .product-card__info {
+    position: static;
+    padding-top: 10px;
+  }
   .shop-row--three .product-card { flex-basis: 100%; max-width: 100%; }
   .shop-editorial-still { margin: 34px 0 54px; }
   .product-layout { grid-template-columns: 1fr; }
@@ -2016,6 +2061,27 @@ html.has-custom-cursor * {
   .lookbook-look__copy { align-items: flex-start !important; text-align: left !important; }
   .lookbook-look__copy a { align-self: flex-start !important; text-align: left !important; }
   .lookbook-end { margin: 70px auto 54px; }
+
+  #look-1,
+  #look-2 {
+    --look-composition-height: auto;
+  }
+  #look-1 .lookbook-gallery,
+  #look-2 .lookbook-gallery {
+    order: 1;
+    height: auto;
+  }
+  #look-1 .lookbook-look__copy,
+  #look-2 .lookbook-look__copy {
+    order: 2;
+    min-height: 0;
+    gap: clamp(30px, 10vw, 44px);
+    padding: 20px 0 0;
+  }
+  #look-1 .lookbook-look__copy-head,
+  #look-2 .lookbook-look__copy-head {
+    gap: 14px;
+  }
 }
 
 .checkout-banner { margin-bottom: 24px; }

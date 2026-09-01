@@ -117,3 +117,12 @@ test('SS24 gallery controller supports hover preview, keyboard, swipe, and alt u
   assert.match(source, /touchend/);
   assert.doesNotMatch(source, /lookbook-gallery__next|innerHTML|insertAdjacentHTML|eval\s*\(/);
 });
+
+test('first two SS24 looks share a viewport-bounded reference composition and mobile order', () => {
+  const css = read('css/styles.css');
+
+  assert.match(css, /#look-1,\s*#look-2\s*\{[^}]*--look-composition-height:\s*min\(calc\(100svh - var\(--nav-h\) - 76px\),\s*850px\)/s);
+  assert.match(css, /#look-1 \.lookbook-look__copy,\s*#look-2 \.lookbook-look__copy\s*\{[^}]*min-height:\s*var\(--look-composition-height\)/s);
+  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?#look-1 \.lookbook-gallery,\s*#look-2 \.lookbook-gallery\s*\{[^}]*order:\s*1/s);
+  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?#look-1 \.lookbook-look__copy,\s*#look-2 \.lookbook-look__copy\s*\{[^}]*order:\s*2/s);
+});

@@ -114,3 +114,12 @@ test('shop page reuses the ss24 scroll-lock pattern', () => {
   assert.match(html, /<body class="[^"]*\bshop-page\b/);
   assert.match(css, /html:has\(body\.shop-page\)\s*\{\s*scroll-snap-type:\s*y mandatory;\s*\}/);
 });
+
+test('opening product pair uses the reference composition and keeps mobile price in flow', () => {
+  const css = read('css/styles.css');
+
+  assert.match(css, /\.shop-row:first-child\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*min\(100%,\s*592px\)\)\)/s);
+  assert.match(css, /\.shop-row:first-child \.product-card__img\s*\{[^}]*aspect-ratio:\s*5\s*\/\s*7/s);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.shop-row:first-child\s*\{[^}]*grid-template-columns:\s*1fr/s);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.shop-row:first-child \.product-card__info\s*\{[^}]*position:\s*static/s);
+});
