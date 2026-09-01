@@ -189,6 +189,121 @@ ul { list-style: none; }
   padding-top: var(--nav-h);
 }
 
+/* ── Homepage preloader: Cut Table ─────────────────────────── */
+body.is-preloading {
+  overflow: hidden;
+  animation: preloader-body-failsafe 0s 5.5s forwards;
+}
+.site-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-sans);
+  isolation: isolate;
+  animation: preloader-failsafe 0s 5.5s forwards;
+}
+.site-preloader__panels {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.site-preloader__panel {
+  background: var(--white);
+  border-right: 1px solid rgba(0, 0, 0, .16);
+  transform-origin: top;
+}
+.site-preloader__panel:last-child { border-right: 0; }
+.site-preloader__header {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.site-preloader__logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(84vw, 1200px);
+  max-width: none;
+  transform: translate(-53%, -50%);
+  clip-path: inset(0 100% 0 0);
+  animation: preloader-logo-in 1.25s cubic-bezier(.76, 0, .24, 1) .12s forwards;
+}
+.site-preloader__footer {
+  position: absolute;
+  right: 20px;
+  bottom: 18px;
+  left: 20px;
+  display: grid;
+  grid-template-columns: 70px 1fr auto;
+  align-items: end;
+}
+.site-preloader__mark {
+  grid-column: 1;
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  background: var(--white);
+  mix-blend-mode: multiply;
+}
+.site-preloader__label {
+  grid-column: 2;
+  align-self: end;
+  justify-self: center;
+  padding-bottom: 2px;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.site-preloader__progress {
+  grid-column: 3;
+  justify-self: end;
+  min-width: 2ch;
+  font-family: var(--font-title);
+  font-size: clamp(54px, 9vw, 130px);
+  font-weight: 400;
+  line-height: .72;
+  letter-spacing: -.08em;
+  font-variant-numeric: tabular-nums;
+}
+.site-preloader.is-leaving .site-preloader__panel {
+  animation: preloader-panel-out .62s cubic-bezier(.76, 0, .24, 1) forwards;
+}
+.site-preloader.is-leaving .site-preloader__panel:nth-child(2) { animation-delay: .04s; }
+.site-preloader.is-leaving .site-preloader__panel:nth-child(3) { animation-delay: .08s; }
+.site-preloader.is-leaving .site-preloader__panel:nth-child(4) { animation-delay: .12s; }
+.site-preloader.is-leaving .site-preloader__panel:nth-child(5) { animation-delay: .16s; }
+.site-preloader.is-leaving .site-preloader__panel:nth-child(6) { animation-delay: .2s; }
+.site-preloader.is-leaving > :not(.site-preloader__panels) {
+  opacity: 0;
+  transition: opacity .18s ease;
+}
+@keyframes preloader-logo-in {
+  to { clip-path: inset(0); transform: translate(-50%, -50%); }
+}
+@keyframes preloader-panel-out {
+  to { transform: scaleY(0); }
+}
+@keyframes preloader-failsafe {
+  to { visibility: hidden; pointer-events: none; }
+}
+@keyframes preloader-body-failsafe {
+  to { overflow: auto; }
+}
+
 /* ── Footer ────────────────────────────────────────────────── */
 .footer {
   border-top: none;
@@ -307,6 +422,23 @@ ul { list-style: none; }
 }
 
 @media (max-width: 768px) {
+  .site-preloader__header {
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    font-size: 7px;
+  }
+  .site-preloader__header span:last-child { display: none; }
+  .site-preloader__logo { width: 90vw; }
+  .site-preloader__footer {
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    grid-template-columns: 52px 1fr auto;
+  }
+  .site-preloader__mark { width: 46px; height: 46px; }
+  .site-preloader__label { display: none; }
+  .site-preloader__progress { font-size: clamp(58px, 20vw, 86px); }
   .navbar {
     display: flex;
     align-items: center;
@@ -343,6 +475,11 @@ ul { list-style: none; }
   .about-terms { margin-bottom: var(--about-space-section); }
   .about-gallery + .about-section { margin-top: 0; }
   .about-section + .about-section { margin-top: var(--about-space-section); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.is-preloading { overflow: auto; animation: none; }
+  .site-preloader { display: none; }
 }
 
 /* ── Cart Drawer ───────────────────────────────────────────── */

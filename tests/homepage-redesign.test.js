@@ -68,3 +68,43 @@ test('desktop homepage featured products stay viewport-bounded and footer has no
   assert.match(css, /\.footer\s*\{[\s\S]*?border-top:\s*none/);
   assert.doesNotMatch(css, /\.product-tile:nth-child\(2\)\s*\{[^}]*margin-top:\s*(?!0\b)/);
 });
+
+test('homepage uses the approved Cut Table preloader with supplied brand assets', () => {
+  const html = read('index.html');
+  const preloader = html.match(/<div class="site-preloader"[\s\S]*?<\/div>\s*<\/div>/)?.[0] || '';
+
+  assert.match(preloader, /role="status"/);
+  assert.match(preloader, /aria-live="polite"/);
+  assert.match(preloader, /data-preloader-progress[^>]*aria-hidden="true"/);
+  assert.match(preloader, /assets\/logo\.png/);
+  assert.match(preloader, /assets\/apple-touch-icon\.png/);
+  assert.match(preloader, /Pattern loading/);
+  assert.equal((preloader.match(/class="site-preloader__panel"/g) || []).length, 6);
+  assert.doesNotMatch(preloader, /<video|\.mp4/);
+  assert.match(html, /js\/preloader\.js/);
+});
+
+test('Cut Table preloader is pure white, responsive, and reduced-motion safe', () => {
+  const css = read('css/styles.css');
+
+  assert.match(css, /\.site-preloader\s*\{[\s\S]*?background:\s*var\(--white\)/);
+  assert.match(css, /\.site-preloader__panel\s*\{[\s\S]*?background:\s*var\(--white\)/);
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.site-preloader/);
+  assert.match(css, /@keyframes\s+preloader-failsafe/);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-preloader__logo/);
+  assert.match(css, /\.site-preloader__progress\s*\{[\s\S]*?grid-column:\s*3/);
+});
+
+test('Cut Table preloader tracks loading and always releases the page', () => {
+  const source = read('js/preloader.js');
+
+  assert.match(source, /window\.addEventListener\('load'/);
+  assert.match(source, /requestAnimationFrame/);
+  assert.match(source, /pageLoaded\s*&&\s*displayedProgress\s*>=\s*99/);
+  assert.match(source, /setTimeout\(dismiss/);
+  assert.match(source, /prefers-reduced-motion:\s*reduce/);
+  assert.match(source, /document\.body\.classList\.remove\('is-preloading'\)/);
+  assert.match(source, /document\.addEventListener\('keydown',\s*blockTab/);
+  assert.match(source, /document\.removeEventListener\('keydown',\s*blockTab/);
+  assert.match(source, /preloader\.remove\(\)/);
+});

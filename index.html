@@ -13,7 +13,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="page-body">
+<body class="page-body is-preloading">
+
+  <div class="site-preloader" role="status" aria-live="polite" aria-label="Loading Lorimer">
+    <div class="site-preloader__panels" aria-hidden="true">
+      <span class="site-preloader__panel"></span>
+      <span class="site-preloader__panel"></span>
+      <span class="site-preloader__panel"></span>
+      <span class="site-preloader__panel"></span>
+      <span class="site-preloader__panel"></span>
+      <span class="site-preloader__panel"></span>
+    </div>
+    <div class="site-preloader__header" aria-hidden="true">
+      <span>LORIMER® / HELSINKI</span>
+      <span>GARMENT INDEX 001—024</span>
+    </div>
+    <img class="site-preloader__logo" src="./assets/logo.png" alt="LORIMER®">
+    <div class="site-preloader__footer">
+      <img class="site-preloader__mark" src="./assets/apple-touch-icon.png" alt="">
+      <span class="site-preloader__label" aria-hidden="true">Pattern loading / mm</span>
+      <span class="site-preloader__progress" aria-hidden="true"><span data-preloader-progress aria-hidden="true">00</span></span>
+    </div>
+  </div>
+  <noscript><style>.site-preloader{display:none}.is-preloading{overflow:auto}</style></noscript>
 
   <nav class="navbar">
     <a class="navbar__item" href="ss24.html">S/S_24</a>
@@ -133,6 +155,7 @@
     </div>
   </footer>
 
+  <script src="js/preloader.js"></script>
   <script src="js/products-data.js?v=9"></script>
   <script>window.__LORIMER_SCRIPTS_AFTER__ = ['js/cart.js?v=6','js/main.js?v=7','js/home.js','js/ss24.js?v=9','js/animations.js','js/cursor.js'];</script>
   <script src="js/products-remote.js"></script>

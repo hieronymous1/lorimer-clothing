@@ -33,6 +33,7 @@
     "avoid": []
   },
   "decisions": [
+    "Homepage entry uses a pure-white Cut Table preloader: the supplied LORIMER wordmark draws across a six-column pattern grid, the supplied L-mark anchors the footer, and staggered white panels retract to reveal the page. Motion is reduced or skipped when requested.",
     "Shop uses flat editorial rows: two columns for the available launch pair and dividers, three columns for catalog and SS24 look rows, with no card chrome or gray image gutters.",
     "Sold-out status replaces price text and purchase controls while keeping every garment detail page accessible.",
     "The opening Products pair uses the supplied 5:7 portrait composition with a viewport-bounded card height; the first two SS24 looks use viewport-bounded 2:3 imagery and intentionally asymmetric copy spacing, then stack image before copy on mobile."
