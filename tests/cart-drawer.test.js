@@ -148,8 +148,8 @@ test('drawer styles implement compact desktop, full-width mobile, focus, and red
 test('storefront pages version the coupled cart scripts together', () => {
   for (const page of ['index.html', 'shop.html', 'ss24.html', 'about.html', 'checkout.html', 'product-detail.html']) {
     const html = read(page);
-    assert.match(html, /js\/cart\.js\?v=7/);
-    assert.match(html, /js\/main\.js\?v=9/);
+    assert.match(html, /js\/cart\.js\?v=8/);
+    assert.match(html, /js\/main\.js\?v=10/);
     assert.match(html, /js\/products-data\.js/);
   }
   assert.match(read('product-detail.html'), /js\/product\.js\?v=10/);

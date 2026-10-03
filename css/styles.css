@@ -1696,6 +1696,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   .option-btn { transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease; }
   .option-btn:active { transform: none; }
 }
+.option-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
 .option-group__guide { margin-left: 6px; color: var(--black); font-family: var(--font-title); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 3px; }
 
 .btn-add-cart {

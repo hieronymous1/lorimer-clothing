@@ -166,7 +166,7 @@ function renderOrderSummary() {
     info.className = 'summary-item__info';
     info.append(
       createTextElement('p', 'summary-item__name', item.name),
-      createTextElement('p', 'summary-item__size', `Size ${item.size}${item.finish ? ` · ${toTitleCase(getFinishLabel(getCanonicalProduct(item.id), item.finish))}` : ''}${item.quantity > 1 ? ` × ${item.quantity}` : ''}`),
+      createTextElement('p', 'summary-item__size', `${formatSizeLabel(item.size)}${item.finish ? ` · ${toTitleCase(getFinishLabel(getCanonicalProduct(item.id), item.finish))}` : ''}${item.quantity > 1 ? ` × ${item.quantity}` : ''}`),
     );
     const price = createTextElement('span', 'summary-item__price', `€${getLineTotal(item).toLocaleString()}`);
 

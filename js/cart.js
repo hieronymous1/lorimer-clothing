@@ -62,6 +62,10 @@ function getFinishLabel(product, finishId) {
   return getProductFinishes(product).find(entry => entry.id === finishId)?.label || '';
 }
 
+function formatSizeLabel(size) {
+  return /^size\b/i.test(size) ? size : `Size ${size}`;
+}
+
 function cartLineKey(item) {
   return `${item.id}|${item.size}|${item.finish || ''}`;
 }

@@ -240,7 +240,7 @@ function createCartRow(line, index) {
   const info = document.createElement('div');
   info.className = 'cart-item__info';
   const nameEl = createTextElement('h3', 'cart-item__name', line.name);
-  const sizeEl = createTextElement('p', 'cart-item__size', `Size ${line.size}${line.finishLabel ? ` · ${toTitleCase(line.finishLabel)}` : ''}`);
+  const sizeEl = createTextElement('p', 'cart-item__size', `${formatSizeLabel(line.size)}${line.finishLabel ? ` · ${toTitleCase(line.finishLabel)}` : ''}`);
   const priceEl = createTextElement('p', 'cart-item__price', `${formatMoney(line.unitPrice)} each · ${formatMoney(line.lineTotal)} total`);
   info.append(nameEl, sizeEl, priceEl);
   const actions = document.createElement('div');

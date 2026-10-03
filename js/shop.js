@@ -120,7 +120,7 @@ function createProductCard(product, eager, index = 0, finishId = '') {
   const price = document.createElement('p');
   const soldOut = !product.available && !product.notForSale;
   price.className = `product-card__price${soldOut ? ' product-card__price--sold-out' : ''}`;
-  price.textContent = product.notForSale ? 'Inquiry' : product.available ? formatPrice(finish ? finish.price : product.price) : 'Sold Out';
+  price.textContent = product.notForSale ? 'Sold Out' : product.available ? formatPrice(finish ? finish.price : product.price) : 'Sold Out';
   details.append(name);
   if (finish) {
     const finishLine = document.createElement('p');

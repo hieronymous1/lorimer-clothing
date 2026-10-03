@@ -63,3 +63,21 @@ test('SS24 product links share one alignment rule across both orientations', () 
   assert.match(css, /\.lookbook-look__copy > a\s*\{[^}]*justify-self:\s*start/);
   assert.doesNotMatch(css, /\.lookbook-look--reverse \.lookbook-look__copy > a\s*\{[^}]*justify-self/);
 });
+
+test('size labels never double the "Size" prefix', () => {
+  const vm = require('node:vm');
+  const context = vm.createContext({ module: { exports: {} }, localStorage: { getItem: () => null, setItem() {}, removeItem() {} } });
+  vm.runInContext(read('js/products-data.js'), context);
+  vm.runInContext(read('js/cart.js'), context);
+  assert.equal(context.formatSizeLabel('Size 1.5'), 'Size 1.5');
+  assert.equal(context.formatSizeLabel('32×32'), 'Size 32×32');
+  assert.match(read('js/checkout.js'), /formatSizeLabel\(item\.size\)/);
+  assert.match(read('js/main.js'), /formatSizeLabel\(line\.size\)/);
+});
+
+test('archive cards say Sold Out and the size guide sits in the size row', () => {
+  assert.doesNotMatch(read('js/shop.js'), /Inquiry/);
+  const html = read('product-detail.html');
+  assert.match(html, /<div class="option-row">\s*<div class="option-group" id="size-grid"[^>]*><\/div>\s*<button class="option-group__guide" id="size-guide-trigger"/);
+  assert.match(read('css/styles.css'), /\.option-row\s*\{[^}]*display:\s*flex[^}]*align-items:\s*center/);
+});
