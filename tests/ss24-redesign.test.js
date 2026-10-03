@@ -113,15 +113,13 @@ test('SS24 desktop composition uses the large reference scale', () => {
   assert.match(css, /\.lookbook-look__copy a\s*\{[\s\S]*?clamp\(14px,[^;]+18px\)/);
 });
 
-// Superseded by Task 9 (client feedback round): hover preview becomes edge-scrim click navigation.
-test('SS24 gallery controller supports hover preview, keyboard, swipe, and alt updates', { todo: 'Task 9 rewrites the gallery controller' }, () => {
+test('SS24 gallery controller supports edge buttons, keyboard, swipe, and alt updates', () => {
   const source = read('js/ss24.js');
 
   assert.match(source, /injectCartDrawer\s*\(\s*\)/);
   assert.match(source, /replaceChildren|\.src\s*=/);
   assert.match(source, /image X of Y|image \$\{/);
-  assert.match(source, /mouseenter/);
-  assert.doesNotMatch(source, /mouseleave/);
+  assert.doesNotMatch(source, /mouseenter|mouseleave/);
   assert.match(source, /ArrowLeft/);
   assert.match(source, /ArrowRight/);
   assert.match(source, /touchstart/);

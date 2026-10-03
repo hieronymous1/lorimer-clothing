@@ -29,11 +29,6 @@ function initLookbookGallery(gallery) {
   images.forEach(() => dotsWrap.appendChild(document.createElement('span')));
   gallery.appendChild(dotsWrap);
 
-  const counter = document.createElement('span');
-  counter.className = 'lookbook-gallery__counter';
-  counter.setAttribute('aria-hidden', 'true');
-  gallery.appendChild(counter);
-
   const prevBtn = document.createElement('button');
   prevBtn.type = 'button';
   prevBtn.className = 'lookbook-gallery__nav lookbook-gallery__nav--prev';
@@ -49,7 +44,6 @@ function initLookbookGallery(gallery) {
   let index = 0;
   let touchStartX = null;
   const updateChrome = () => {
-    counter.textContent = `${index + 1} / ${images.length}`;
     dotsWrap.querySelectorAll('span').forEach((dot, i) => dot.classList.toggle('is-active', i === index));
   };
   const move = direction => {
