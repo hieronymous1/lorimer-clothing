@@ -79,3 +79,11 @@ test('production responses include baseline security headers', () => {
   assert.ok(names.has('x-content-type-options'));
   assert.ok(names.has('referrer-policy'));
 });
+
+test('checkout prices every line through resolveLinePrice and never trusts a client price', () => {
+  const api = read('api/checkout.js');
+  assert.match(api, /resolveLinePrice\(structural, dbProduct, item\.finish\)/);
+  assert.match(api, /finish_prices from products/);
+  assert.doesNotMatch(api, /item\.price\b/);
+  assert.match(api, /quantityBySize/);
+});
