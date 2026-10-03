@@ -25,6 +25,13 @@
       if (typeof override.name === 'string') product.name = override.name;
       if (typeof override.description === 'string') product.description = override.description;
       if (typeof override.price === 'number') product.price = override.price;
+      if (override.finish_prices && typeof override.finish_prices === 'object' && Array.isArray(product.finishes)) {
+        product.finishes.forEach(function (finish) {
+          var price = override.finish_prices[finish.id];
+          if (typeof price === 'number' && price > 0) finish.price = price;
+        });
+        if (product.finishes[0]) product.price = product.finishes[0].price;
+      }
       if (Array.isArray(override.images) && override.images.length) product.images = override.images;
       if (override.stock_by_size && typeof override.stock_by_size === 'object') {
         product.stockBySize = override.stock_by_size;

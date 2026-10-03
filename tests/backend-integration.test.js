@@ -39,7 +39,7 @@ test('every storefront page defers to products-remote.js before its page script'
     const html = read(page);
     assert.match(html, /window\.__LORIMER_SCRIPTS_AFTER__ = \[/, `${page} is missing the deferred script list`);
     assert.match(html, new RegExp(pageScript.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${page} is missing ${pageScript} in its deferred list`);
-    assert.match(html, /<script src="js\/products-remote\.js"><\/script>/, `${page} is missing products-remote.js`);
+    assert.match(html, /<script src="js\/products-remote\.js\?v=2"><\/script>/, `${page} is missing products-remote.js`);
   });
 });
 
@@ -78,4 +78,18 @@ test('admin.js calls every admin API route', () => {
   ['/api/admin/login', '/api/admin/products', '/api/admin/inventory', '/api/admin/orders', '/api/admin/content'].forEach(route => {
     assert.match(js, new RegExp(route.replace(/\//g, '\\/')), `admin.js never calls ${route}`);
   });
+});
+
+test('public products expose finish prices in euros and the storefront applies them', () => {
+  const api = read('api/products.js');
+  const remote = read('js/products-remote.js');
+  assert.match(api, /finish_prices/);
+  assert.match(api, /cents \/ 100/);
+  assert.match(remote, /override\.finish_prices/);
+});
+
+test('admin validates finish prices against known finishes', () => {
+  const admin = read('api/admin/products.js');
+  assert.match(admin, /invalid finish prices/);
+  assert.match(admin, /Number\.isInteger/);
 });

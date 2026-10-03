@@ -1,27 +1,31 @@
 const { getDb } = require('../api/_lib/db');
+const PRODUCTS_DATA = require('../js/products-data.js');
 
 const PRODUCTS = [
   {
     id: 'phyllite-jacket',
     name: 'Phyllite Jacket',
-    description: 'Classic denim jacket treated with a matte wax finish for a distinct texture and weather resistance. Fitted silhouette with raw hem.',
+    description: PRODUCTS_DATA.find(p => p.id === 'phyllite-jacket').description,
     price_cents: 7000,
-    images: ['./assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_1748.jpg'],
-    sizes: ['Size 1', 'Size 2'],
+    finish_prices: { wax: 7000, 'fabric-paint': 8000 },
+    images: ['./assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_2297.jpg'],
+    sizes: ['Size 1', 'Size 1.5', 'Size 2', 'Size 2.5'],
   },
   {
     id: 'lorimer-selvedge-denim',
     name: 'Lorimer Selvedge Denim — Blue',
-    description: 'Lorimer selvedge denim cut with a clean, structured silhouette and considered finishing throughout. Waxed and fabric-painted by hand — each pair develops its own character with wear.',
+    description: PRODUCTS_DATA.find(p => p.id === 'lorimer-selvedge-denim').description,
     price_cents: 8000,
+    finish_prices: null,
     images: ['./assets/photos/PRODUCTS/Lorimer Selvedge Denim - Photoshoot/IMG_2520.jpg'],
     sizes: ['30×30', '30×32', '32×30', '32×32', '32×34', '34×32', '34×34'],
   },
   {
     id: 'lorimer-selvedge-denim-black',
     name: 'Lorimer Selvedge Denim — Black',
-    description: 'Lorimer selvedge denim in black — cut with a clean, structured silhouette and considered finishing throughout. Waxed and fabric-painted by hand, developing its own character with wear.',
+    description: PRODUCTS_DATA.find(p => p.id === 'lorimer-selvedge-denim-black').description,
     price_cents: 8000,
+    finish_prices: null,
     images: ['./assets/photos/PRODUCTS/Lorimer Selvedge Denim Black - Photoshoot/IMG_3161.jpg'],
     sizes: ['30×30', '30×32', '32×30', '32×32', '32×34', '34×32', '34×34'],
   },
@@ -43,8 +47,8 @@ async function seed() {
 
   for (const product of PRODUCTS) {
     await sql`
-      insert into products (id, name, description, price_cents, images)
-      values (${product.id}, ${product.name}, ${product.description}, ${product.price_cents}, ${JSON.stringify(product.images)}::jsonb)
+      insert into products (id, name, description, price_cents, images, finish_prices)
+      values (${product.id}, ${product.name}, ${product.description}, ${product.price_cents}, ${JSON.stringify(product.images)}::jsonb, ${product.finish_prices ? JSON.stringify(product.finish_prices) : null}::jsonb)
       on conflict (id) do nothing
     `;
     for (const size of product.sizes) {

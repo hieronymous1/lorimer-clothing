@@ -10,7 +10,7 @@ module.exports = async function handler(req, res) {
   }
 
   const sql = getDb();
-  const rows = await sql`select id, name, description, price_cents, images from products`;
+  const rows = await sql`select id, name, description, price_cents, images, finish_prices from products`;
   const inventoryRows = await sql`select product_id, size, stock from inventory`;
   const byId = new Map(rows.map(row => [row.id, row]));
   const stockByProduct = new Map();
@@ -28,6 +28,9 @@ module.exports = async function handler(req, res) {
       description: override?.description ?? structural.description,
       price: override ? override.price_cents / 100 : structural.price,
       images: override?.images?.length ? override.images : structural.images,
+      finish_prices: override?.finish_prices
+        ? Object.fromEntries(Object.entries(override.finish_prices).map(([key, cents]) => [key, cents / 100]))
+        : null,
       sizes: structural.sizes,
       stock_by_size: stockByProduct.get(id) || {},
     };

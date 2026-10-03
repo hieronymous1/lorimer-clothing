@@ -4,6 +4,7 @@ create table if not exists products (
   description text not null,
   price_cents integer not null,
   images jsonb not null default '[]'::jsonb,
+  finish_prices jsonb,
   updated_at timestamptz not null default now()
 );
 
@@ -31,3 +32,5 @@ create table if not exists webhook_events (
   event_id text primary key,
   processed_at timestamptz not null default now()
 );
+
+alter table products add column if not exists finish_prices jsonb;

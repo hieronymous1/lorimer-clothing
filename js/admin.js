@@ -97,6 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <label>Name<input name="name" value="${escapeAttr(product.name)}"></label>
         <label>Description<textarea name="description">${escapeHtml(product.description)}</textarea></label>
         <label>Price (EUR)<input name="price" type="number" step="0.01" value="${(product.price_cents / 100).toFixed(2)}"></label>
+        ${product.finish_prices ? Object.entries(product.finish_prices).map(([key, cents]) => `
+        <label>${escapeHtml(key === 'fabric-paint' ? 'Fabric Paint price (EUR)' : key === 'wax' ? 'Wax price (EUR)' : key)}<input name="finish:${escapeAttr(key)}" type="number" step="0.01" min="0.01" value="${(cents / 100).toFixed(2)}"></label>`).join('') : ''}
         <label>Images (one URL per line)<textarea name="images">${(product.images || []).join('\n')}</textarea></label>
         <label>Add image<input name="image" type="file" accept="image/*"></label>
         <button type="submit">Save</button>
@@ -122,6 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
           price_cents: Math.round(parseFloat(data.get('price')) * 100),
           images: imageUrls,
         };
+        const finishFields = [...data.keys()].filter(key => key.startsWith('finish:'));
+        if (finishFields.length) {
+          payload.finish_prices = Object.fromEntries(
+            finishFields.map(key => [key.slice('finish:'.length), Math.round(parseFloat(data.get(key)) * 100)]),
+          );
+        }
         const res = await API.products.save(payload);
         form.querySelector('.admin-save-status').textContent = res.ok ? 'Saved' : 'Error';
       });
