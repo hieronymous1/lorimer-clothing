@@ -214,6 +214,12 @@ function renderFiltered(layout) {
     layout.rest.forEach((product, index) => track.appendChild(createProductCard(product, false, index)));
     container.appendChild(track);
   }
+  if (!layout.featured.length && !layout.rest.length) {
+    const empty = document.createElement('p');
+    empty.className = 'shop-filtered__empty';
+    empty.textContent = 'No products found';
+    container.appendChild(empty);
+  }
   container.hidden = false;
   animateFilteredCards(container);
   return layout.featured.length + layout.rest.length;

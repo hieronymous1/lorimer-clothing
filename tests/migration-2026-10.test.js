@@ -40,3 +40,17 @@ test('running twice issues the same idempotent statements', async () => {
   await migrate(b.sql);
   assert.deepEqual(a.calls.map(c => c.text), b.calls.map(c => c.text));
 });
+
+test('denim rows only receive the new description; admin price and images survive', async () => {
+  const { sql, calls } = recordingSql();
+  await migrate(sql);
+  const denim = calls.filter(c => /update products set/.test(c.text) && c.values.some(v => String(v).startsWith('lorimer-selvedge-denim')));
+  assert.equal(denim.length, 2);
+  denim.forEach(call => {
+    assert.match(call.text, /update products set description = \?, updated_at = now\(\) where id = \?/);
+    assert.doesNotMatch(call.text, /price_cents|images|finish_prices/);
+  });
+  const phyllite = calls.find(c => /update products set/.test(c.text) && c.values.includes('phyllite-jacket'));
+  assert.match(phyllite.text, /name = \?/);
+  assert.ok(phyllite.values.includes('Phyllite Jacket'));
+});

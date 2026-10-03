@@ -81,3 +81,20 @@ test('archive cards say Sold Out and the size guide sits in the size row', () =>
   assert.match(html, /<div class="option-row">\s*<div class="option-group" id="size-grid"[^>]*><\/div>\s*<button class="option-group__guide" id="size-guide-trigger"/);
   assert.match(read('css/styles.css'), /\.option-row\s*\{[^}]*display:\s*flex[^}]*align-items:\s*center/);
 });
+
+test('every page loads one shared products-data and stylesheet version', () => {
+  const pages = ['index.html', 'ss24.html', 'shop.html', 'product-detail.html', 'checkout.html', 'about.html'];
+  const versions = name => new Set(pages.flatMap(page => [...read(page).matchAll(new RegExp(`${name}\\?v=(\\d+)`, 'g'))].map(m => m[1])));
+  const data = versions('js/products-data\\.js');
+  assert.equal(data.size, 1, `products-data versions: ${[...data]}`);
+  assert.ok(Number([...data][0]) >= 13);
+  const css = versions('css/styles\\.css');
+  assert.equal(css.size, 1, `styles versions: ${[...css]}`);
+  pages.forEach(page => assert.doesNotMatch(read(page), /href="css\/styles\.css"/, page));
+});
+
+test('an empty filter shows a visible message', () => {
+  const js = read('js/shop.js');
+  assert.match(js, /shop-filtered__empty/);
+  assert.match(read('css/styles.css'), /\.shop-filtered__empty\s*\{/);
+});

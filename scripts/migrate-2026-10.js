@@ -3,7 +3,7 @@
    DATABASE_URL=… node scripts/migrate-2026-10.js */
 const PRODUCTS = require('../js/products-data.js');
 
-const LIVE_IDS = ['phyllite-jacket', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'];
+const DENIM_IDS = ['lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'];
 const NEW_PHYLLITE_SIZES = ['Size 1.5', 'Size 2.5'];
 
 function finishPricesCents(product) {
@@ -14,18 +14,23 @@ function finishPricesCents(product) {
 async function migrate(sql) {
   await sql`alter table products add column if not exists finish_prices jsonb`;
 
-  for (const id of LIVE_IDS) {
+  // Phyllite gains finishes, a new cover and copy. Its row is fully refreshed.
+  const phyllite = PRODUCTS.find(p => p.id === 'phyllite-jacket');
+  await sql`
+    update products set
+      name = ${phyllite.name},
+      description = ${phyllite.description},
+      images = ${JSON.stringify(phyllite.images)}::jsonb,
+      price_cents = ${Math.round(phyllite.price * 100)},
+      finish_prices = ${JSON.stringify(finishPricesCents(phyllite))}::jsonb,
+      updated_at = now()
+    where id = ${'phyllite-jacket'}
+  `;
+
+  // Denim only receives the client's new copy; admin-managed price and images stay.
+  for (const id of DENIM_IDS) {
     const product = PRODUCTS.find(p => p.id === id);
-    const prices = finishPricesCents(product);
-    await sql`
-      update products set
-        description = ${product.description},
-        images = ${JSON.stringify(product.images)}::jsonb,
-        price_cents = ${Math.round(product.price * 100)},
-        finish_prices = ${prices ? JSON.stringify(prices) : null}::jsonb,
-        updated_at = now()
-      where id = ${id}
-    `;
+    await sql`update products set description = ${product.description}, updated_at = now() where id = ${id}`;
   }
 
   for (const size of NEW_PHYLLITE_SIZES) {

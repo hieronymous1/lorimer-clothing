@@ -1351,6 +1351,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
 }
 .shop-filtered { display: flex; flex-direction: column; gap: 96px; }
 .shop-filtered[hidden] { display: none; }
+.shop-filtered__empty { padding: 96px 0; text-align: center; font-family: var(--font-title); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--gray-text); }
 .shop-filtered__featured {
   grid-template-columns: repeat(2, minmax(0, min(100%, 592px)));
   justify-content: center;
