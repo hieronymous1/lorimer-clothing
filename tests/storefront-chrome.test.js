@@ -14,7 +14,7 @@ test('every storefront page uses the approved five-item navigation order', () =>
 
     const positions = [
       nav.indexOf('S/S_24'),
-      nav.indexOf('>SHOP<'),
+      nav.indexOf('>PRODUCTS<'),
       nav.indexOf('class="navbar__logo"'),
       nav.indexOf('>ABOUT<'),
       nav.indexOf('CART <span class="cart-count">(0)</span>'),

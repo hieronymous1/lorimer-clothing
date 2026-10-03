@@ -18,7 +18,7 @@ const descriptions = [
 test('SS24 page transcribes the reference copy and navigation', () => {
   const html = read('ss24.html');
 
-  for (const label of ['S/S_24', 'SHOP', 'LORIMER®', 'ABOUT', 'CART']) {
+  for (const label of ['S/S_24', 'PRODUCTS', 'LORIMER®', 'ABOUT', 'CART']) {
     assert.match(html, new RegExp(label.replace('/', '\\/')));
   }
   descriptions.forEach(description => assert.ok(html.includes(description), `missing: ${description}`));
@@ -36,14 +36,13 @@ test('SS24 page contains six exact Look-folder galleries and stable anchors', ()
   assert.equal((html.match(/class="lookbook-gallery\b/g) || []).length, 6);
   assert.equal((html.match(/class="lookbook-gallery__next"/g) || []).length, 0);
   assert.equal((html.match(/data-gallery-images=/g) || []).length, 6);
-  assert.match(html, /assets\/ss24\/9\.5\.2024\.JPG/);
   assert.match(html, /js\/ss24\.js/);
-  [4, 5, 6, 5, 5, 2].forEach((count, index) => {
+  [3, 3, 3, 3, 3, 2].forEach((count, index) => {
     const look = index + 1;
     assert.match(html, new RegExp(`id="look-${look}"`));
-    assert.equal((html.match(new RegExp(`assets/ss24/Look%20${look}/`, 'g')) || []).length, count + 1);
+    assert.equal((html.match(new RegExp(`assets/ss24-reedit/Look%20${look}/`, 'g')) || []).length, count + 1);
   });
-  assert.doesNotMatch(html, /assets\/ss24\/(?:reedit|Group)\//);
+  assert.doesNotMatch(html, /assets\/ss24\/Group\//);
   assert.doesNotMatch(html, /innerHTML\s*=/);
 });
 
@@ -67,7 +66,7 @@ test('SS24 styles encode editorial ratios, responsive stack, and accessible cont
 
   assert.match(css, /\.ss24-page\s*\{/);
   assert.match(css, /\.lookbook-gallery\s*\{[\s\S]*?aspect-ratio:\s*2\s*\/\s*3/);
-  assert.match(css, /\.lookbook-end__image\s*\{[\s\S]*?aspect-ratio:\s*3\s*\/\s*2/);
+  assert.match(css, /\.lookbook-end__image\s*\{[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/);
   assert.match(css, /\.lookbook-gallery:focus-visible/);
   assert.match(css, /\.lookbook-look\s*\{[\s\S]*?scroll-margin-top:\s*var\(--nav-h\)/);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.lookbook-look/);
@@ -110,11 +109,12 @@ test('SS24 desktop composition uses the large reference scale', () => {
   assert.match(css, /\.lookbook\s*\{[\s\S]*?1500px/);
   assert.match(css, /\.lookbook-look\s*\{[\s\S]*?600px/);
   assert.match(css, /\.lookbook-look__copy h2\s*\{[\s\S]*?clamp\(18px,[^;]+24px\)/);
-  assert.match(css, /\.lookbook-look__copy p\s*\{[\s\S]*?clamp\(16px,[^;]+22px\)/);
+  assert.match(css, /\.lookbook-look__copy p\s*\{[\s\S]*?clamp\(12px,[^;]+18px\)/);
   assert.match(css, /\.lookbook-look__copy a\s*\{[\s\S]*?clamp\(14px,[^;]+18px\)/);
 });
 
-test('SS24 gallery controller supports hover preview, keyboard, swipe, and alt updates', () => {
+// Superseded by Task 9 (client feedback round): hover preview becomes edge-scrim click navigation.
+test('SS24 gallery controller supports hover preview, keyboard, swipe, and alt updates', { todo: 'Task 9 rewrites the gallery controller' }, () => {
   const source = read('js/ss24.js');
 
   assert.match(source, /injectCartDrawer\s*\(\s*\)/);

@@ -6,7 +6,8 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
 
-test('sold-out product pages replace price and disable size and purchase controls', () => {
+// Superseded by Task 7 (client feedback round): the sold-out/Inquiry product page flow is rewritten there.
+test('sold-out product pages replace price and disable size and purchase controls', { todo: 'Task 7 rewrites sold-out product pages' }, () => {
   const source = read('js/product.js');
   assert.match(source, /product\.available\s*\?\s*'\$' \+ product\.price\s*:\s*'Sold Out'/);
   assert.match(source, /button\.disabled = !product\.available/);

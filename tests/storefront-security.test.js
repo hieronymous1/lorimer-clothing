@@ -37,9 +37,13 @@ function loadCart(storedValue) {
 test('checkout page collects no card or personal data directly — payment happens on Stripe', () => {
   const html = read('checkout.html');
   // Card/address entry happens on Stripe's own hosted Checkout page, never here.
-  assert.doesNotMatch(html, /<(?:form|input|select|textarea)\b/i);
+  assert.doesNotMatch(html, /<(?:form|input|textarea)\b/i);
   assert.doesNotMatch(html, /(?:card number|cvc|customer information)/i);
 });
+
+// Superseded by Task 11 (client feedback round): checkout gains a native shipping-region
+// control, so the blanket "no form controls" assertion is rewritten there.
+test.todo('checkout page has no form controls other than the shipping region selector (Task 11)');
 
 test('checkout.js only redirects to a server-issued Stripe URL, never fabricates success itself', () => {
   const source = read('js/checkout.js');
@@ -70,15 +74,15 @@ test('repository ignores operating-system metadata and the delivery folder', () 
   assert.ok(fs.statSync(path.join(ROOT, 'assets')).isDirectory());
 });
 
-test('every page declares a favicon without making an extra request', () => {
+test('every page declares a favicon from the shared asset set', () => {
   for (const file of ['index.html', 'shop.html', 'product-detail.html', 'checkout.html', 'ss24.html']) {
-    assert.match(read(file), /<link rel="icon" href="data:,">/, `${file} has no inline favicon`);
+    assert.match(read(file), /<link rel="icon" href="\.\/assets\/favicon\.ico" sizes="any">/, `${file} has no favicon`);
   }
 });
 
-test('mobile navigation hides the centered logo to prevent control overlap', () => {
+test('mobile navigation moves the logo to the left to prevent control overlap', () => {
   const css = read('css/styles.css');
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.navbar__logo\s*\{\s*display:\s*none;\s*\}/);
+  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.navbar__logo\s*\{[^}]*order:\s*-1[^}]*\}/);
 });
 
 test('malformed cart roots become empty without writing localStorage', () => {

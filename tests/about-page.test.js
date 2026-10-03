@@ -27,7 +27,7 @@ test('about page follows the approved reference content order', () => {
 
 test('about page uses the four supplied editorial images in reference order', () => {
   const html = read('about.html');
-  const images = ['IMG_7858.JPG', 'IMG_7679.JPG', 'JAquet.jpg', 'IMG_6484.JPG'];
+  const images = ['IMG_7858.JPG', 'IMG_7679.JPG', 'JAquet.jpg', 'Horizontal.SS24.jpg'];
   const positions = images.map(image => html.indexOf(`assets/photos/about/${image}`));
 
   assert.ok(positions.every(position => position >= 0), 'about page is missing a supplied image');
@@ -64,9 +64,9 @@ test('about typography uses Lorimer tokens with readable long-form hierarchy', (
 
   assert.match(css, /\.about-page\s*\{[\s\S]*?font-family:\s*var\(--font-sans\)/);
   assert.match(css, /\.about-brand p\s*\{[\s\S]*?font-family:\s*var\(--font-serif\)/);
-  assert.match(css, /\.about-section h1\s*\{[^}]*font-family:\s*var\(--font-sans\)[^}]*font-size:\s*20px/s);
-  assert.match(css, /\.about-section h2\s*\{[^}]*font-family:\s*var\(--font-sans\)[^}]*font-size:\s*16px/s);
-  assert.match(css, /\.about-section h3\s*\{[\s\S]*?font-family:\s*var\(--font-mono\)[\s\S]*?font-size:\s*12px/);
+  assert.match(css, /\.about-section h1\s*\{[^}]*font-family:\s*var\(--font-title\)[^}]*font-size:\s*20px/s);
+  assert.match(css, /\.about-section h2\s*\{[^}]*font-family:\s*var\(--font-title\)[^}]*font-size:\s*16px/s);
+  assert.match(css, /\.about-section h3\s*\{[\s\S]*?font-family:\s*var\(--font-serif\)[\s\S]*?font-size:\s*14px/);
   assert.match(css, /\.about-section p\s*\{[\s\S]*?font-family:\s*var\(--font-sans\)[\s\S]*?font-size:\s*14px[\s\S]*?line-height:\s*1\.6/);
   assert.doesNotMatch(css, /\.about-(?:page|section)[\s\S]{0,180}?Arial/);
 });
