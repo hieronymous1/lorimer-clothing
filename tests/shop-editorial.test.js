@@ -35,8 +35,12 @@ test('catalog has exact 27 garments and only the denim launch pieces are availab
   assert.equal(new Set(products.map(product => product.id)).size, 27);
 });
 
-// Superseded by Task 4 (client feedback round): catalog names and cover images are rewritten there.
-test.todo('catalog names and cover images match the client copy (Task 4)');
+test('catalog names and cover images match the client copy', () => {
+  const products = loadProducts();
+  assert.equal(products.find(product => product.id === 'westworld-button-up').name, 'Fletcher Shirt 001');
+  assert.equal(products.find(product => product.id === 'ss24-dress').name, 'Manuta Dress 001');
+  assert.match(products.find(product => product.id === 'phyllite-jacket').images[0], /IMG_2297\.jpg$/);
+});
 
 test('every Tops and Bottoms garment declares a subcategory', () => {
   const products = loadProducts();
