@@ -7,6 +7,52 @@ document.addEventListener('DOMContentLoaded', () => {
   wireShippingRegion();
 });
 
+function formatEuro(cents) {
+  return `€${(cents / 100).toFixed(2)}`;
+}
+
+function getSelectedRegion() {
+  return document.querySelector('input[name="shipping_region"]:checked')?.value || '';
+}
+
+function renderShippingRegions() {
+  const fieldset = document.getElementById('checkout-shipping-region');
+  if (!fieldset || typeof SHIPPING_REGIONS === 'undefined') return;
+  SHIPPING_REGIONS.forEach(entry => {
+    const label = document.createElement('label');
+    label.className = 'checkout-region';
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'shipping_region';
+    input.value = entry.region;
+    input.className = 'checkout-region__input';
+    const name = createTextElement('span', 'checkout-region__name', entry.label);
+    const price = createTextElement('span', 'checkout-region__price', formatEuro(entry.amount_cents));
+    const delivery = createTextElement('span', 'checkout-region__delivery', entry.delivery);
+    label.append(input, name, price, delivery);
+    fieldset.append(label);
+  });
+}
+
+function swapText(el, text) {
+  if (!el) return;
+  el.classList.add('swap-text');
+  const current = el.querySelector('span:not(.is-leaving)');
+  if (current && current.textContent === text) return;
+  const next = document.createElement('span');
+  next.textContent = text;
+  if (!current) {
+    el.replaceChildren(next);
+    return;
+  }
+  next.classList.add('is-entering');
+  current.classList.add('is-leaving');
+  el.append(next);
+  requestAnimationFrame(() => next.classList.remove('is-entering'));
+  current.addEventListener('transitionend', () => current.remove(), { once: true });
+  setTimeout(() => current.remove(), 260);
+}
+
 function handleRedirectState() {
   const params = new URLSearchParams(window.location.search);
   const successEl = document.getElementById('checkout-success');
@@ -26,7 +72,6 @@ function handleRedirectState() {
 function wirePayButton() {
   const button = document.getElementById('checkout-pay-btn');
   const errorEl = document.getElementById('checkout-error');
-  const regionEl = document.getElementById('checkout-shipping-region');
   if (!button) return;
 
   button.addEventListener('click', async () => {
@@ -40,7 +85,7 @@ function wirePayButton() {
       }
       return;
     }
-    if (!regionEl?.value) {
+    if (!getSelectedRegion()) {
       if (errorEl) {
         errorEl.textContent = 'Please select your shipping destination.';
         errorEl.hidden = false;
@@ -57,7 +102,7 @@ function wirePayButton() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cart: cart.map(item => ({ id: item.id, size: item.size, finish: item.finish || '', quantity: item.quantity })),
-          shipping_region: regionEl.value,
+          shipping_region: getSelectedRegion(),
         }),
       });
       const data = await res.json();
@@ -85,6 +130,7 @@ function wirePayButton() {
 }
 
 function wireShippingRegion() {
+  renderShippingRegions();
   const regionEl = document.getElementById('checkout-shipping-region');
   if (!regionEl) return;
   regionEl.addEventListener('change', renderOrderSummary);
@@ -130,13 +176,14 @@ function renderOrderSummary() {
   itemsEl.append(fragment);
 
   const total = getTotal();
-  const region = document.getElementById('checkout-shipping-region')?.value || '';
-  const shippingByRegion = { FI: 5, EU: 12, ROW: 25 };
-  const shipping = shippingByRegion[region] || 0;
+  const region = getSelectedRegion();
+  const entry = typeof SHIPPING_REGIONS !== 'undefined' ? SHIPPING_REGIONS.find(r => r.region === region) : null;
+  const shippingCents = entry ? entry.amount_cents : 0;
+  const subtotalCents = Math.round(total * 100);
   const shippingEl = document.getElementById('summary-shipping');
-  if (subtotalEl) subtotalEl.textContent = '€' + total.toLocaleString();
-  if (shippingEl) shippingEl.textContent = region ? `€${shipping}` : 'Select region';
-  if (totalEl) totalEl.textContent = '€' + (total + shipping).toLocaleString();
+  if (subtotalEl) subtotalEl.textContent = formatEuro(subtotalCents);
+  swapText(shippingEl, entry ? formatEuro(shippingCents) : 'Select region');
+  swapText(totalEl, formatEuro(subtotalCents + shippingCents));
 }
 
 function toTitleCase(label) {

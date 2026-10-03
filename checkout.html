@@ -37,16 +37,13 @@
           <p>Checkout was canceled. Your cart is still here whenever you're ready.</p>
         </div>
         <div id="checkout-form" class="checkout-form">
-          <h1>Checkout</h1>
-          <label for="checkout-shipping-region">Shipping destination</label>
-          <select id="checkout-shipping-region" required>
-            <option value="">Select your region</option>
-            <option value="FI">Finland — €5</option>
-            <option value="EU">European Union — €12</option>
-            <option value="ROW">Rest of world — €25</option>
-          </select>
-          <p>Your Stripe delivery address must be within the selected region.</p>
+          <h1 class="checkout-title">Checkout</h1>
+          <fieldset class="checkout-regions" id="checkout-shipping-region">
+            <legend class="checkout-label">Shipping destination</legend>
+            <!-- Rendered by checkout.js from SHIPPING_REGIONS -->
+          </fieldset>
           <button id="checkout-pay-btn" class="checkout-pay__button" type="button">Pay Now</button>
+          <p class="checkout-note">Your Stripe delivery address must be within the selected region.</p>
           <p id="checkout-error" class="checkout-error" hidden></p>
         </div>
       </div>
@@ -81,8 +78,9 @@
     <div class="footer__col footer__col--right"><p>NEWSLETTER</p><a href="mailto:contact@lorimer.com">contact@lorimer.com</a><a href="https://www.instagram.com/lorimer.clo/" rel="noopener noreferrer">@Lorimer.Clo</a></div>
   </footer>
 
+  <script src="js/shipping-data.js?v=1"></script>
   <script src="js/products-data.js?v=9"></script>
-  <script>window.__LORIMER_SCRIPTS_AFTER__ = ['js/cart.js?v=7','js/main.js?v=9','js/checkout.js?v=2','js/animations.js'];</script>
+  <script>window.__LORIMER_SCRIPTS_AFTER__ = ['js/cart.js?v=7','js/main.js?v=9','js/checkout.js?v=3','js/animations.js'];</script>
   <script src="js/products-remote.js?v=2"></script>
   <script src="js/content-remote.js"></script>
 

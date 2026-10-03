@@ -43,7 +43,13 @@ test('checkout page collects no card or personal data directly — payment happe
 
 // Superseded by Task 11 (client feedback round): checkout gains a native shipping-region
 // control, so the blanket "no form controls" assertion is rewritten there.
-test.todo('checkout page has no form controls other than the shipping region selector (Task 11)');
+test('checkout page has no form controls other than the script-rendered shipping region radios', () => {
+  const html = read('checkout.html');
+  assert.doesNotMatch(html, /<(?:select|textarea)\b/i);
+  assert.doesNotMatch(html, /<input\b/i);
+  assert.match(html, /<fieldset[^>]*id="checkout-shipping-region"/);
+  assert.match(read('js/checkout.js'), /input\.type = 'radio'/);
+});
 
 test('checkout.js only redirects to a server-issued Stripe URL, never fabricates success itself', () => {
   const source = read('js/checkout.js');
