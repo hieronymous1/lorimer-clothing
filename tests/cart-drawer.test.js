@@ -152,5 +152,5 @@ test('storefront pages version the coupled cart scripts together', () => {
     assert.match(html, /js\/main\.js\?v=8/);
     assert.match(html, /js\/products-data\.js/);
   }
-  assert.match(read('product-detail.html'), /js\/product\.js\?v=8/);
+  assert.match(read('product-detail.html'), /js\/product\.js\?v=9/);
 });

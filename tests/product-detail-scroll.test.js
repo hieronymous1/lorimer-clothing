@@ -6,14 +6,14 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
 
-// Superseded by Task 7 (client feedback round): the sold-out/Inquiry product page flow is rewritten there.
-test('sold-out product pages replace price and disable size and purchase controls', { todo: 'Task 7 rewrites sold-out product pages' }, () => {
+test('sold-out product pages replace price and disable purchase controls', () => {
   const source = read('js/product.js');
-  assert.match(source, /product\.available\s*\?\s*'\$' \+ product\.price\s*:\s*'Sold Out'/);
-  assert.match(source, /button\.disabled = !product\.available/);
-  assert.match(source, /btn\.textContent = 'Sold Out'/);
+  assert.match(source, /soldOut \? 'Sold Out'/);
+  assert.match(source, /disabled: !product\.available/);
+  assert.match(source, /label\.textContent = 'Sold Out'/);
   assert.match(source, /btn\.disabled = true/);
-  assert.match(source, /if \(!product\.available\)/);
+  assert.match(source, /product\.notForSale \|\| !product\.available/);
+  assert.doesNotMatch(source, /Inquiry/);
 });
 
 test('product detail uses one stacked gallery container without thumbnail controls', () => {
@@ -64,7 +64,7 @@ test('mobile gallery is edge-to-edge and product information returns to normal f
 test('product purchase controls retain visible keyboard focus', () => {
   const css = read('css/styles.css');
 
-  assert.match(css, /\.size-btn:focus-visible/);
+  assert.match(css, /\.option-btn:focus-visible/);
   assert.match(css, /\.btn-add-cart:focus-visible/);
 });
 

@@ -9,63 +9,148 @@ function loadProduct() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   const product = PRODUCTS.find(p => p.id === id) || PRODUCTS[0];
+  const initialFinish = selectedFinishFromUrl(product, window.location.search);
+  const finish = (product.finishes || []).find(f => f.id === initialFinish);
 
   document.title = product.name + ' — LORIMER®';
 
-  const priceText = product.notForSale ? 'Sold Out' : product.available ? '€' + product.price : 'Sold Out';
+  const soldOut = product.notForSale || !product.available;
+  const priceText = soldOut ? 'Sold Out' : '€' + (finish ? finish.price : product.price);
   document.getElementById('product-name').textContent = product.name;
-  document.getElementById('product-price').textContent = priceText;
+  setPrice(priceText);
   const mobileName = document.getElementById('mobile-product-name');
   const mobilePrice = document.getElementById('mobile-product-price');
   if (mobileName) mobileName.textContent = product.name;
   if (mobilePrice) mobilePrice.textContent = priceText;
   renderLongDescription(product);
 
-  const meta = [];
-  if (product.material) meta.push('Material: ' + product.material);
-  if (product.origin) meta.push(product.origin);
-  if (product.oneOfOne) meta.push('1 of 1');
-  document.getElementById('product-material').textContent = meta.join('  ·  ');
+  document.getElementById('product-material').textContent = product.material ? 'Material: ' + product.material : '';
 
-  // Not-for-sale pieces have no purchasable size selection.
+  // Archive pieces have no purchasable size; they show a 1 of 1 box and construction details.
   const sizeSection = document.getElementById('size-section');
   if (sizeSection) sizeSection.hidden = !!product.notForSale;
+  if (product.notForSale) {
+    const oneOfOne = document.getElementById('one-of-one-section');
+    if (oneOfOne) oneOfOne.hidden = false;
+    document.querySelector('.product-info')?.classList.add('product-info--archive');
+    const constructed = document.getElementById('product-constructed');
+    if (constructed && product.constructedOn) {
+      constructed.textContent = `Date of Construction: ${product.constructedOn}.`;
+      constructed.hidden = false;
+    }
+    const madeIn = document.getElementById('product-made-in');
+    if (madeIn && product.madeIn) {
+      madeIn.textContent = `Made in ${product.madeIn}`;
+      madeIn.hidden = false;
+    }
+  }
 
   renderGallery(product);
   renderColorVariants(product);
-  renderFinishes(product);
-  renderStyleWith(product);
+  renderFinishes(product, initialFinish);
   if (!product.notForSale) renderSizes(product);
   initAddToCart(product);
   initSizeGuide(product);
 }
 
-function renderFinishes(product) {
+function selectedFinishFromUrl(product, search) {
+  const finishes = Array.isArray(product?.finishes) ? product.finishes : [];
+  if (finishes.length === 0) return '';
+  const requested = new URLSearchParams(search).get('finish');
+  return finishes.some(f => f.id === requested) ? requested : finishes[0].id;
+}
+
+function createOptionGroup({ container, options, selected, onChange }) {
+  let value = selected || '';
+  container.replaceChildren();
+  container.setAttribute('role', 'radiogroup');
+  const buttons = options.map(option => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'option-btn';
+    button.setAttribute('role', 'radio');
+    button.dataset.value = option.value;
+    button.textContent = option.label;
+    button.disabled = !!option.disabled;
+    if (option.disabled) button.setAttribute('aria-label', `${option.label}, sold out`);
+    button.addEventListener('click', () => select(option.value, true));
+    container.appendChild(button);
+    return button;
+  });
+
+  function sync() {
+    const enabled = buttons.filter(b => !b.disabled);
+    const focusTarget = buttons.find(b => b.dataset.value === value && !b.disabled) || enabled[0];
+    buttons.forEach(button => {
+      const checked = button.dataset.value === value;
+      button.setAttribute('aria-checked', String(checked));
+      button.tabIndex = button === focusTarget ? 0 : -1;
+    });
+  }
+
+  function select(next, notify) {
+    value = next;
+    sync();
+    if (notify) onChange?.(value);
+  }
+
+  container.addEventListener('keydown', event => {
+    if (!['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(event.key)) return;
+    const enabled = buttons.filter(b => !b.disabled);
+    if (enabled.length === 0) return;
+    event.preventDefault();
+    const current = Math.max(0, enabled.indexOf(document.activeElement));
+    const step = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1;
+    const next = enabled[(current + step + enabled.length) % enabled.length];
+    next.focus();
+    select(next.dataset.value, true);
+  });
+
+  sync();
+  return { getValue: () => value };
+}
+
+let finishGroup = null;
+let sizeGroup = null;
+
+function renderFinishes(product, initialFinish) {
   const section = document.getElementById('finish-section');
   const grid = document.getElementById('finish-grid');
   if (!section || !grid) return;
-
   const finishes = Array.isArray(product.finishes) ? product.finishes : [];
-  if (finishes.length === 0) {
-    section.hidden = true;
+  section.hidden = finishes.length === 0 || !!product.notForSale;
+  if (section.hidden) return;
+  finishGroup = createOptionGroup({
+    container: grid,
+    options: finishes.map(f => ({ value: f.id, label: f.label })),
+    selected: initialFinish,
+    onChange: finishId => {
+      const finish = finishes.find(f => f.id === finishId);
+      const text = `€${finish.price}`;
+      setPrice(text);
+      const mobilePrice = document.getElementById('mobile-product-price');
+      if (mobilePrice) mobilePrice.textContent = text;
+    },
+  });
+}
+
+function setPrice(text) {
+  const el = document.getElementById('product-price');
+  if (!el) return;
+  const current = el.querySelector('span:not(.is-leaving)');
+  if (current && current.textContent === text) return;
+  const next = document.createElement('span');
+  next.textContent = text;
+  if (!current) {
+    el.replaceChildren(next);
     return;
   }
-
-  section.hidden = false;
-  grid.replaceChildren();
-
-  finishes.forEach((finish, index) => {
-    const button = document.createElement('button');
-    button.className = 'finish-btn' + (index === 0 ? ' selected' : '');
-    button.type = 'button';
-    button.dataset.finish = finish;
-    button.textContent = finish;
-    button.addEventListener('click', () => {
-      grid.querySelectorAll('.finish-btn').forEach(b => b.classList.remove('selected'));
-      button.classList.add('selected');
-    });
-    grid.appendChild(button);
-  });
+  next.classList.add('is-entering');
+  current.classList.add('is-leaving');
+  el.append(next);
+  requestAnimationFrame(() => next.classList.remove('is-entering'));
+  current.addEventListener('transitionend', () => current.remove(), { once: true });
+  setTimeout(() => current.remove(), 260);
 }
 
 function renderLongDescription(product) {
@@ -73,49 +158,11 @@ function renderLongDescription(product) {
   if (!container) return;
   container.replaceChildren();
 
-  const paragraphs = [product.description, product.longDescription].filter(Boolean);
+  const paragraphs = (product.description || '').split(/\n{2,}/).map(t => t.trim()).filter(Boolean);
   paragraphs.forEach(text => {
     const p = document.createElement('p');
     p.textContent = text;
     container.appendChild(p);
-  });
-}
-
-function renderStyleWith(product) {
-  const section = document.getElementById('style-with-section');
-  const grid = document.getElementById('style-with-grid');
-  if (!section || !grid) return;
-
-  const ids = Array.isArray(product.styleWith) ? product.styleWith : [];
-  const items = ids.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
-
-  if (items.length === 0) {
-    section.hidden = true;
-    return;
-  }
-
-  section.hidden = false;
-  grid.replaceChildren();
-
-  items.forEach(item => {
-    const link = document.createElement('a');
-    link.className = 'style-with-card';
-    link.href = `product-detail.html?id=${encodeURIComponent(item.id)}`;
-
-    const image = document.createElement('img');
-    image.className = 'style-with-card__img';
-    image.src = item.images?.[0] || '';
-    image.alt = item.name;
-    image.loading = 'lazy';
-    image.decoding = 'async';
-    link.appendChild(image);
-
-    const name = document.createElement('p');
-    name.className = 'style-with-card__name';
-    name.textContent = item.name;
-    link.appendChild(name);
-
-    grid.appendChild(link);
   });
 }
 
@@ -215,27 +262,17 @@ function initImageMagnifier(image) {
 }
 
 function renderSizes(product) {
-  const sizeGrid = document.getElementById('size-grid');
-  if (!sizeGrid) return;
-
-  sizeGrid.replaceChildren();
-  product.sizes.forEach(size => {
-    const button = document.createElement('button');
-    button.className = 'size-btn';
-    button.type = 'button';
-    button.dataset.size = size;
-    button.textContent = size;
-    button.disabled = !product.available || (product.stockBySize && !(product.stockBySize?.[size] > 0));
-    if (button.disabled) button.setAttribute('aria-label', `${size} — Sold Out`);
-    sizeGrid.appendChild(button);
-  });
-
-  sizeGrid.querySelectorAll('.size-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      sizeGrid.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      document.getElementById('size-error')?.classList.remove('visible');
-    });
+  const grid = document.getElementById('size-grid');
+  if (!grid) return;
+  sizeGroup = createOptionGroup({
+    container: grid,
+    options: product.sizes.map(size => ({
+      value: size,
+      label: size,
+      disabled: !product.available || (product.stockBySize && !(product.stockBySize?.[size] > 0)),
+    })),
+    selected: '',
+    onChange: () => document.getElementById('size-error')?.classList.remove('visible'),
   });
 }
 
@@ -243,36 +280,31 @@ function initAddToCart(product) {
   const btn = document.getElementById('add-to-cart');
   if (!btn) return;
 
-  if (product.notForSale) {
-    btn.textContent = 'Inquiry';
-    const subject = encodeURIComponent('Inquiry: ' + product.name);
-    btn.addEventListener('click', () => {
-      window.location.href = `mailto:contact@lorimer.com?subject=${subject}`;
-    });
-    return;
-  }
-
-  if (!product.available) {
-    btn.textContent = 'Sold Out';
+  if (product.notForSale || !product.available) {
+    const label = btn.querySelector('.btn-add-cart__label') || btn;
+    label.textContent = 'Sold Out';
     btn.disabled = true;
     btn.setAttribute('aria-disabled', 'true');
     return;
   }
 
   btn.addEventListener('click', async () => {
-    const selected = document.querySelector('.size-btn.selected');
-    if (!selected) {
+    const size = sizeGroup?.getValue();
+    if (!size) {
       document.getElementById('size-error')?.classList.add('visible');
       return;
     }
+    const finishId = finishGroup ? finishGroup.getValue() : '';
+    const finish = (product.finishes || []).find(f => f.id === finishId);
     btn.disabled = true;
     const result = await cartService.addLine({
       productId: product.id,
       merchandiseId: '',
       name: product.name,
-      size: selected.dataset.size,
+      size,
+      finish: finishId,
       image: product.images[0] || '',
-      unitPrice: { amountMinor: Math.round(product.price * 100), currencyCode: 'EUR' },
+      unitPrice: { amountMinor: Math.round((finish ? finish.price : product.price) * 100), currencyCode: 'EUR' },
     });
     if (!result.ok) {
       btn.disabled = false;

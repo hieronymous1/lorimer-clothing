@@ -36,6 +36,8 @@ ul { list-style: none; }
   --white: #fff;
   --gray: #e4e4e7;
   --gray-mid: #a1a1aa;
+  --gray-text: #6b6b73;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --font-title: 'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-serif: 'Lora', Georgia, serif;
   --font-sans: 'Inter', system-ui, sans-serif;
@@ -1464,17 +1466,39 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
 .product-info__name {
   font-family: var(--font-title);
   font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 0.06em;
+  font-size: clamp(18px, 1.5vw, 22px);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  line-height: 1.5;
+  line-height: 1.2;
+  text-wrap: balance;
 }
 .product-info__price {
+  position: relative;
+  display: inline-grid;
   font-family: var(--font-title);
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  margin-top: 10px;
+  font-size: 17px;
+  letter-spacing: 0.02em;
+  margin-top: 12px;
+  font-variant-numeric: tabular-nums;
 }
+.product-info__price > span { grid-area: 1 / 1; transition: opacity 200ms var(--ease-out), filter 200ms var(--ease-out); }
+.product-info__price > span.is-leaving { opacity: 0; filter: blur(2px); }
+.product-info__price > span.is-entering { opacity: 0; filter: blur(2px); }
+@media (prefers-reduced-motion: reduce) {
+  .product-info__price > span { transition: opacity 200ms ease; filter: none !important; }
+}
+.product-info--archive { display: flex; flex-direction: column; min-height: calc(100svh - var(--nav-h)); }
+.product-info--archive .product-info__section { padding-top: 32px; }
+.product-info__note {
+  margin-top: 10px;
+  text-align: right;
+  font-family: var(--font-serif);
+  font-size: 11px;
+  color: var(--gray-text);
+}
+.product-info--archive .product-info__section--text { flex: 1; display: flex; flex-direction: column; }
+.product-info__made-in { margin-top: auto; padding-top: 32px; }
+.product-info--archive .product-info__back { align-self: flex-start; margin-top: 24px; }
 .product-info__section {
   padding-top: var(--product-info-space);
   border-top: 1px solid var(--gray);
@@ -1536,26 +1560,6 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   opacity: 0.5;
 }
 .product-info__back:hover { opacity: 1; }
-.finish-grid { display: flex; gap: 8px; flex-wrap: wrap; }
-.finish-btn {
-  padding: 0 16px;
-  min-height: 40px;
-  border: 1px solid var(--gray);
-  font-family: var(--font-title);
-  font-size: 10px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-  background: var(--white);
-  color: var(--black);
-  transition: border-color 0.15s, background 0.15s;
-}
-.finish-btn:hover { border-color: var(--black); }
-.finish-btn.selected { background: var(--black); color: var(--white); border-color: var(--black); }
-.finish-btn:focus-visible {
-  outline: 2px solid var(--black);
-  outline-offset: 3px;
-}
 .color-swatches {
   display: flex;
   gap: 12px;
@@ -1575,59 +1579,51 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   border-radius: 50%;
   display: block;
 }
-.style-with-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-.style-with-card { display: block; min-width: 0; }
-.style-with-card__img {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  background: var(--gray);
-}
-.style-with-card__name {
-  margin-top: 6px;
-  font-family: var(--font-title);
-  font-size: 9px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--gray-mid);
-  line-height: 1.4;
-}
-.style-with-card:hover .style-with-card__name { color: var(--black); }
 .color-swatch.selected { border-color: var(--black); }
 .color-swatch:hover { border-color: var(--black); }
 .color-swatch:focus-visible {
   outline: 2px solid var(--black);
   outline-offset: 3px;
 }
-.size-grid {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.size-btn {
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--gray);
-  font-family: var(--font-title);
-  font-size: 10px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-  background: var(--white);
-  color: var(--black);
-  transition: border-color 0.15s, background 0.15s;
-}
-.size-btn:focus-visible,
 .btn-add-cart:focus-visible {
   outline: 2px solid var(--black);
   outline-offset: 3px;
 }
-.size-btn:hover { border-color: var(--black); }
-.size-btn.selected { background: var(--black); color: var(--white); border-color: var(--black); }
+
+/* ── Option buttons: size, finish, colour, region, 1 of 1 ───── */
+.option-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.option-btn {
+  min-height: 44px;
+  min-width: 72px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--gray);
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-title);
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 120ms var(--ease-out);
+}
+.option-btn:active { transform: scale(.97); }
+.option-btn[aria-checked="true"] { background: var(--black); color: var(--white); border-color: var(--black); }
+.option-btn:disabled { color: var(--gray-text); text-decoration: line-through; cursor: not-allowed; }
+.option-btn:focus-visible { outline: 2px solid var(--black); outline-offset: 3px; }
+.option-btn--static { cursor: default; }
+.option-btn--static:active { transform: none; }
+@media (hover: hover) and (pointer: fine) {
+  .option-btn:hover:not(:disabled):not([aria-checked="true"]) { border-color: var(--black); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .option-btn { transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease; }
+  .option-btn:active { transform: none; }
+}
+.option-group__guide { margin-left: 6px; color: var(--black); font-family: var(--font-title); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 3px; }
 
 .btn-add-cart {
   width: 100%;

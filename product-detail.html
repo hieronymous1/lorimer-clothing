@@ -37,7 +37,7 @@
     <!-- Right: Product Info -->
     <div class="product-info">
       <h1 class="product-info__name reveal" id="product-name"></h1>
-      <p class="product-info__price reveal reveal-delay-1" id="product-price"></p>
+      <p class="product-info__price reveal reveal-delay-1" id="product-price" aria-live="polite"></p>
 
       <div class="product-info__section reveal reveal-delay-2" id="color-section" hidden>
         <p class="size-label">Select Color</p>
@@ -45,32 +45,29 @@
       </div>
 
       <div class="product-info__section reveal reveal-delay-2" id="finish-section" hidden>
-        <p class="size-label">Choose Finish</p>
-        <div class="finish-grid" id="finish-grid"></div>
+        <p class="size-label" id="finish-label">Select Finish</p>
+        <div class="option-group" id="finish-grid" role="radiogroup" aria-labelledby="finish-label"></div>
       </div>
 
       <div class="product-info__section reveal reveal-delay-3" id="size-section">
-        <div class="size-label-row">
-          <p class="size-label">Select Size</p>
-          <button class="size-guide-trigger" id="size-guide-trigger" type="button">Size Guide</button>
-        </div>
-        <div class="size-grid" id="size-grid"></div>
+        <p class="size-label" id="size-label">Select Size</p>
+        <div class="option-group" id="size-grid" role="radiogroup" aria-labelledby="size-label"></div>
+        <button class="option-group__guide" id="size-guide-trigger" type="button">Size Guide</button>
         <p class="size-error" id="size-error">Please select a size</p>
       </div>
+
+      <div class="product-info__section" id="one-of-one-section" hidden><span class="option-btn option-btn--static" id="product-one-of-one">1 of 1</span></div>
 
       <button class="btn-add-cart reveal reveal-delay-4" id="add-to-cart">
         <span class="btn-add-cart__label">Add to Cart</span>
         <svg class="btn-add-cart__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5L9.5 18L20 6"/></svg>
       </button>
+      <p class="product-info__note" id="product-constructed" hidden></p>
 
       <div class="product-info__section product-info__section--text reveal reveal-delay-5">
         <div class="product-info__long-desc" id="product-desc"></div>
         <p class="product-info__meta" id="product-material"></p>
-      </div>
-
-      <div class="product-info__section reveal reveal-delay-6" id="style-with-section" hidden>
-        <p class="size-label">Style It With</p>
-        <div class="style-with-grid" id="style-with-grid"></div>
+        <p class="product-info__note product-info__made-in" id="product-made-in" hidden></p>
       </div>
 
       <a href="shop.html" class="product-info__back reveal reveal-delay-7">&larr; Back to Products</a>
@@ -83,7 +80,7 @@
   </footer>
 
   <script src="js/products-data.js?v=12"></script>
-  <script>window.__LORIMER_SCRIPTS_AFTER__ = ['js/cart.js?v=7','js/main.js?v=8','js/product.js?v=8','js/animations.js','js/cursor.js'];</script>
+  <script>window.__LORIMER_SCRIPTS_AFTER__ = ['js/cart.js?v=7','js/main.js?v=8','js/product.js?v=9','js/animations.js','js/cursor.js'];</script>
   <script src="js/products-remote.js?v=2"></script>
   <script src="js/content-remote.js"></script>
 
