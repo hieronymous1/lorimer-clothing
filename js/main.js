@@ -18,7 +18,7 @@ function injectMobileMenu() {
     <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
       <button class="mobile-menu__close" id="mobile-menu-close" type="button" aria-label="Close menu">×</button>
       <a href="index.html">Home</a>
-      <a href="ss24.html">S/S_24</a>
+      <a href="ss24.html">S/S24</a>
       <a href="shop.html">Products</a>
       <a href="about.html">About</a>
     </nav>

@@ -1216,6 +1216,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+.lookbook-look__copy > a { justify-self: start; align-self: flex-start; }
 .lookbook-look__copy a:hover { opacity: .56; }
 
 /* The opening pair follows the supplied runway compositions: image and copy
@@ -1490,7 +1491,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   width: 100%;
   height: auto;
   background: var(--gray);
-  cursor: none;
+  cursor: zoom-in;
 }
 .gallery-magnifier {
   position: fixed;
@@ -1504,39 +1505,8 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   pointer-events: none;
 }
 .gallery-magnifier[hidden] { display: none; }
-.gallery-detail-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 30px;
-  height: 30px;
-  z-index: 151;
-  border: 1px solid var(--black);
-  border-radius: 50%;
-  opacity: 0;
-  pointer-events: none;
-  transition: width .12s ease, height .12s ease, opacity .12s ease;
-}
-.gallery-detail-cursor::before,
-.gallery-detail-cursor::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background: var(--black);
-  transform: translate(-50%, -50%);
-}
-.gallery-detail-cursor::before { width: 11px; height: 1px; }
-.gallery-detail-cursor::after { width: 1px; height: 11px; }
-.gallery-detail-cursor.is-active {
-  width: 42px;
-  height: 42px;
-  opacity: 1;
-}
 @media (hover: none), (pointer: coarse) {
-  .gallery-image { cursor: default; }
   .gallery-magnifier { display: none; }
-  .gallery-detail-cursor { display: none; }
 }
 .gallery-empty {
   min-height: calc(100svh - var(--nav-h));
@@ -1621,7 +1591,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   font-size: 10px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--gray-mid);
+  color: var(--gray-text);
   line-height: 1.8;
   margin-top: 18px;
 }
@@ -2079,40 +2049,12 @@ a:hover .card-media img,
   transition: transform 0.1s ease;
 }
 
-/* Custom cursor — replaces the system pointer entirely on fine-pointer
-   devices; js/cursor.js adds .has-custom-cursor only when it's safe to. */
-html.has-custom-cursor,
-html.has-custom-cursor * {
-  cursor: none !important;
-}
-.custom-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--black);
-  pointer-events: none;
-  z-index: 999;
-  opacity: 0;
-  transition: width .18s cubic-bezier(.34,1.56,.64,1),
-              height .18s cubic-bezier(.34,1.56,.64,1),
-              opacity .15s ease;
-  will-change: transform;
-}
-.custom-cursor.is-near { width: 16px; height: 16px; }
-.custom-cursor.is-down { width: 6px; height: 6px; }
-
 .is-magnetic {
   transition: transform .18s cubic-bezier(.34,1.56,.64,1);
 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  html.has-custom-cursor,
-  html.has-custom-cursor * { cursor: auto !important; }
-  .custom-cursor { display: none !important; }
   body,
   .reveal,
   .card-media img,

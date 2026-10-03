@@ -18,7 +18,7 @@ const descriptions = [
 test('SS24 page transcribes the reference copy and navigation', () => {
   const html = read('ss24.html');
 
-  for (const label of ['S/S_24', 'PRODUCTS', 'LORIMER®', 'ABOUT', 'CART']) {
+  for (const label of ['S/S24', 'PRODUCTS', 'LORIMER®', 'ABOUT', 'CART']) {
     assert.match(html, new RegExp(label.replace('/', '\\/')));
   }
   descriptions.forEach(description => assert.ok(html.includes(description), `missing: ${description}`));

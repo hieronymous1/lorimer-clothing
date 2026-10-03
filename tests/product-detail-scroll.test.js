@@ -81,15 +81,10 @@ test('desktop product images provide a cursor-tracked magnified detail lens', ()
   assert.match(css, /@media\s*\(hover:\s*none\)[\s\S]*?\.gallery-magnifier\s*\{\s*display:\s*none/);
 });
 
-test('magnified product images use a restrained custom detail cursor', () => {
+test('magnified product images keep the native zoom-in cursor', () => {
   const source = read('js/product.js');
   const css = read('css/styles.css');
-  assert.match(source, /gallery-detail-cursor/);
-  assert.match(source, /cursor\.style\.transform/);
-  assert.match(source, /cursor\.classList\.add\('is-active'\)/);
-  assert.match(source, /cursor\.classList\.remove\('is-active'\)/);
-  assert.match(css, /\.gallery-detail-cursor::before/);
-  assert.match(css, /\.gallery-detail-cursor::after/);
-  assert.match(css, /\.gallery-detail-cursor\.is-active\s*\{[^}]*width:\s*42px[^}]*height:\s*42px/s);
-  assert.match(css, /@media\s*\(hover:\s*none\)[\s\S]*?\.gallery-detail-cursor\s*\{\s*display:\s*none/);
+  assert.doesNotMatch(source, /gallery-detail-cursor/);
+  assert.doesNotMatch(css, /gallery-detail-cursor/);
+  assert.match(css, /\.gallery-image\s*\{[^}]*cursor:\s*zoom-in/);
 });

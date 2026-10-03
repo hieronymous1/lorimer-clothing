@@ -13,7 +13,7 @@ test('every storefront page uses the approved five-item navigation order', () =>
     assert.doesNotMatch(nav, />\s*HOME\s*</, `${page} still exposes HOME`);
 
     const positions = [
-      nav.indexOf('S/S_24'),
+      nav.indexOf('S/S24'),
       nav.indexOf('>PRODUCTS<'),
       nav.indexOf('class="navbar__logo"'),
       nav.indexOf('>ABOUT<'),
@@ -52,7 +52,7 @@ test('homepage uses the approved compact SS24 preview content', () => {
   assert.match(section, /Spring\/Summer 24/);
   assert.match(section, /SS24 Featuring 6 original looks available for viewing in Products and S\/S24 page/);
   assert.match(section, /View in S\/S24/);
-  const expectedSlides = ['DSC04197.jpg', 'DSC04200.jpg', 'addition.jpg', 'IMG_6295.jpg', 'DSC_0409.jpg', 'addition4.jpg'];
+  const expectedSlides = ['F10E840B', '03B5025B', '56AFFC6A', '45D39E80', '68DD5925', 'C629834E', '773069D2'];
   let previousSlide = -1;
   for (const slide of expectedSlides) {
     const position = section.indexOf(slide);
@@ -63,13 +63,13 @@ test('homepage uses the approved compact SS24 preview content', () => {
   assert.match(section, /alt="Models walking the Lorimer Spring\/Summer 2024 runway"/);
 });
 
-test('homepage leads with black selvedge denim and replaces Westworld with pinstripe trousers', () => {
+test('homepage leads with black selvedge denim and uses the client preview order', () => {
   const html = read('index.html');
   const featured = html.match(/<section class="featured-products"[\s\S]*?<\/section>/)?.[0] || '';
   const preview = html.match(/<section class="product-preview"[\s\S]*?<\/section>/)?.[0] || '';
 
   assert.match(featured, /product-detail\.html\?id=lorimer-selvedge-denim-black[\s\S]*?Lorimer Selvedge Denim Black - Photoshoot\/IMG_3161\.jpg/);
-  assert.match(preview, /product-detail\.html\?id=reinforced-pinstripe-trousers[\s\S]*?Reinforced Pinstripe Trousers\/12\.jpg[\s\S]*?Reinforced Pinstripe Trousers/);
+  assert.match(preview, /product-detail\.html\?id=adjustable-button-trousers[\s\S]*?Adjustable Button Trousers - Look 1 Bottoms\/17\.jpg[\s\S]*?Clasper Trousers 002/);
   assert.doesNotMatch(preview, /product-detail\.html\?id=westworld-button-up/);
 });
 
@@ -77,12 +77,12 @@ test('homepage six-card grid mirrors the approved Shop catalog products', () => 
   const html = read('index.html');
   const section = html.match(/<section class="product-preview"[\s\S]*?<\/section>/)?.[0] || '';
   const products = [
-    ['reconstructed-button-up-1', 'Reconstructed Button Up 001', 'Reconstructed Button Up 1/10.jpg'],
-    ['deconstructed-bomber', 'Deconstructed Bomber Jacket', 'Deconstructesd Bomber Jacket/1.jpg'],
-    ['zip-up-utility-vest', 'Zip Up Utility Vest', 'Zip Up Utility Vest/2.jpg'],
-    ['reinforced-pinstripe-trousers', 'Reinforced Pinstripe Trousers', 'Reinforced Pinstripe Trousers/12.jpg'],
-    ['layered-denim-jeans', 'Layered Distressed Jeans', 'Layered Denim Distressed Jeans/4.jpg'],
-    ['layered-denim-shorts', 'Layered Distressed Shorts', 'Layerered Denim Distressed Shorts/6.jpg'],
+    ['deconstructed-bomber', 'Mason Jacket 001', 'Deconstructesd Bomber Jacket/1.jpg'],
+    ['reconstructed-button-up-1', 'Mercer Shirt 001', 'Reconstructed Button Up 1/10.jpg'],
+    ['zip-up-utility-vest', 'Gardner Vest 001', 'Zip Up Utility Vest/2.jpg'],
+    ['layered-denim-shorts', 'Weaver Shorts 001', 'Layerered Denim Distressed Shorts/6.jpg'],
+    ['adjustable-button-trousers', 'Clasper Trousers 002', 'Adjustable Button Trousers - Look 1 Bottoms/17.jpg'],
+    ['layered-denim-jeans', 'Weaver Jeans 002', 'Layered Denim Distressed Jeans/4.jpg'],
   ];
 
   let previousPosition = -1;

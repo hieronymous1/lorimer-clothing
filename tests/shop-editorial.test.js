@@ -52,7 +52,7 @@ test('every Tops and Bottoms garment declares a subcategory', () => {
 
 test('homepage primary-product links use the canonical top-row IDs', () => {
   const html = read('index.html');
-  assert.match(html, /href="product-detail\.html\?id=phyllite-jacket"[\s\S]*?denim-feature-01\.jpg[\s\S]*?>Phyllite Jacket</);
+  assert.match(html, /href="product-detail\.html\?id=phyllite-jacket"[\s\S]*?IMG_2297\.jpg[\s\S]*?>Phyllite Jacket</);
   // 2026-09-01 editorial pass: the opening denim cover is the black colourway.
   assert.match(html, /href="product-detail\.html\?id=lorimer-selvedge-denim-black"[\s\S]*?IMG_3161\.jpg[\s\S]*?>Lorimer Selvedge Denim — Black</);
 });

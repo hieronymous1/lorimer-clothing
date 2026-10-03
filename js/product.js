@@ -235,11 +235,6 @@ function initImageMagnifier(image) {
   magnifier.setAttribute('aria-hidden', 'true');
   document.body.appendChild(magnifier);
 
-  const cursor = document.createElement('span');
-  cursor.className = 'gallery-detail-cursor';
-  cursor.setAttribute('aria-hidden', 'true');
-  document.body.appendChild(cursor);
-
   image.addEventListener('pointermove', event => {
     if (event.pointerType === 'touch') return;
     const bounds = image.getBoundingClientRect();
@@ -251,13 +246,10 @@ function initImageMagnifier(image) {
     magnifier.style.backgroundPosition = `${x}% ${y}%`;
     magnifier.style.left = `${Math.min(window.innerWidth - lensSize - 16, event.clientX + 24)}px`;
     magnifier.style.top = `${Math.min(window.innerHeight - lensSize - 16, Math.max(16, event.clientY - lensSize / 2))}px`;
-    cursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0) translate(-50%, -50%)`;
-    cursor.classList.add('is-active');
   });
 
   image.addEventListener('pointerleave', () => {
     magnifier.hidden = true;
-    cursor.classList.remove('is-active');
   });
 }
 
