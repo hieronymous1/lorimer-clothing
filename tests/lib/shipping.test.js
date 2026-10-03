@@ -1,35 +1,46 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const SHIPPING_REGIONS = require('../../js/shipping-data.js');
 const { ALLOWED_COUNTRIES, SHIPPING_OPTIONS, buildStripeShippingOptions, getShippingRegion } = require('../../api/_lib/shipping');
 
-test('includes Finland and covers all three regions', () => {
-  assert.ok(ALLOWED_COUNTRIES.includes('FI'));
-  assert.equal(SHIPPING_OPTIONS.length, 3);
+test('four regions with the client-approved rates in cents', () => {
+  assert.deepEqual(
+    SHIPPING_REGIONS.map(r => [r.region, r.label, r.amount_cents]),
+    [
+      ['FI', 'Finland', 790],
+      ['EU', 'European Union', 1490],
+      ['UK', 'United Kingdom', 1990],
+      ['WW', 'Worldwide', 2490],
+    ],
+  );
+  SHIPPING_REGIONS.forEach(r => assert.match(r.delivery, /^\d+–\d+ business days$/));
 });
 
-test('flat rates match the approved figures (in cents)', () => {
-  const byRegion = Object.fromEntries(SHIPPING_OPTIONS.map(o => [o.region, o.amount_cents]));
-  assert.equal(byRegion.FI, 500);
-  assert.equal(byRegion.EU, 1200);
-  assert.equal(byRegion.ROW, 2500);
+test('server options are built from the shared table', () => {
+  assert.deepEqual(SHIPPING_OPTIONS.map(o => o.amount_cents), SHIPPING_REGIONS.map(r => r.amount_cents));
+  assert.deepEqual(SHIPPING_OPTIONS.map(o => o.region), ['FI', 'EU', 'UK', 'WW']);
 });
 
-test('buildStripeShippingOptions returns Stripe-shaped fixed_amount rates in EUR', () => {
-  const options = buildStripeShippingOptions('EU');
-  assert.equal(options.length, 1);
-  options.forEach(option => {
-    assert.equal(option.shipping_rate_data.type, 'fixed_amount');
-    assert.equal(option.shipping_rate_data.fixed_amount.currency, 'eur');
-    assert.equal(typeof option.shipping_rate_data.fixed_amount.amount, 'number');
-    assert.equal(typeof option.shipping_rate_data.display_name, 'string');
-  });
-  assert.equal(options[0].shipping_rate_data.fixed_amount.amount, 1200);
+test('GB is only reachable through the UK region', () => {
+  assert.deepEqual(getShippingRegion('UK').allowed_countries, ['GB']);
+  ['FI', 'EU', 'WW'].forEach(code => assert.ok(!getShippingRegion(code).allowed_countries.includes('GB'), code));
+  assert.ok(ALLOWED_COUNTRIES.includes('GB'));
 });
 
-test('shipping regions constrain the address countries and rate together', () => {
-  assert.equal(getShippingRegion('FI').amount_cents, 500);
+test('regions constrain countries', () => {
+  assert.deepEqual(getShippingRegion('FI').allowed_countries, ['FI']);
   assert.ok(getShippingRegion('EU').allowed_countries.includes('ES'));
   assert.ok(!getShippingRegion('EU').allowed_countries.includes('FI'));
-  assert.ok(getShippingRegion('ROW').allowed_countries.includes('US'));
+  assert.ok(getShippingRegion('WW').allowed_countries.includes('US'));
+  assert.equal(getShippingRegion('ROW'), null);
   assert.equal(getShippingRegion('unknown'), null);
+});
+
+test('Stripe options are fixed EUR amounts for the selected region only', () => {
+  const [option] = buildStripeShippingOptions('UK');
+  assert.equal(option.shipping_rate_data.type, 'fixed_amount');
+  assert.equal(option.shipping_rate_data.fixed_amount.currency, 'eur');
+  assert.equal(option.shipping_rate_data.fixed_amount.amount, 1990);
+  assert.equal(option.shipping_rate_data.display_name, 'United Kingdom');
+  assert.deepEqual(buildStripeShippingOptions('nope'), []);
 });
