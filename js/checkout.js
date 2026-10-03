@@ -56,7 +56,7 @@ function wirePayButton() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          cart: cart.map(item => ({ id: item.id, size: item.size, quantity: item.quantity })),
+          cart: cart.map(item => ({ id: item.id, size: item.size, finish: item.finish || '', quantity: item.quantity })),
           shipping_region: regionEl.value,
         }),
       });
@@ -120,7 +120,7 @@ function renderOrderSummary() {
     info.className = 'summary-item__info';
     info.append(
       createTextElement('p', 'summary-item__name', item.name),
-      createTextElement('p', 'summary-item__size', `Size: ${item.size}${item.quantity > 1 ? ` × ${item.quantity}` : ''}`),
+      createTextElement('p', 'summary-item__size', `Size ${item.size}${item.finish ? ` · ${toTitleCase(getFinishLabel(getCanonicalProduct(item.id), item.finish))}` : ''}${item.quantity > 1 ? ` × ${item.quantity}` : ''}`),
     );
     const price = createTextElement('span', 'summary-item__price', `€${getLineTotal(item).toLocaleString()}`);
 
@@ -137,4 +137,8 @@ function renderOrderSummary() {
   if (subtotalEl) subtotalEl.textContent = '€' + total.toLocaleString();
   if (shippingEl) shippingEl.textContent = region ? `€${shipping}` : 'Select region';
   if (totalEl) totalEl.textContent = '€' + (total + shipping).toLocaleString();
+}
+
+function toTitleCase(label) {
+  return label.toLowerCase().replace(/\b\w/g, letter => letter.toUpperCase());
 }

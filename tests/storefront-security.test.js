@@ -119,6 +119,7 @@ test('cart data is bounded, deduplicated, and replaced by canonical product data
     id: 'jacket',
     name: 'Jacket',
     size: 'M',
+    finish: '',
     price: 320,
     quantity: 99,
     image: './assets/photos/jacket.jpg',

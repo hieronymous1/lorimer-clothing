@@ -44,6 +44,28 @@ function isSizeAvailable(product, size, quantity = 1) {
   return Number.isInteger(product.stockBySize[size]) && product.stockBySize[size] >= quantity;
 }
 
+const CART_FINISH_MAX = 32;
+
+function getProductFinishes(product) {
+  return Array.isArray(product?.finishes) ? product.finishes : [];
+}
+
+function resolveFinish(product, rawFinish) {
+  const finishes = getProductFinishes(product);
+  if (finishes.length === 0) return { ok: true, id: '', price: product.price };
+  const id = normalizeText(rawFinish, CART_FINISH_MAX) || finishes[0].id;
+  const match = finishes.find(entry => entry.id === id);
+  return match ? { ok: true, id: match.id, price: match.price } : { ok: false };
+}
+
+function getFinishLabel(product, finishId) {
+  return getProductFinishes(product).find(entry => entry.id === finishId)?.label || '';
+}
+
+function cartLineKey(item) {
+  return `${item.id}|${item.size}|${item.finish || ''}`;
+}
+
 function normalizeCart(value) {
   if (!Array.isArray(value)) return [];
 
@@ -58,12 +80,15 @@ function normalizeCart(value) {
     const product = getCanonicalProduct(id);
     if (!product || !size || !isSizeAvailable(product, size)) return;
 
-    const price = Math.min(CART_LIMITS.price, Math.max(0, product.price));
+    const finish = resolveFinish(product, raw.finish);
+    if (!finish.ok) return;
+
+    const price = Math.min(CART_LIMITS.price, Math.max(0, finish.price));
     const rawQuantity = typeof raw.quantity === 'number' && Number.isFinite(raw.quantity)
       ? Math.trunc(raw.quantity)
       : 1;
     const quantity = Math.min(CART_LIMITS.quantity, Math.max(1, rawQuantity));
-    const key = `${id}|${size}`;
+    const key = `${id}|${size}|${finish.id}`;
     const existing = byKey.get(key);
 
     if (existing) {
@@ -75,6 +100,7 @@ function normalizeCart(value) {
       id,
       name: normalizeText(product.name, CART_LIMITS.name),
       size,
+      finish: finish.id,
       price,
       quantity,
       image: normalizeImage(product.images?.[0]),
@@ -109,11 +135,13 @@ function trySaveCart(cart) {
   }
 }
 
-function addToCart(product, size) {
+function addToCart(product, size, finishId) {
   const canonical = getCanonicalProduct(product?.id);
   if (!canonical || !isSizeAvailable(canonical, size)) return getCart();
+  const finish = resolveFinish(canonical, finishId);
+  if (!finish.ok) return getCart();
   const cart = getCart();
-  const existing = cart.find(i => i.id === canonical.id && i.size === size);
+  const existing = cart.find(i => i.id === canonical.id && i.size === size && i.finish === finish.id);
   if (existing) {
     existing.quantity = Math.min(CART_LIMITS.quantity, existing.quantity + 1);
   } else {
@@ -121,7 +149,8 @@ function addToCart(product, size) {
       id: canonical.id,
       name: canonical.name,
       size: size,
-      price: canonical.price,
+      finish: finish.id,
+      price: finish.price,
       quantity: 1,
       image: canonical.images[0] || '',
     });
@@ -130,17 +159,17 @@ function addToCart(product, size) {
   return cart;
 }
 
-function removeFromCart(id, size) {
-  const cart = getCart().filter(i => !(i.id === id && i.size === size));
+function removeFromCart(id, size, finish) {
+  const cart = getCart().filter(i => !(i.id === id && i.size === size && i.finish === (finish || '')));
   saveCart(cart);
   return cart;
 }
 
-function updateQuantity(id, size, qty) {
+function updateQuantity(id, size, qty, finish) {
   const cart = getCart();
-  const item = cart.find(i => i.id === id && i.size === size);
+  const item = cart.find(i => i.id === id && i.size === size && i.finish === (finish || ''));
   if (item) {
-    if (qty <= 0) return removeFromCart(id, size);
+    if (qty <= 0) return removeFromCart(id, size, finish);
     item.quantity = qty;
     saveCart(cart);
   }
@@ -181,11 +210,13 @@ function getCartState(status = 'idle') {
     const unitPrice = createMoney(Math.round(item.price * 100));
     const lineTotal = createMoney(unitPrice.amountMinor * item.quantity, unitPrice.currencyCode);
     return {
-      lineKey: `${item.id}|${item.size}`,
+      lineKey: cartLineKey(item),
       productId: item.id,
       merchandiseId: '',
       name: item.name,
       size: item.size,
+      finish: item.finish,
+      finishLabel: getFinishLabel(getCanonicalProduct(item.id), item.finish),
       image: item.image,
       unitPrice,
       quantity: item.quantity,
@@ -217,18 +248,24 @@ const cartService = Object.freeze({
     if (!size || !isSizeAvailable(product, size)) {
       return failedCartResult('invalid-line');
     }
-    const amountMinor = Math.round(product.price * 100);
+    const finish = resolveFinish(product, line?.finish);
+    if (!finish.ok || (line?.finish && finish.id !== line.finish)) return failedCartResult('invalid-line');
+    const amountMinor = Math.round(finish.price * 100);
 
     const snapshot = getCart();
-    const existing = snapshot.find(item => item.id === productId && item.size === size);
-    if (!isSizeAvailable(product, size, (existing?.quantity || 0) + 1)) {
+    const existing = snapshot.find(item => item.id === productId && item.size === size && item.finish === finish.id);
+    // Stock is per size and shared across finishes.
+    const sizeTotal = snapshot
+      .filter(item => item.id === productId && item.size === size)
+      .reduce((sum, item) => sum + item.quantity, 0);
+    if (!isSizeAvailable(product, size, sizeTotal + 1)) {
       return failedCartResult('product-unavailable');
     }
     if (!existing && snapshot.length >= CART_LIMITS.items) return failedCartResult('line-limit');
     if (existing && existing.quantity >= CART_LIMITS.quantity) return failedCartResult('quantity-limit');
 
     const next = snapshot.map(item => ({ ...item }));
-    const nextExisting = next.find(item => item.id === productId && item.size === size);
+    const nextExisting = next.find(item => item.id === productId && item.size === size && item.finish === finish.id);
     if (nextExisting) {
       nextExisting.quantity += 1;
     } else {
@@ -236,6 +273,7 @@ const cartService = Object.freeze({
         id: productId,
         name: product.name,
         size,
+        finish: finish.id,
         price: amountMinor / 100,
         quantity: 1,
         image: normalizeImage(product.images?.[0]),
@@ -253,10 +291,13 @@ const cartService = Object.freeze({
 
     const snapshot = getCart();
     const next = snapshot.map(item => ({ ...item }));
-    const item = next.find(entry => `${entry.id}|${entry.size}` === lineKey);
+    const item = next.find(entry => cartLineKey(entry) === lineKey);
     if (!item) return failedCartResult('line-not-found');
     const product = getCanonicalProduct(item.id);
-    if (!product || !isSizeAvailable(product, item.size, quantity)) return failedCartResult('product-unavailable');
+    const otherFinishes = next
+      .filter(entry => entry !== item && entry.id === item.id && entry.size === item.size)
+      .reduce((sum, entry) => sum + entry.quantity, 0);
+    if (!product || !isSizeAvailable(product, item.size, otherFinishes + quantity)) return failedCartResult('product-unavailable');
     item.quantity = quantity;
     if (!trySaveCart(next)) return failedCartResult('storage-unavailable');
     return { ok: true, cart: getCartState() };
@@ -264,7 +305,7 @@ const cartService = Object.freeze({
 
   async removeLine(lineKey) {
     const snapshot = getCart();
-    const next = snapshot.filter(item => `${item.id}|${item.size}` !== lineKey);
+    const next = snapshot.filter(item => cartLineKey(item) !== lineKey);
     if (next.length === snapshot.length) return failedCartResult('line-not-found');
     if (!trySaveCart(next)) return failedCartResult('storage-unavailable');
     return { ok: true, cart: getCartState() };

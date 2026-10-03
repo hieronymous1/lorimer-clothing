@@ -71,7 +71,7 @@ test('preview cart service exposes promise-based normalized state', async () => 
   assert.equal(value.ok, true);
   assert.equal(value.cart.totalQuantity, 1);
   assert.deepEqual(value.cart.subtotal, { amountMinor: 18500, currencyCode: 'EUR' });
-  assert.equal(value.cart.lines[0].lineKey, 'jacket|M');
+  assert.equal(value.cart.lines[0].lineKey, 'jacket|M|');
   assert.deepEqual(value.cart.lines[0].lineTotal, { amountMinor: 18500, currencyCode: 'EUR' });
 });
 
@@ -79,7 +79,7 @@ test('quantity mutation uses lineKey and returns the confirmed subtotal', async 
   const service = loadCartService(JSON.stringify([
     { id: 'jacket', name: 'Jacket', size: 'M', price: 185, quantity: 1, image: '' },
   ]));
-  const result = await service.run(`cartService.updateLineQuantity('jacket|M', 3)`);
+  const result = await service.run(`cartService.updateLineQuantity('jacket|M|', 3)`);
   const value = JSON.parse(JSON.stringify(result));
 
   assert.equal(value.ok, true);
@@ -93,7 +93,7 @@ test('a failed storage write returns the last confirmed cart', async () => {
     { id: 'jacket', name: 'Jacket', size: 'M', price: 185, quantity: 1, image: '' },
   ]);
   const service = loadCartService(stored, { failWrites: true });
-  const result = await service.run(`cartService.updateLineQuantity('jacket|M', 2)`);
+  const result = await service.run(`cartService.updateLineQuantity('jacket|M|', 2)`);
   const value = JSON.parse(JSON.stringify(result));
 
   assert.equal(value.ok, false);
@@ -148,8 +148,8 @@ test('drawer styles implement compact desktop, full-width mobile, focus, and red
 test('storefront pages version the coupled cart scripts together', () => {
   for (const page of ['index.html', 'shop.html', 'ss24.html', 'about.html', 'checkout.html', 'product-detail.html']) {
     const html = read(page);
-    assert.match(html, /js\/cart\.js\?v=6/);
-    assert.match(html, /js\/main\.js\?v=7/);
+    assert.match(html, /js\/cart\.js\?v=7/);
+    assert.match(html, /js\/main\.js\?v=8/);
     assert.match(html, /js\/products-data\.js/);
   }
   assert.match(read('product-detail.html'), /js\/product\.js\?v=8/);
