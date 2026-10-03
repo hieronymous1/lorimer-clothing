@@ -73,7 +73,7 @@ test('shop declares exact twelve-row sequence with no standalone look cards', ()
 test('shop cards link garments and replace sold-out prices', () => {
   const source = read('js/shop.js');
   assert.match(source, /product-detail\.html\?id=\$\{encodeURIComponent\(product\.id\)\}/);
-  assert.match(source, /product\.available\s*\?\s*formatPrice\(product\.price\)\s*:\s*'Sold Out'/);
+  assert.match(source, /product\.available\s*\?\s*formatPrice\(finish \? finish\.price : product\.price\)\s*:\s*'Sold Out'/);
   assert.match(source, /textContent/);
   assert.doesNotMatch(source, /innerHTML|outerHTML|insertAdjacentHTML|onerror\s*=/);
 });
@@ -89,9 +89,8 @@ test('filters retain matching garments and subcategories while hiding editorial 
   const source = read('js/shop.js');
   assert.match(source, /row\.querySelectorAll\('\.product-card'\)/);
   assert.match(source, /row\.dataset\.rowType === 'divider'/);
-  assert.match(source, /card\.dataset\.category !== filter && card\.dataset\.subcategory !== filter/);
-  assert.match(source, /row\.hidden = visibleProducts === 0/);
-  assert.match(source, /grid\?\.classList\.toggle\('is-filtered',\s*filter !== 'All'\)/);
+  assert.match(source, /buildFilterLayout\(PRODUCTS, filter\)/);
+  assert.match(source, /id = 'shop-filtered'/);
 });
 
 test('shop sidebar declares Tops and Bottoms subcategory filters', () => {
@@ -111,12 +110,12 @@ test('mobile shop filters retain Lorimer black instead of browser accent blue', 
   assert.match(css, /\.filter-btn--sub\.active\s*\{[^}]*color:\s*var\(--black\)/s);
 });
 
-test('filtered products leave editorial row boundaries and fill a continuous grid', () => {
+test('filtered products render into a centred track under the featured row', () => {
   const css = read('css/styles.css');
 
-  assert.match(css, /\.shop-grid\.is-filtered\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
-  assert.match(css, /\.shop-grid\.is-filtered \.shop-row\s*\{[^}]*display:\s*contents/s);
-  assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.shop-grid\.is-filtered\s*\{[^}]*grid-template-columns:\s*1fr/s);
+  assert.match(css, /\.shop-filtered__track\s*\{[^}]*justify-content:\s*center/s);
+  assert.match(css, /\.shop-filtered__featured\s*\{[^}]*grid-template-columns:\s*repeat\(2/s);
+  assert.doesNotMatch(css, /is-filtered/);
 });
 
 test('shop CSS defines row columns, ratios, and mobile stacking', () => {

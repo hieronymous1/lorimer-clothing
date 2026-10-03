@@ -26,6 +26,35 @@ if (typeof document !== 'undefined') {
   });
 }
 
+const FEATURED_BY_FILTER = {
+  Bottoms: [{ id: 'lorimer-selvedge-denim' }, { id: 'lorimer-selvedge-denim-black' }],
+  Denim: [{ id: 'lorimer-selvedge-denim' }, { id: 'lorimer-selvedge-denim-black' }],
+  Tops: [{ id: 'phyllite-jacket', finishId: 'wax' }, { id: 'phyllite-jacket', finishId: 'fabric-paint' }],
+  Jackets: [{ id: 'phyllite-jacket', finishId: 'wax' }, { id: 'phyllite-jacket', finishId: 'fabric-paint' }],
+};
+
+function catalogueOrder() {
+  return SHOP_ROWS.filter(row => row.type === 'products').flatMap(row => row.products);
+}
+
+function buildFilterLayout(products, filter) {
+  const byId = new Map(products.map(product => [product.id, product]));
+  const matches = id => {
+    const product = byId.get(id);
+    return product && (product.category === filter || product.subcategory === filter);
+  };
+  const featured = (FEATURED_BY_FILTER[filter] || [])
+    .filter(entry => matches(entry.id))
+    .map(entry => ({ product: byId.get(entry.id), finishId: entry.finishId }));
+  const featuredIds = new Set(featured.map(entry => entry.product.id));
+  const rest = catalogueOrder().filter(id => matches(id) && !featuredIds.has(id)).map(id => byId.get(id));
+  return { featured, rest };
+}
+
+function toTitleCase(label) {
+  return label.toLowerCase().replace(/\b\w/g, letter => letter.toUpperCase());
+}
+
 function productById(id) {
   return Array.isArray(PRODUCTS) ? PRODUCTS.find(product => product.id === id) : null;
 }
@@ -53,20 +82,27 @@ function renderShop() {
     }
     grid.appendChild(element);
   });
+
+  const filtered = document.createElement('div');
+  filtered.className = 'shop-filtered';
+  filtered.id = 'shop-filtered';
+  filtered.hidden = true;
+  grid.appendChild(filtered);
 }
 
-function createProductCard(product, eager, index = 0) {
+function createProductCard(product, eager, index = 0, finishId = '') {
+  const finish = finishId ? (product.finishes || []).find(f => f.id === finishId) : null;
   const link = document.createElement('a');
   link.className = `product-card reveal reveal-delay-${(index % 3) + 1}`;
-  link.id = product.id;
-  link.href = `product-detail.html?id=${encodeURIComponent(product.id)}`;
+  if (!finish) link.id = product.id;
+  link.href = `product-detail.html?id=${encodeURIComponent(product.id)}${finish ? `&finish=${encodeURIComponent(finish.id)}` : ''}`;
   link.dataset.category = product.category;
   if (product.subcategory) link.dataset.subcategory = product.subcategory;
   link.dataset.productId = product.id;
 
   const media = document.createElement('div');
   media.className = 'product-card__media';
-  media.appendChild(createProductImage(product.images?.[0], product.name, eager));
+  media.appendChild(createProductImage(finish?.image || product.images?.[0], product.name, eager));
   const secondarySrc = product.images?.[1];
   if (secondarySrc) {
     const secondary = createProductImage(secondarySrc, '', false);
@@ -84,8 +120,15 @@ function createProductCard(product, eager, index = 0) {
   const price = document.createElement('p');
   const soldOut = !product.available && !product.notForSale;
   price.className = `product-card__price${soldOut ? ' product-card__price--sold-out' : ''}`;
-  price.textContent = product.notForSale ? 'Inquiry' : product.available ? formatPrice(product.price) : 'Sold Out';
-  details.append(name, price);
+  price.textContent = product.notForSale ? 'Inquiry' : product.available ? formatPrice(finish ? finish.price : product.price) : 'Sold Out';
+  details.append(name);
+  if (finish) {
+    const finishLine = document.createElement('p');
+    finishLine.className = 'product-card__finish';
+    finishLine.textContent = toTitleCase(finish.label);
+    details.append(finishLine);
+  }
+  details.append(price);
   link.appendChild(details);
   return link;
 }
@@ -156,45 +199,83 @@ function closeAllSubfilterPanels() {
   document.querySelectorAll('.filter-btn[aria-expanded="true"]').forEach(button => button.setAttribute('aria-expanded', 'false'));
 }
 
-function applyFilter(filter) {
-  const grid = document.querySelector('.shop-grid');
-  grid?.classList.toggle('is-filtered', filter !== 'All');
+function renderFiltered(layout) {
+  const container = document.getElementById('shop-filtered');
+  container.replaceChildren();
+  if (layout.featured.length) {
+    const row = document.createElement('div');
+    row.className = 'shop-row shop-row--two shop-filtered__featured';
+    layout.featured.forEach((entry, index) => row.appendChild(createProductCard(entry.product, index === 0, index, entry.finishId)));
+    container.appendChild(row);
+  }
+  if (layout.rest.length) {
+    const track = document.createElement('div');
+    track.className = 'shop-filtered__track';
+    layout.rest.forEach((product, index) => track.appendChild(createProductCard(product, false, index)));
+    container.appendChild(track);
+  }
+  container.hidden = false;
+  animateFilteredCards(container);
+  return layout.featured.length + layout.rest.length;
+}
 
+function animateFilteredCards(container) {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  container.querySelectorAll('.product-card').forEach((card, index) => {
+    card.classList.remove('reveal');
+    if (typeof card.animate !== 'function') return;
+    const keyframes = reduce
+      ? [{ opacity: 0 }, { opacity: 1 }]
+      : [{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }];
+    card.animate(keyframes, {
+      duration: 220,
+      delay: Math.min(index, 5) * 40,
+      easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
+      fill: 'backwards',
+    });
+  });
+}
+
+function applyFilter(filter) {
   document.querySelectorAll('.filter-btn').forEach(button => {
     const active = button.dataset.filter === filter;
     button.classList.toggle('active', active);
     button.setAttribute('aria-pressed', String(active));
   });
 
-  const ss24Only = filter === 'S/S 24';
+  const filtered = document.getElementById('shop-filtered');
+  const rows = document.querySelectorAll('#shop-grid > .shop-row');
   let visibleCount = 0;
-  document.querySelectorAll('.shop-row').forEach(row => {
-    if (row.dataset.rowType === 'divider') {
-      row.hidden = filter !== 'All';
-      return;
-    }
 
-    // S/S 24 filter surfaces the complete-look rows in full.
-    if (ss24Only) {
-      const isSS24 = row.dataset.ss24 === 'true';
-      row.hidden = !isSS24;
-      if (isSS24) {
-        row.querySelectorAll('.product-card').forEach(card => {
-          card.hidden = false;
-          if (card.dataset.productId) visibleCount += 1;
-        });
+  if (filter !== 'All' && filter !== 'S/S 24') {
+    rows.forEach(row => { row.hidden = true; });
+    visibleCount = renderFiltered(buildFilterLayout(PRODUCTS, filter));
+  } else {
+    if (filtered) {
+      filtered.hidden = true;
+      filtered.replaceChildren();
+    }
+    const ss24Only = filter === 'S/S 24';
+    rows.forEach(row => {
+      if (row.dataset.rowType === 'divider') {
+        row.hidden = filter !== 'All';
+        return;
       }
-      return;
-    }
 
-    let visibleProducts = 0;
-    row.querySelectorAll('.product-card').forEach(card => {
-      card.hidden = filter !== 'All' && card.dataset.category !== filter && card.dataset.subcategory !== filter;
-      if (!card.hidden && card.dataset.productId) visibleProducts += 1;
+      // S/S 24 filter surfaces the complete-look rows in full.
+      if (ss24Only) {
+        const isSS24 = row.dataset.ss24 === 'true';
+        row.hidden = !isSS24;
+        row.querySelectorAll('.product-card').forEach(card => { card.hidden = false; });
+        if (isSS24) visibleCount += row.querySelectorAll('.product-card[data-product-id]').length;
+        return;
+      }
+
+      row.hidden = false;
+      row.querySelectorAll('.product-card').forEach(card => { card.hidden = false; });
+      visibleCount += row.querySelectorAll('.product-card[data-product-id]').length;
     });
-    row.hidden = visibleProducts === 0;
-    visibleCount += visibleProducts;
-  });
+  }
 
   const status = document.getElementById('shop-results-status');
   if (status) status.textContent = visibleCount ? `${visibleCount} products shown` : 'No products found';
