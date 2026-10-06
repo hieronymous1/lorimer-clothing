@@ -27,5 +27,8 @@ The former stock was shared. Existing quantities remain with Wax; V2 is
 initialised at zero. Enter the actual quantities for both products in Admin
 before making V2 available. Fresh databases get both products from `seed.js`.
 
-This migration has been prepared locally; it has not been run against the live
-database, and the storefront has not been deployed.
+Released to production on 6 October 2026 at https://www.lorimerclothing.com.
+The migration completed successfully. Existing Wax stock remains 10 in Size 1;
+all V2 sizes start at zero. The original product copy and uploaded photos were
+preserved; V2 uses the fabric-painted description and its separate gallery.
+A pre-migration product/inventory backup is stored in the ignored `.vercel/backups/` directory.

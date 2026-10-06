@@ -15,7 +15,7 @@ async function migrate(sql) {
       insert into products (id, name, description, price_cents, images, finish_prices)
       values (
         ${painted.id}, ${painted.name},
-        coalesce((select description from products where id = ${wax.id}), ${painted.description}),
+        ${painted.description},
         coalesce((select (finish_prices->>'fabric-paint')::integer from products where id = ${wax.id}), ${Math.round(painted.price * 100)}),
         ${JSON.stringify(painted.images)}::jsonb, null
       )
