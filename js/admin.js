@@ -1,34 +1,50 @@
+// API failures must remain visible instead of leaving a blank editor or false success.
+async function request(url, options = {}) {
+  let response;
+  try {
+    response = await fetch(url, { cache: 'no-store', ...options });
+  } catch {
+    throw new Error('Connection failed. Your edits are still here; please try saving again.');
+  }
+  if (!response.ok) {
+    if (response.status === 401) throw new Error(options.method === 'POST' && url === '/api/admin/login' ? 'Incorrect password.' : 'Your session expired. Log in again in another tab, then retry saving here.');
+    const detail = await response.json().catch(() => ({}));
+    throw new Error(detail.error || `Request failed (${response.status}). Please try again.`);
+  }
+  return response;
+}
+
 const API = {
-  session: () => fetch('/api/admin/login').then(r => r.json()),
-  login: password => fetch('/api/admin/login', {
+  session: () => request('/api/admin/login').then(r => r.json()),
+  login: password => request('/api/admin/login', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }),
   }),
-  logout: () => fetch('/api/admin/login', { method: 'DELETE' }),
+  logout: () => request('/api/admin/login', { method: 'DELETE' }),
   products: {
-    list: () => fetch('/api/admin/products').then(r => r.json()),
-    save: product => fetch('/api/admin/products', {
+    list: () => request('/api/admin/products').then(r => r.json()),
+    save: product => request('/api/admin/products', {
       method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(product),
     }),
   },
   inventory: {
-    list: () => fetch('/api/admin/inventory').then(r => r.json()),
-    save: row => fetch('/api/admin/inventory', {
+    list: () => request('/api/admin/inventory').then(r => r.json()),
+    save: row => request('/api/admin/inventory', {
       method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(row),
     }),
   },
   orders: {
-    list: () => fetch('/api/admin/orders').then(r => r.json()),
-    save: note => fetch('/api/admin/orders', {
+    list: () => request('/api/admin/orders').then(r => r.json()),
+    save: note => request('/api/admin/orders', {
       method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(note),
     }),
   },
   content: {
-    list: () => fetch('/api/admin/content').then(r => r.json()),
-    save: entry => fetch('/api/admin/content', {
+    list: () => request('/api/admin/content').then(r => r.json()),
+    save: entry => request('/api/admin/content', {
       method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry),
     }),
   },
-  upload: file => fetch(`/api/admin/upload?filename=${encodeURIComponent(file.name)}`, {
+  upload: file => request(`/api/admin/upload?filename=${encodeURIComponent(file.name)}`, {
     method: 'POST', headers: { 'Content-Type': file.type }, body: file,
   }),
 };
@@ -46,29 +62,74 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('admin-login-form');
   const loginError = document.getElementById('admin-login-error');
 
+  const dirty = new Set();
+  const revisions = new WeakMap();
+  document.addEventListener('input', event => {
+    const card = event.target.closest('.admin-card, tr');
+    if (card) { dirty.add(card); revisions.set(card, (revisions.get(card) || 0) + 1); }
+  });
+  window.addEventListener('beforeunload', event => {
+    if (dirty.size) { event.preventDefault(); event.returnValue = ''; }
+  });
+
+  function onAction(element, eventName, action) {
+    element.addEventListener(eventName, async event => {
+      event.preventDefault();
+      const card = element.closest('.admin-card, tr') || element;
+      const revision = revisions.get(card) || 0;
+      const status = card.querySelector('.admin-save-status') || loginError;
+      const buttons = [...card.querySelectorAll('button')];
+      buttons.forEach(button => { button.disabled = true; });
+      status.hidden = false;
+      status.textContent = 'Saving…';
+      try {
+        await action(event);
+        if ((revisions.get(card) || 0) === revision) dirty.delete(card);
+      } catch (error) {
+        status.textContent = error.message;
+      } finally {
+        buttons.forEach(button => { button.disabled = false; });
+      }
+    });
+  }
+
+  async function showTab(name) {
+    const panel = document.getElementById(`admin-tab-${name}`);
+    if (panel.dataset.loaded) return;
+    panel.dataset.loaded = 'loading';
+    panel.textContent = 'Loading…';
+    try {
+      await ({ products: renderProducts, inventory: renderInventory, orders: renderOrders, content: renderContent })[name]();
+      panel.dataset.loaded = 'true';
+      if (!panel.children.length) panel.textContent = 'No records yet.';
+    } catch (error) {
+      delete panel.dataset.loaded;
+      panel.textContent = error.message + ' Select this tab to retry.';
+    }
+  }
+
   API.session().then(session => {
     if (!session.authenticated) return;
     loginView.hidden = true;
     panelView.hidden = false;
-    renderProducts();
+    showTab('products');
   }).catch(() => {});
 
-  loginForm.addEventListener('submit', async event => {
+  onAction(loginForm, 'submit', async event => {
     event.preventDefault();
     const password = document.getElementById('admin-password').value;
-    const res = await API.login(password);
-    if (!res.ok) {
-      loginError.textContent = 'Incorrect password.';
-      loginError.hidden = false;
-      return;
-    }
+    await API.login(password);
+    loginError.hidden = true;
     loginView.hidden = true;
     panelView.hidden = false;
-    renderProducts();
+    showTab('products');
   });
 
   document.getElementById('admin-logout').addEventListener('click', async () => {
-    await API.logout();
+    if (dirty.size && !window.confirm('Discard unsaved changes and log out?')) return;
+    try { await API.logout(); } catch (error) { window.alert(error.message); return; }
+    dirty.clear();
+    window.location.reload();
     panelView.hidden = true;
     loginView.hidden = false;
   });
@@ -79,10 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.admin-tab-panel').forEach(p => { p.hidden = true; });
       tab.classList.add('admin-tab--active');
       document.getElementById(`admin-tab-${tab.dataset.tab}`).hidden = false;
-      if (tab.dataset.tab === 'products') renderProducts();
-      if (tab.dataset.tab === 'inventory') renderInventory();
-      if (tab.dataset.tab === 'orders') renderOrders();
-      if (tab.dataset.tab === 'content') renderContent();
+      showTab(tab.dataset.tab);
     });
   });
 
@@ -99,26 +157,30 @@ document.addEventListener('DOMContentLoaded', () => {
         <label>Price (EUR)<input name="price" type="number" step="0.01" value="${(product.price_cents / 100).toFixed(2)}"></label>
         ${product.finish_prices ? Object.entries(product.finish_prices).map(([key, cents]) => `
         <label>${escapeHtml(key === 'fabric-paint' ? 'Fabric Paint price (EUR)' : key === 'wax' ? 'Wax price (EUR)' : key)}<input name="finish:${escapeAttr(key)}" type="number" step="0.01" min="0.01" value="${(cents / 100).toFixed(2)}"></label>`).join('') : ''}
-        <label>Images (one URL per line)<textarea name="images">${(product.images || []).join('\n')}</textarea></label>
-        <label>Add image<input name="image" type="file" accept="image/*"></label>
+        <label>Images (one URL per line)<textarea name="images">${escapeHtml((product.images || []).join('\n'))}</textarea></label>
+        <p>First image is the cover. Reorder or remove URLs above, then Save. Upload JPG, PNG, WebP, GIF or AVIF up to 4 MB.</p>
+        <label>Add image<input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif"></label>
         <button type="submit">Save</button>
-        <span class="admin-save-status"></span>
+        <span class="admin-save-status" role="status" aria-live="polite"></span>
       `;
-      form.addEventListener('submit', async event => {
+      onAction(form, 'submit', async event => {
         event.preventDefault();
         const data = new FormData(form);
         const imageFile = data.get('image');
         const imageUrls = data.get('images').split('\n').map(s => s.trim()).filter(Boolean);
         if (imageFile?.size) {
+          if (imageFile.size > 4 * 1024 * 1024) throw new Error('Choose an image of 4 MB or smaller.');
+          if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'].includes(imageFile.type)) throw new Error('Use JPG, PNG, WebP, GIF or AVIF images.');
           const uploadRes = await API.upload(imageFile);
-          if (!uploadRes.ok) {
-            form.querySelector('.admin-save-status').textContent = 'Image upload failed';
-            return;
-          }
           imageUrls.push((await uploadRes.json()).url);
+          // Retain the upload even if the subsequent product save fails. Retrying must
+          // neither upload it twice nor restore the old image list.
+          form.elements.images.value = imageUrls.join('\n');
+          form.elements.image.value = '';
         }
         const payload = {
           id: product.id,
+          updated_at: product.updated_at,
           name: data.get('name'),
           description: data.get('description'),
           price_cents: Math.round(parseFloat(data.get('price')) * 100),
@@ -131,6 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
           );
         }
         const res = await API.products.save(payload);
+        const saved = await res.json();
+        if (saved.product) Object.assign(product, saved.product);
         form.querySelector('.admin-save-status').textContent = res.ok ? 'Saved' : 'Error';
       });
       panel.append(form);
@@ -150,10 +214,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${escapeHtml(row.product_id)}</td>
         <td>${escapeHtml(row.size)}</td>
         <td><input type="number" min="0" value="${row.stock}"></td>
-        <td><button type="button">Save</button><span class="admin-save-status"></span></td>
+        <td><button type="button">Save</button><span class="admin-save-status" role="status" aria-live="polite"></span></td>
       `;
-      tr.querySelector('button').addEventListener('click', async () => {
-        const stock = parseInt(tr.querySelector('input').value, 10);
+      onAction(tr.querySelector('button'), 'click', async () => {
+        const input = tr.querySelector('input');
+        const stock = Number(input.value);
+        if (!input.value.trim() || !Number.isInteger(stock) || stock < 0) throw new Error('Stock must be a whole number of zero or more.');
         const res = await API.inventory.save({ product_id: row.product_id, size: row.size, stock });
         tr.querySelector('.admin-save-status').textContent = res.ok ? 'Saved' : 'Error';
       });
@@ -177,9 +243,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <label><input type="checkbox" ${order.fulfilled ? 'checked' : ''}> Fulfilled</label>
         <label>Tracking <input type="text" value="${escapeAttr(order.tracking)}"></label>
         <button type="button">Save</button>
-        <span class="admin-save-status"></span>
+        <span class="admin-save-status" role="status" aria-live="polite"></span>
       `;
-      card.querySelector('button').addEventListener('click', async () => {
+      onAction(card.querySelector('button'), 'click', async () => {
         const fulfilled = card.querySelector('input[type="checkbox"]').checked;
         const tracking = card.querySelector('input[type="text"]').value;
         const res = await API.orders.save({ session_id: order.id, fulfilled, tracking });
@@ -199,9 +265,9 @@ document.addEventListener('DOMContentLoaded', () => {
       form.innerHTML = `
         <label>${escapeHtml(row.key)}<textarea name="value">${escapeHtml(row.value)}</textarea></label>
         <button type="submit">Save</button>
-        <span class="admin-save-status"></span>
+        <span class="admin-save-status" role="status" aria-live="polite"></span>
       `;
-      form.addEventListener('submit', async event => {
+      onAction(form, 'submit', async event => {
         event.preventDefault();
         const value = new FormData(form).get('value');
         const res = await API.content.save({ key: row.key, value });

@@ -1,9 +1,8 @@
 /* migrate-2026-10.js — October 2026 client feedback round.
-   Additive and idempotent. Run only with explicit approval:
+   Additive and idempotent; preserves existing CMS edits:
    DATABASE_URL=… node scripts/migrate-2026-10.js */
 const PRODUCTS = require('../js/products-data.js');
 
-const DENIM_IDS = ['lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'];
 const NEW_PHYLLITE_SIZES = ['Size 1.5', 'Size 2.5'];
 
 function finishPricesCents(product) {
@@ -14,23 +13,13 @@ function finishPricesCents(product) {
 async function migrate(sql) {
   await sql`alter table products add column if not exists finish_prices jsonb`;
 
-  // Phyllite gains finishes, a new cover and copy. Its row is fully refreshed.
+  // Populate the new field only; never replace admin-managed copy, images or prices.
   const phyllite = PRODUCTS.find(p => p.id === 'phyllite-jacket');
-  await sql`
-    update products set
-      name = ${phyllite.name},
-      description = ${phyllite.description},
-      images = ${JSON.stringify(phyllite.images)}::jsonb,
-      price_cents = ${Math.round(phyllite.price * 100)},
-      finish_prices = ${JSON.stringify(finishPricesCents(phyllite))}::jsonb,
-      updated_at = now()
-    where id = ${'phyllite-jacket'}
-  `;
-
-  // Denim only receives the client's new copy; admin-managed price and images stay.
-  for (const id of DENIM_IDS) {
-    const product = PRODUCTS.find(p => p.id === id);
-    await sql`update products set description = ${product.description}, updated_at = now() where id = ${id}`;
+  if (phyllite.finishes?.length) {
+    await sql`
+      update products set finish_prices = ${JSON.stringify(finishPricesCents(phyllite))}::jsonb
+      where id = ${'phyllite-jacket'} and finish_prices is null
+    `;
   }
 
   for (const size of NEW_PHYLLITE_SIZES) {

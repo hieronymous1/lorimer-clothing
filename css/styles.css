@@ -985,6 +985,7 @@ body.is-preloading {
 }
 html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
 .lookbook {
+  --look-media-width: min(600px, calc((100svh - var(--nav-h) - 108px) * 2 / 3));
   width: min(100% - 112px, 1500px);
   margin: 0 auto;
   padding: 54px 0 0;
@@ -992,22 +993,20 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
 .lookbook-look {
   display: grid;
   scroll-margin-top: var(--nav-h);
-  grid-template-columns: minmax(0, 600px) minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: clamp(32px, 3.2vw, 64px);
   align-items: center;
   margin-bottom: 44px;
 }
-.lookbook-look--reverse { grid-template-columns: minmax(0, 1fr) minmax(0, 600px); }
+
 .lookbook-look--reverse .lookbook-gallery { order: 2; }
 .lookbook-look--reverse .lookbook-look__copy { order: 1; }
 .lookbook-look:not(.lookbook-look--reverse) .lookbook-gallery { justify-self: end; }
 .lookbook-gallery {
   position: relative;
   overflow: hidden;
-  width: auto;
-  max-width: 600px;
-  height: calc(100svh - var(--nav-h) - 108px);
-  max-height: 900px;
+  width: min(100%, var(--look-media-width));
+  height: auto;
   aspect-ratio: 2 / 3;
   background: #ecece8;
   outline: none;
@@ -1099,98 +1098,17 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   .lookbook-gallery__nav--prev:hover::after,
   .lookbook-gallery__nav--prev:active::after { transform: rotate(135deg); }
 }
-.lookbook-look__copy { order: 1; }
-.lookbook-look:not(.lookbook-look--reverse) .lookbook-gallery { justify-self: end; }
-.lookbook-gallery {
-  position: relative;
-  overflow: hidden;
-  width: auto;
-  max-width: 600px;
-  height: calc(100svh - var(--nav-h) - 108px);
-  max-height: 900px;
-  aspect-ratio: 2 / 3;
-  background: #ecece8;
-  outline: none;
-  scroll-snap-align: center;
-}
-.lookbook-gallery__image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 240ms var(--ease-out);
-}
-.lookbook-gallery__image.is-visible { opacity: 1; z-index: 1; }
-.lookbook-gallery:focus-visible {
-  outline: 1px solid var(--ss24-ink);
-  outline-offset: 3px;
-}
-.lookbook-gallery__dots {
-  position: absolute;
-  left: 12px;
-  bottom: 14px;
-  display: flex;
-  gap: 6px;
-  pointer-events: none;
-  z-index: 2;
-}
-.lookbook-gallery__dots span {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .5);
-  transition: background .16s ease, transform .16s ease;
-}
-.lookbook-gallery__dots span.is-active {
-  background: #fff;
-  transform: scale(1.3);
-}
-.lookbook-gallery__nav {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  display: flex;
-  align-items: center;
-  padding: 0 22px;
-  opacity: 0;
-  transition: opacity .2s ease;
-  cursor: pointer;
-  z-index: 3;
-}
-.lookbook-gallery__nav::after {
-  content: '';
-  width: 11px;
-  height: 11px;
-  border: solid #fff;
-  border-width: 0 2px 2px 0;
-}
-.lookbook-gallery__nav--prev {
-  left: 0;
-  justify-content: flex-start;
-  background: linear-gradient(to right, rgba(20, 20, 20, .38), transparent);
-}
-.lookbook-gallery__nav--prev::after { transform: rotate(135deg); }
-.lookbook-gallery__nav--next {
-  right: 0;
-  justify-content: flex-end;
-  background: linear-gradient(to left, rgba(20, 20, 20, .38), transparent);
-}
-.lookbook-gallery__nav--next::after { transform: rotate(-45deg); }
-.lookbook-gallery__nav:hover,
-.lookbook-gallery__nav:focus-visible {
-  opacity: 1;
-}
 .lookbook-look__copy {
-  min-height: 700px;
+  width: min(100%, var(--look-media-width));
+  aspect-ratio: 2 / 3;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 110px 0 54px;
+  padding: clamp(32px, 9svh, 110px) 0 clamp(24px, 5svh, 54px);
 }
+.lookbook-look--reverse .lookbook-look__copy { justify-self: end; }
 .lookbook-look__copy h2 {
   font-family: var(--font-serif);
   font-size: clamp(18px, 1.25vw, 24px);
@@ -1203,7 +1121,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   gap: 24px;
 }
 .lookbook-look__copy p {
-  width: min(100%, 560px);
+  width: 100%;
   margin: 0;
   font-family: var(--font-serif);
   font-size: clamp(12px, .86vw, 18px);
@@ -1219,22 +1137,6 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
 .lookbook-look__copy > a { justify-self: start; align-self: flex-start; }
 .lookbook-look__copy a:hover { opacity: .56; }
 
-/* The opening pair follows the supplied runway compositions: image and copy
-   share one viewport-bounded height, while the text/link gaps stay asymmetric. */
-#look-1,
-#look-2 {
-  --look-composition-height: min(calc(100svh - var(--nav-h) - 76px), 850px);
-}
-#look-1 .lookbook-gallery,
-#look-2 .lookbook-gallery {
-  height: var(--look-composition-height);
-  max-height: none;
-}
-#look-1 .lookbook-look__copy,
-#look-2 .lookbook-look__copy {
-  min-height: var(--look-composition-height);
-  padding-block: clamp(72px, 11svh, 110px) clamp(40px, 5.4svh, 54px);
-}
 .lookbook-end {
   width: min(100%, 700px);
   margin: 280px auto 72px;
@@ -1243,9 +1145,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
 }
 .lookbook-end__image {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  object-position: center 78%;
+  height: auto;
 }
 .lookbook-end figcaption {
   margin-top: 14px;
@@ -1468,7 +1368,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   text-transform: uppercase;
 }
 .product-card__price { margin-top: 2px; color: var(--black); font-size: 11px; font-variant-numeric: tabular-nums; }
-.product-card__price--sold-out { color: var(--black); }
+.product-card__price--sold-out { color: var(--black); font-size: 8px; }
 .shop-divider__image {
   display: block;
   width: 100%;
@@ -1535,7 +1435,7 @@ html:has(body.ss24-page) { scroll-snap-type: y mandatory; }
   align-self: start;
   max-height: calc(100svh - var(--nav-h));
   overflow-y: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior: auto;
 }
 .product-info__name {
   font-family: var(--font-title);
@@ -2143,13 +2043,13 @@ a:hover .card-media img,
   .lookbook { width: min(100% - 56px, 680px); padding-top: 42px; }
   .lookbook-look,
   .lookbook-look--reverse {
-    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: clamp(28px, 6vw, 48px);
-    min-height: 520px;
+    min-height: 0;
   }
-  .lookbook-look--reverse { grid-template-columns: minmax(0, 1fr) minmax(0, 280px); }
+
   .lookbook-gallery { width: 100%; max-width: none; height: auto; max-height: none; }
-  .lookbook-look__copy { min-height: 360px; padding-block: 50px 26px; }
+  .lookbook-look__copy { width: 100%; min-height: 0; padding-block: 24px; }
   .lookbook-end { margin-top: 100px; }
   .shop-layout { display: block; }
   .shop-sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--black); flex: none; flex-direction: column; align-items: flex-start; gap: 12px; padding: 20px 16px; }
@@ -2261,7 +2161,9 @@ a:hover .card-media img,
   .lookbook-look--reverse .lookbook-look__copy { order: 2; }
   .lookbook-gallery { width: 100%; max-width: none; height: auto; max-height: none; }
   .lookbook-look__copy {
-    min-height: 0;
+    order: 2;
+    aspect-ratio: auto;
+    min-height: 200px;
     gap: 22px;
     padding: 22px 0 0;
   }
@@ -2270,26 +2172,7 @@ a:hover .card-media img,
   .lookbook-look__copy a { align-self: flex-start !important; text-align: left !important; }
   .lookbook-end { margin: 70px auto 54px; }
 
-  #look-1,
-  #look-2 {
-    --look-composition-height: auto;
-  }
-  #look-1 .lookbook-gallery,
-  #look-2 .lookbook-gallery {
-    order: 1;
-    height: auto;
-  }
-  #look-1 .lookbook-look__copy,
-  #look-2 .lookbook-look__copy {
-    order: 2;
-    min-height: 0;
-    gap: clamp(30px, 10vw, 44px);
-    padding: 20px 0 0;
-  }
-  #look-1 .lookbook-look__copy-head,
-  #look-2 .lookbook-look__copy-head {
-    gap: 14px;
-  }
+
 }
 
 .checkout-banner { margin-bottom: 24px; }

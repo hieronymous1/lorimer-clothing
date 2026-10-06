@@ -10,7 +10,7 @@ const SHOP_ROWS = [
   { type: 'divider', images: ['./assets/photos/shop/still-03.jpg', './assets/photos/shop/still-04.jpg'] },
   { type: 'products', products: ['dual-texture-knit-vest', 'adjustable-button-trousers'], ss24: true },
   { type: 'products', products: ['university-striped-sweatshirt', 'mens-straight-trousers', 'distressed-lorimer-cap'], ss24: true },
-  { type: 'products', products: ['3d-panel-bomber', 'denim-leather-trousers'] },
+  { type: 'products', products: ['3d-panel-bomber', 'denim-leather-trousers'], ss24: true },
   { type: 'products', products: ['asymmetrical-white-top', 'white-layered-skirt'], ss24: true },
   { type: 'products', products: ['zip-up-top', 'womens-wide-trousers', 'ss24-dress'], ss24: true },
 ];
@@ -29,8 +29,8 @@ if (typeof document !== 'undefined') {
 const FEATURED_BY_FILTER = {
   Bottoms: [{ id: 'lorimer-selvedge-denim' }, { id: 'lorimer-selvedge-denim-black' }],
   Denim: [{ id: 'lorimer-selvedge-denim' }, { id: 'lorimer-selvedge-denim-black' }],
-  Tops: [{ id: 'phyllite-jacket', finishId: 'wax' }, { id: 'phyllite-jacket', finishId: 'fabric-paint' }],
-  Jackets: [{ id: 'phyllite-jacket', finishId: 'wax' }, { id: 'phyllite-jacket', finishId: 'fabric-paint' }],
+  Tops: [{ id: 'phyllite-jacket' }, { id: 'phyllite-jacket-v2' }],
+  Jackets: [{ id: 'phyllite-jacket' }, { id: 'phyllite-jacket-v2' }],
 };
 
 function catalogueOrder() {
@@ -41,7 +41,7 @@ function buildFilterLayout(products, filter) {
   const byId = new Map(products.map(product => [product.id, product]));
   const matches = id => {
     const product = byId.get(id);
-    return product && (product.category === filter || product.subcategory === filter);
+    return product && id !== 'upcycled-two-piece' && (product.category === filter || product.subcategory === filter);
   };
   const featured = (FEATURED_BY_FILTER[filter] || [])
     .filter(entry => matches(entry.id))
@@ -49,10 +49,6 @@ function buildFilterLayout(products, filter) {
   const featuredIds = new Set(featured.map(entry => entry.product.id));
   const rest = catalogueOrder().filter(id => matches(id) && !featuredIds.has(id)).map(id => byId.get(id));
   return { featured, rest };
-}
-
-function toTitleCase(label) {
-  return label.toLowerCase().replace(/\b\w/g, letter => letter.toUpperCase());
 }
 
 function productById(id) {
@@ -118,16 +114,10 @@ function createProductCard(product, eager, index = 0, finishId = '') {
   name.className = 'product-card__name';
   name.textContent = product.name;
   const price = document.createElement('p');
-  const soldOut = !product.available && !product.notForSale;
+  const soldOut = product.notForSale || !product.available;
   price.className = `product-card__price${soldOut ? ' product-card__price--sold-out' : ''}`;
   price.textContent = product.notForSale ? 'Sold Out' : product.available ? formatPrice(finish ? finish.price : product.price) : 'Sold Out';
   details.append(name);
-  if (finish) {
-    const finishLine = document.createElement('p');
-    finishLine.className = 'product-card__finish';
-    finishLine.textContent = toTitleCase(finish.label);
-    details.append(finishLine);
-  }
   details.append(price);
   link.appendChild(details);
   return link;

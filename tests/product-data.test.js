@@ -53,17 +53,21 @@ test('every archive piece carries the client name, date, origin and 1-of-1 statu
   });
 });
 
-test('Phyllite has four sizes, two priced finishes and the new cover', () => {
-  const phyllite = loadProducts().find(p => p.id === 'phyllite-jacket');
-  assert.deepEqual(phyllite.sizes, ['Size 1', 'Size 1.5', 'Size 2', 'Size 2.5']);
-  assert.deepEqual(phyllite.finishes.map(f => [f.id, f.label, f.price]), [['wax', 'WAX', 70], ['fabric-paint', 'FABRIC PAINT', 80]]);
-  assert.match(phyllite.finishes[1].image, /IMG_3420\.jpg$/);
-  assert.match(phyllite.images[0], /Phyllite Jacket - Photoshoot\/IMG_2297\.jpg$/);
-  assert.equal(phyllite.images.filter(src => src.endsWith('IMG_2297.jpg')).length, 1);
-  assert.equal(phyllite.material, '100% Cotton Denim, Stainless Steel Hardware');
-  assert.equal(phyllite.description.split('\n\n').length, 2);
-  assert.equal(phyllite.styleWith, undefined);
-  assert.equal(phyllite.longDescription, undefined);
+test('Phyllite jackets have separate galleries and prices with reciprocal variants', () => {
+  const products = loadProducts();
+  const jackets = ['phyllite-jacket', 'phyllite-jacket-v2'].map(id => products.find(p => p.id === id));
+  assert.ok(jackets.every(Boolean));
+  assert.deepEqual(jackets.map(p => [p.name, p.price]), [['Phyllite Jacket', 70], ['Phyllite Jacket V2', 80]]);
+  jackets.forEach(p => {
+    assert.deepEqual(p.sizes, ['Size 1', 'Size 1.5', 'Size 2', 'Size 2.5']);
+    assert.deepEqual(p.colorVariants, ['phyllite-jacket', 'phyllite-jacket-v2']);
+    assert.equal(p.finishes, undefined);
+    assert.ok(p.images.length > 1);
+    p.images.forEach(image => assert.ok(fs.existsSync(path.join(ROOT, image))));
+  });
+  assert.ok(jackets[0].images[0].endsWith('IMG_2297.jpg'));
+  assert.ok(jackets[1].images[0].endsWith('IMG_3420.jpg'));
+  assert.ok(jackets[0].images.every(image => !jackets[1].images.includes(image)));
 });
 
 test('live denim carries the new copy and material', () => {

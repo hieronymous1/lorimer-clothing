@@ -28,11 +28,11 @@ const expectedRows = [
   ['products', 'zip-up-top', 'womens-wide-trousers', 'ss24-dress'],
 ];
 
-test('catalog has exact 27 garments and only the denim launch pieces are available', () => {
+test('catalog has exact 28 garments and only the denim launch pieces are available', () => {
   const products = loadProducts();
-  assert.equal(products.length, 27);
-  assert.deepEqual(products.filter(product => product.available).map(product => product.id), ['phyllite-jacket', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black']);
-  assert.equal(new Set(products.map(product => product.id)).size, 27);
+  assert.equal(products.length, 28);
+  assert.deepEqual(products.filter(product => product.available).map(product => product.id), ['phyllite-jacket', 'phyllite-jacket-v2', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black']);
+  assert.equal(new Set(products.map(product => product.id)).size, 28);
 });
 
 test('catalog names and cover images match the client copy', () => {
@@ -53,8 +53,8 @@ test('every Tops and Bottoms garment declares a subcategory', () => {
 test('homepage primary-product links use the canonical top-row IDs', () => {
   const html = read('index.html');
   assert.match(html, /href="product-detail\.html\?id=phyllite-jacket"[\s\S]*?IMG_2297\.jpg[\s\S]*?>Phyllite Jacket</);
-  // 2026-09-01 editorial pass: the opening denim cover is the black colourway.
-  assert.match(html, /href="product-detail\.html\?id=lorimer-selvedge-denim-black"[\s\S]*?IMG_3161\.jpg[\s\S]*?>Lorimer Selvedge Denim — Black</);
+  // Final design update: feature the blue colourway.
+  assert.match(html, /href="product-detail\.html\?id=lorimer-selvedge-denim"[\s\S]*?IMG_2520\.jpg[\s\S]*?>Lorimer Selvedge Denim — Blue</);
 });
 
 test('shop declares exact twelve-row sequence with no standalone look cards', () => {
@@ -66,7 +66,7 @@ test('shop declares exact twelve-row sequence with no standalone look cards', ()
   assert.deepEqual(compact, expectedRows);
   assert.deepEqual(rows[1].images, ['./assets/photos/shop/still-01.jpg', './assets/photos/shop/still-02.jpg']);
   assert.deepEqual(rows[6].images, ['./assets/photos/shop/still-03.jpg', './assets/photos/shop/still-04.jpg']);
-  assert.deepEqual(rows.map(row => Boolean(row.ss24)), [false, false, false, false, false, false, false, true, true, false, true, true]);
+  assert.deepEqual(rows.map(row => Boolean(row.ss24)), [false, false, false, false, false, false, false, true, true, true, true, true]);
   assert.match(source, /rowIndex === 0 \? 'two'/);
 });
 

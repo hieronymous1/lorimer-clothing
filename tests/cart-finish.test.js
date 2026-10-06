@@ -25,15 +25,15 @@ function loadCart(initial) {
   return context;
 }
 
-test('same size in two finishes stays as two priced lines', async () => {
+test('same size in the two jackets stays as two distinct product lines', async () => {
   const ctx = loadCart();
-  await ctx.cartService.addLine({ productId: 'phyllite-jacket', size: 'Size 1.5', finish: 'wax' });
-  await ctx.cartService.addLine({ productId: 'phyllite-jacket', size: 'Size 1.5', finish: 'fabric-paint' });
+  await ctx.cartService.addLine({ productId: 'phyllite-jacket', size: 'Size 1.5' });
+  await ctx.cartService.addLine({ productId: 'phyllite-jacket-v2', size: 'Size 1.5' });
   const cart = ctx.getCart();
   assert.equal(cart.length, 2);
-  assert.deepEqual(plain(cart.map(i => [i.finish, i.price])), [['wax', 70], ['fabric-paint', 80]]);
+  assert.deepEqual(plain(cart.map(i => [i.id, i.price])), [['phyllite-jacket', 70], ['phyllite-jacket-v2', 80]]);
   const state = await ctx.cartService.getCart();
-  assert.deepEqual(plain(state.lines.map(l => l.lineKey)), ['phyllite-jacket|Size 1.5|wax', 'phyllite-jacket|Size 1.5|fabric-paint']);
+  assert.deepEqual(plain(state.lines.map(l => l.lineKey)), ['phyllite-jacket|Size 1.5|', 'phyllite-jacket-v2|Size 1.5|']);
 });
 
 test('unknown finish is refused', async () => {
@@ -43,23 +43,25 @@ test('unknown finish is refused', async () => {
   assert.equal(ctx.getCart().length, 0);
 });
 
-test('a pre-release Phyllite line without finish becomes wax; denim keeps no finish', () => {
+test('legacy Phyllite cart lines migrate to the correct separate products', () => {
   const ctx = loadCart([
     { id: 'phyllite-jacket', size: 'Size 1', quantity: 1 },
+    { id: 'phyllite-jacket', size: 'Size 2', finish: 'fabric-paint', quantity: 1 },
     { id: 'lorimer-selvedge-denim', size: '30×30', quantity: 2 },
   ]);
   const cart = ctx.getCart();
   assert.deepEqual(plain(cart.map(i => [i.id, i.finish, i.price, i.quantity])), [
-    ['phyllite-jacket', 'wax', 70, 1],
+    ['phyllite-jacket', '', 70, 1],
+    ['phyllite-jacket-v2', '', 80, 1],
     ['lorimer-selvedge-denim', '', 80, 2],
   ]);
 });
 
-test('remove and update address a single finish line', async () => {
+test('remove and update address only the selected jacket', async () => {
   const ctx = loadCart();
-  await ctx.cartService.addLine({ productId: 'phyllite-jacket', size: 'Size 2', finish: 'wax' });
-  await ctx.cartService.addLine({ productId: 'phyllite-jacket', size: 'Size 2', finish: 'fabric-paint' });
-  await ctx.cartService.updateLineQuantity('phyllite-jacket|Size 2|fabric-paint', 3);
-  await ctx.cartService.removeLine('phyllite-jacket|Size 2|wax');
-  assert.deepEqual(plain(ctx.getCart().map(i => [i.finish, i.quantity])), [['fabric-paint', 3]]);
+  await ctx.cartService.addLine({ productId: 'phyllite-jacket', size: 'Size 2' });
+  await ctx.cartService.addLine({ productId: 'phyllite-jacket-v2', size: 'Size 2' });
+  await ctx.cartService.updateLineQuantity('phyllite-jacket-v2|Size 2|', 3);
+  await ctx.cartService.removeLine('phyllite-jacket|Size 2|');
+  assert.deepEqual(plain(ctx.getCart().map(i => [i.id, i.quantity])), [['phyllite-jacket-v2', 3]]);
 });

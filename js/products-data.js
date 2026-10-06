@@ -47,22 +47,44 @@ Rib knit finishes along the collar, neck and cuffs, fully lined inside and finis
     name: 'Phyllite Jacket',
     category: 'Tops',
     subcategory: 'Jackets',
+    colorway: 'Wax',
+    variantLabel: 'Select Version',
+    swatch: '#19191b',
+    colorVariants: ['phyllite-jacket', 'phyllite-jacket-v2'],
     price: 70,
     images: [
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_2297.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_1748.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_1791.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_1930.jpg',
-      './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3420.jpg',
-      './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3453.jpg',
-      './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3306.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_1942.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_1961.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_2103.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_2370.jpg',
+      './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_2246.jpg',
+    ],
+    description: `The subtle black two tone denim jacket is separated by its front and back panels seamlessly transitioning throughout the jacket's shoulders, sleeves and sides. Appearing in an exaggerated silhouette with a high crop on the body along with elongated sleeves and stainless steel buttons.
+
+Like a Phyllite stone reaching its metamorphosis due to subjected heat and pressure, the jacket is given an added sheen during an in-house waxing procedure that elevates the jacket's look and feel. The Phyllite Jacket is fully lined inside with a soft and light 100% cotton lining for extra comfort.`,
+    material: '100% Cotton Denim, Stainless Steel Hardware',
+    sizes: ['Size 1', 'Size 1.5', 'Size 2', 'Size 2.5'],
+  },
+  {
+    id: 'phyllite-jacket-v2',
+    name: 'Phyllite Jacket V2',
+    category: 'Tops',
+    subcategory: 'Jackets',
+    colorway: 'Fabric Paint',
+    variantLabel: 'Select Version',
+    swatch: '#353539',
+    colorVariants: ['phyllite-jacket', 'phyllite-jacket-v2'],
+    price: 80,
+    images: [
+      './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3420.jpg',
+      './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3453.jpg',
+      './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3306.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3504.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3464.jpg',
-      './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_2246.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3629.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3577.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3662.jpg',
@@ -73,13 +95,9 @@ Rib knit finishes along the collar, neck and cuffs, fully lined inside and finis
     ],
     description: `The subtle black two tone denim jacket is separated by its front and back panels seamlessly transitioning throughout the jacket's shoulders, sleeves and sides. Appearing in an exaggerated silhouette with a high crop on the body along with elongated sleeves and stainless steel buttons.
 
-Like a Phyllite stone reaching its metamorphosis due to subjected heat and pressure, the jacket is given an added sheen during an in-house waxing or fabric painted procedure that elevates the jacket's look and feel. The Phyllite Jacket is fully lined inside with a soft and light 100% cotton lining for extra comfort.`,
+Like a Phyllite stone reaching its metamorphosis due to subjected heat and pressure, the jacket is given an added sheen during an in-house fabric painting procedure that elevates the jacket's look and feel. The Phyllite Jacket is fully lined inside with a soft and light 100% cotton lining for extra comfort.`,
     material: '100% Cotton Denim, Stainless Steel Hardware',
     sizes: ['Size 1', 'Size 1.5', 'Size 2', 'Size 2.5'],
-    finishes: [
-      { id: 'wax', label: 'WAX', price: 70 },
-      { id: 'fabric-paint', label: 'FABRIC PAINT', price: 80, image: './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3420.jpg' },
-    ],
   },
   {
     id: 'lorimer-selvedge-denim',
@@ -425,7 +443,7 @@ The straight leg shape hugs the legs comfortably and stacks at the hem, the trou
     id: 'denim-leather-trousers',
     name: 'Lacquer Trousers 002',
     category: 'Bottoms',
-    subcategory: 'Denim',
+    subcategory: 'Trousers',
     price: 265,
     constructedOn: 'May 2024',
     madeIn: 'Spain',
@@ -570,7 +588,7 @@ That same taffeta completes the dress as a double layered skirt top layer being 
   },
 ].map(product => ({
   ...product,
-  available: ['phyllite-jacket', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'].includes(product.id),
+  available: ['phyllite-jacket', 'phyllite-jacket-v2', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'].includes(product.id),
 }));
 
 if (typeof module !== 'undefined') module.exports = PRODUCTS;

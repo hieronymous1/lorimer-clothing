@@ -30,9 +30,9 @@ test('homepage preview grid follows the client order with new names', () => {
   ['Mason Jacket 001', 'Mercer Shirt 001', 'Gardner Vest 001', 'Weaver Shorts 001', 'Clasper Trousers 002', 'Weaver Jeans 002'].forEach(name => assert.match(preview, new RegExp(name)));
 });
 
-test('homepage covers: black denim stays, Phyllite uses IMG_2297', () => {
+test('homepage covers: blue denim, Phyllite uses IMG_2297', () => {
   const html = read('index.html');
-  assert.match(html, /Lorimer Selvedge Denim Black - Photoshoot\/IMG_3161\.jpg/);
+  assert.match(html, /Lorimer Selvedge Denim - Photoshoot\/IMG_2520\.jpg/);
   assert.match(html, /Phyllite Jacket - Photoshoot\/IMG_2297\.jpg/);
 });
 

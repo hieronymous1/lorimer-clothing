@@ -52,7 +52,7 @@ function getProductFinishes(product) {
 
 function resolveFinish(product, rawFinish) {
   const finishes = getProductFinishes(product);
-  if (finishes.length === 0) return { ok: true, id: '', price: product.price };
+  if (finishes.length === 0) return rawFinish ? { ok: false } : { ok: true, id: '', price: product.price };
   const id = normalizeText(rawFinish, CART_FINISH_MAX) || finishes[0].id;
   const match = finishes.find(entry => entry.id === id);
   return match ? { ok: true, id: match.id, price: match.price } : { ok: false };
@@ -79,12 +79,18 @@ function normalizeCart(value) {
   value.slice(0, CART_LIMITS.items).forEach(raw => {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return;
 
-    const id = normalizeText(raw.id, CART_LIMITS.id);
+    // Migrate saved carts from the old combined Phyllite product.
+    let id = normalizeText(raw.id, CART_LIMITS.id);
+    let rawFinish = raw.finish;
+    if (id === 'phyllite-jacket' && ['wax', 'fabric-paint'].includes(rawFinish)) {
+      if (rawFinish === 'fabric-paint') id = 'phyllite-jacket-v2';
+      rawFinish = '';
+    }
     const size = normalizeText(raw.size, CART_LIMITS.size);
     const product = getCanonicalProduct(id);
     if (!product || !size || !isSizeAvailable(product, size)) return;
 
-    const finish = resolveFinish(product, raw.finish);
+    const finish = resolveFinish(product, rawFinish);
     if (!finish.ok) return;
 
     const price = Math.min(CART_LIMITS.price, Math.max(0, finish.price));

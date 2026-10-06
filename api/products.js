@@ -1,7 +1,7 @@
 const { getDb } = require('./_lib/db');
 const PRODUCTS = require('../js/products-data.js');
 
-const LIVE_IDS = ['phyllite-jacket', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'];
+const LIVE_IDS = ['phyllite-jacket', 'phyllite-jacket-v2', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'];
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -27,7 +27,7 @@ module.exports = async function handler(req, res) {
       name: override?.name ?? structural.name,
       description: override?.description ?? structural.description,
       price: override ? override.price_cents / 100 : structural.price,
-      images: override?.images?.length ? override.images : structural.images,
+      images: Array.isArray(override?.images) ? override.images : structural.images,
       finish_prices: override?.finish_prices
         ? Object.fromEntries(Object.entries(override.finish_prices).map(([key, cents]) => [key, cents / 100]))
         : null,

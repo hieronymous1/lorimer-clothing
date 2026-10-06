@@ -22,11 +22,13 @@ When you're done, click **Log out** in the top-right corner — especially on a 
 4. Click **Save** at the bottom of that product's card
 5. Refresh the live site to see your change — it's instant, no waiting
 
-**About images:** use **Add image** to upload a JPG, PNG, WebP, or other browser-supported image up to 10 MB. Existing image addresses remain listed in the Images box, one per line; remove a line and save if you no longer want that image shown.
+**About images:** use **Add image** to upload a JPG, PNG, WebP, GIF, or AVIF image up to 4 MB. Existing image addresses remain listed in the Images box, one per line; remove a line and save if you no longer want that image shown.
 
 ---
 
 ## Updating stock levels
+
+**Phyllite jackets:** Phyllite Jacket (Wax) and Phyllite Jacket V2 (Fabric Paint) are separate products. Edit their prices, photos and stock separately, just like the two denim colours. After the split is released, check the stock for both jackets: existing stock stays with Wax, and V2 starts at zero until its actual quantities are entered.
 
 1. Click the **Inventory** tab
 2. You'll see a table listing every product and size, with a stock number next to each

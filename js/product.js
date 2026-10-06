@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function loadProduct() {
   const params = new URLSearchParams(window.location.search);
+  // Keep links to the former finish option working after the product split.
+  if (params.get('id') === 'phyllite-jacket' && ['wax', 'fabric-paint'].includes(params.get('finish'))) {
+    if (params.get('finish') === 'fabric-paint') params.set('id', 'phyllite-jacket-v2');
+    params.delete('finish');
+    window.history.replaceState(null, '', `${window.location.pathname}?${params}${window.location.hash}`);
+  }
   const id = params.get('id');
   const product = PRODUCTS.find(p => p.id === id) || PRODUCTS[0];
   const initialFinish = selectedFinishFromUrl(product, window.location.search);
@@ -182,6 +188,7 @@ function renderColorVariants(product) {
   }
 
   colorSection.hidden = false;
+  colorSection.querySelector('.size-label').textContent = product.variantLabel || 'Select Color';
   swatchRow.replaceChildren();
 
   variants.forEach(variant => {
@@ -190,6 +197,7 @@ function renderColorVariants(product) {
     link.href = `product-detail.html?id=${encodeURIComponent(variant.id)}`;
     link.setAttribute('aria-label', variant.colorway || variant.name);
     link.title = variant.colorway || variant.name;
+    if (variant.id === product.id) link.setAttribute('aria-current', 'page');
 
     const dot = document.createElement('span');
     dot.className = 'color-swatch__dot';

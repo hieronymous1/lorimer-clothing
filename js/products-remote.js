@@ -32,7 +32,7 @@
         });
         if (product.finishes[0]) product.price = product.finishes[0].price;
       }
-      if (Array.isArray(override.images) && override.images.length) product.images = override.images;
+      if (Array.isArray(override.images)) product.images = override.images;
       if (override.stock_by_size && typeof override.stock_by_size === 'object') {
         product.stockBySize = override.stock_by_size;
         product.available = Object.values(override.stock_by_size).some(function (stock) { return stock > 0; });

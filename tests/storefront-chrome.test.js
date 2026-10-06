@@ -63,12 +63,12 @@ test('homepage uses the approved compact SS24 preview content', () => {
   assert.match(section, /alt="Models walking the Lorimer Spring\/Summer 2024 runway"/);
 });
 
-test('homepage leads with black selvedge denim and uses the client preview order', () => {
+test('homepage leads with blue selvedge denim and uses the client preview order', () => {
   const html = read('index.html');
   const featured = html.match(/<section class="featured-products"[\s\S]*?<\/section>/)?.[0] || '';
   const preview = html.match(/<section class="product-preview"[\s\S]*?<\/section>/)?.[0] || '';
 
-  assert.match(featured, /product-detail\.html\?id=lorimer-selvedge-denim-black[\s\S]*?Lorimer Selvedge Denim Black - Photoshoot\/IMG_3161\.jpg/);
+  assert.match(featured, /product-detail\.html\?id=lorimer-selvedge-denim[\s\S]*?Lorimer Selvedge Denim - Photoshoot\/IMG_2520\.jpg/);
   assert.match(preview, /product-detail\.html\?id=adjustable-button-trousers[\s\S]*?Adjustable Button Trousers - Look 1 Bottoms\/17\.jpg[\s\S]*?Clasper Trousers 002/);
   assert.doesNotMatch(preview, /product-detail\.html\?id=westworld-button-up/);
 });

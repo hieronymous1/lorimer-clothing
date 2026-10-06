@@ -21,7 +21,11 @@ module.exports = async function handler(req, res) {
       res.status(400).json({ error: 'invalid inventory payload' });
       return;
     }
-    await sql`update inventory set stock = ${stock} where product_id = ${product_id} and size = ${size}`;
+    const rows = await sql`update inventory set stock = ${stock} where product_id = ${product_id} and size = ${size} returning product_id, size, stock`;
+    if (!rows.length) {
+      res.status(404).json({ error: 'Inventory row not found. Reload the editor.' });
+      return;
+    }
     res.status(200).json({ ok: true });
     return;
   }

@@ -66,18 +66,18 @@ test('SS24 styles encode editorial ratios, responsive stack, and accessible cont
 
   assert.match(css, /\.ss24-page\s*\{/);
   assert.match(css, /\.lookbook-gallery\s*\{[\s\S]*?aspect-ratio:\s*2\s*\/\s*3/);
-  assert.match(css, /\.lookbook-end__image\s*\{[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/);
+  assert.match(css, /\.lookbook-end__image\s*\{[\s\S]*?height:\s*auto/);
   assert.match(css, /\.lookbook-gallery:focus-visible/);
   assert.match(css, /\.lookbook-look\s*\{[\s\S]*?scroll-margin-top:\s*var\(--nav-h\)/);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.lookbook-look/);
   assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?\.lookbook-look\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
 });
 
-test('SS24 alternates with one harmonious gap, aligned links, and the new closing image', () => {
+test('SS24 alternates with one harmonious gap, aligned links, and the restored film photograph', () => {
   const html = read('ss24.html');
   const css = read('css/styles.css');
 
-  assert.match(html, /class="lookbook-end__image" src="assets\/ss24\/reedit\/addition4\.jpg"/);
+  assert.match(html, /class="lookbook-end__image" src="assets\/ss24\/9\.5\.2024\.JPG"/);
   assert.match(css, /\.lookbook-look\s*\{[^}]*column-gap:\s*clamp\(32px,\s*3\.2vw,\s*64px\)/s);
   assert.match(css, /\.lookbook-look:not\(\.lookbook-look--reverse\) \.lookbook-gallery\s*\{[^}]*justify-self:\s*end/s);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.lookbook-look,[\s\S]*?column-gap:\s*clamp\(28px,\s*6vw,\s*48px\)/s);
@@ -107,7 +107,7 @@ test('SS24 desktop composition uses the large reference scale', () => {
   const css = read('css/styles.css');
 
   assert.match(css, /\.lookbook\s*\{[\s\S]*?1500px/);
-  assert.match(css, /\.lookbook-look\s*\{[\s\S]*?600px/);
+  assert.match(css, /--look-media-width:\s*min\(600px/);
   assert.match(css, /\.lookbook-look__copy h2\s*\{[\s\S]*?clamp\(18px,[^;]+24px\)/);
   assert.match(css, /\.lookbook-look__copy p\s*\{[\s\S]*?clamp\(12px,[^;]+18px\)/);
   assert.match(css, /\.lookbook-look__copy a\s*\{[\s\S]*?clamp\(14px,[^;]+18px\)/);
@@ -127,11 +127,10 @@ test('SS24 gallery controller supports edge buttons, keyboard, swipe, and alt up
   assert.doesNotMatch(source, /lookbook-gallery__next|innerHTML|insertAdjacentHTML|eval\s*\(/);
 });
 
-test('first two SS24 looks share a viewport-bounded reference composition and mobile order', () => {
+test('all SS24 looks share image and copy dimensions without per-look overrides', () => {
   const css = read('css/styles.css');
-
-  assert.match(css, /#look-1,\s*#look-2\s*\{[^}]*--look-composition-height:\s*min\(calc\(100svh - var\(--nav-h\) - 76px\),\s*850px\)/s);
-  assert.match(css, /#look-1 \.lookbook-look__copy,\s*#look-2 \.lookbook-look__copy\s*\{[^}]*min-height:\s*var\(--look-composition-height\)/s);
-  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?#look-1 \.lookbook-gallery,\s*#look-2 \.lookbook-gallery\s*\{[^}]*order:\s*1/s);
-  assert.match(css, /@media\s*\(max-width:\s*420px\)[\s\S]*?#look-1 \.lookbook-look__copy,\s*#look-2 \.lookbook-look__copy\s*\{[^}]*order:\s*2/s);
+  assert.doesNotMatch(css, /#look-[1-6]/);
+  for (const selector of ['lookbook-gallery', 'lookbook-look__copy']) {
+    assert.match(css, new RegExp('\\.' + selector + '\\s*\\{[^}]*width: min\\(100%, var\\(--look-media-width\\)\\)'));
+  }
 });

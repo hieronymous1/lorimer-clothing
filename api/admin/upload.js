@@ -1,6 +1,6 @@
 const { put } = require('@vercel/blob');
 const { isAuthenticated } = require('../_lib/session');
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 async function handler(req, res) {
   if (!isAuthenticated(req, process.env.SESSION_SECRET)) {
@@ -23,7 +23,7 @@ async function handler(req, res) {
     return;
   }
   if (Number(req.headers['content-length'] || 0) > MAX_UPLOAD_BYTES) {
-    res.status(413).json({ error: 'image must be 10 MB or smaller' });
+    res.status(413).json({ error: 'image must be 4 MB or smaller' });
     return;
   }
 
@@ -33,7 +33,7 @@ async function handler(req, res) {
     req.on('data', chunk => {
       size += chunk.length;
       if (size > MAX_UPLOAD_BYTES) {
-        reject(Object.assign(new Error('image must be 10 MB or smaller'), { statusCode: 413 }));
+        reject(Object.assign(new Error('image must be 4 MB or smaller'), { statusCode: 413 }));
         req.destroy();
         return;
       }

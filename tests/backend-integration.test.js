@@ -29,8 +29,8 @@ test('every storefront page defers to products-remote.js before its page script'
   const pages = [
     ['index.html', 'js/home.js'],
     ['about.html', 'js/main.js?v=10'],
-    ['shop.html', 'js/shop.js?v=13'],
-    ['product-detail.html', 'js/product.js?v=10'],
+    ['shop.html', 'js/shop.js?v=15'],
+    ['product-detail.html', 'js/product.js?v=11'],
     ['ss24.html', 'js/ss24.js?v=11'],
     ['checkout.html', 'js/checkout.js'],
   ];

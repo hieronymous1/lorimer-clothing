@@ -1,35 +1,11 @@
 const { getDb } = require('../api/_lib/db');
 const PRODUCTS_DATA = require('../js/products-data.js');
 
-const PRODUCTS = [
-  {
-    id: 'phyllite-jacket',
-    name: 'Phyllite Jacket',
-    description: PRODUCTS_DATA.find(p => p.id === 'phyllite-jacket').description,
-    price_cents: 7000,
-    finish_prices: { wax: 7000, 'fabric-paint': 8000 },
-    images: ['./assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_2297.jpg'],
-    sizes: ['Size 1', 'Size 1.5', 'Size 2', 'Size 2.5'],
-  },
-  {
-    id: 'lorimer-selvedge-denim',
-    name: 'Lorimer Selvedge Denim — Blue',
-    description: PRODUCTS_DATA.find(p => p.id === 'lorimer-selvedge-denim').description,
-    price_cents: 8000,
-    finish_prices: null,
-    images: ['./assets/photos/PRODUCTS/Lorimer Selvedge Denim - Photoshoot/IMG_2520.jpg'],
-    sizes: ['30×30', '30×32', '32×30', '32×32', '32×34', '34×32', '34×34'],
-  },
-  {
-    id: 'lorimer-selvedge-denim-black',
-    name: 'Lorimer Selvedge Denim — Black',
-    description: PRODUCTS_DATA.find(p => p.id === 'lorimer-selvedge-denim-black').description,
-    price_cents: 8000,
-    finish_prices: null,
-    images: ['./assets/photos/PRODUCTS/Lorimer Selvedge Denim Black - Photoshoot/IMG_3161.jpg'],
-    sizes: ['30×30', '30×32', '32×30', '32×32', '32×34', '34×32', '34×34'],
-  },
-];
+const PRODUCTS = PRODUCTS_DATA.filter(product => product.available).map(product => ({
+  ...product,
+  price_cents: Math.round(product.price * 100),
+  finish_prices: null,
+}));
 
 const CONTENT = {
   'footer.copyright': `© Lorimer 2026`,

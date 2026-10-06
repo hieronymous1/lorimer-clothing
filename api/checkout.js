@@ -4,7 +4,7 @@ const { buildStripeShippingOptions, getShippingRegion } = require('./_lib/shippi
 const { resolveLinePrice } = require('./_lib/pricing');
 const PRODUCTS = require('../js/products-data.js');
 
-const LIVE_IDS = ['phyllite-jacket', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'];
+const LIVE_IDS = ['phyllite-jacket', 'phyllite-jacket-v2', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'];
 
 function getStructuralProduct(id) {
   return LIVE_IDS.includes(id) ? PRODUCTS.find(p => p.id === id) : null;
@@ -30,10 +30,15 @@ module.exports = async function handler(req, res) {
 
   const consolidated = new Map();
   for (const item of cart) {
-    const id = typeof item?.id === 'string' ? item.id : '';
+    let id = typeof item?.id === 'string' ? item.id : '';
     const size = typeof item?.size === 'string' ? item.size : '';
     const quantity = Number.isInteger(item?.quantity) ? item.quantity : 0;
-    const finish = typeof item?.finish === 'string' ? item.finish : '';
+    let finish = typeof item?.finish === 'string' ? item.finish : '';
+    // Accept carts submitted by tabs opened before Phyllite was split.
+    if (id === 'phyllite-jacket' && ['wax', 'fabric-paint'].includes(finish)) {
+      if (finish === 'fabric-paint') id = 'phyllite-jacket-v2';
+      finish = '';
+    }
     const lineKey = `${id}\u0000${size}\u0000${finish}`;
     const existing = consolidated.get(lineKey);
     if (existing) existing.quantity += quantity;
