@@ -6,8 +6,37 @@ const cartBackgroundState = new Map();
 
 document.addEventListener('DOMContentLoaded', () => {
   updateCartBadge(); injectCartDrawer(); initCartDrawer(); setNavActive();
-  injectMobileMenu(); initMobileMenu();
+  injectMobileMenu(); initMobileMenu(); initCookieNotice();
 });
+
+const COOKIE_NOTICE_KEY = 'lorimer-cookie-notice';
+
+// Informational only: the site stores nothing beyond what it needs to work
+// (cart, this dismissal), so there is nothing to opt in or out of.
+function initCookieNotice() {
+  if (document.querySelector('.cookie-notice')) return;
+  try { if (localStorage.getItem(COOKIE_NOTICE_KEY)) return; } catch { /* storage blocked: show notice */ }
+  const notice = document.createElement('div');
+  notice.className = 'cookie-notice';
+  notice.setAttribute('role', 'region');
+  notice.setAttribute('aria-label', 'Cookie notice');
+  const text = document.createElement('p');
+  text.textContent = 'We only use essential cookies and storage to keep your cart working. No tracking. ';
+  const link = document.createElement('a');
+  link.href = 'cookies.html';
+  link.textContent = 'Cookie policy';
+  text.append(link);
+  const accept = document.createElement('button');
+  accept.type = 'button';
+  accept.className = 'cookie-notice__accept';
+  accept.textContent = 'OK';
+  accept.addEventListener('click', () => {
+    try { localStorage.setItem(COOKIE_NOTICE_KEY, '1'); } catch { /* dismiss for this page only */ }
+    notice.remove();
+  });
+  notice.append(text, accept);
+  document.body.append(notice);
+}
 
 let mobileMenuTrigger = null;
 

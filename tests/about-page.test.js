@@ -45,7 +45,7 @@ test('about page integrates shared navigation and identifies the current page', 
 test('about page ends with the approved shared storefront footer', () => {
   const html = read('about.html');
   const footer = html.match(/<footer class="[^"]*footer[^"]*"[\s\S]*?<\/footer>/)?.[0] || '';
-  for (const content of ['ABOUT', '© Lorimer 2026', 'Helsinki, 00750', 'NEWSLETTER', 'contact@lorimer.com', '@Lorimer.Clo']) {
+  for (const content of ['ABOUT', '© Lorimer 2026', 'Helsinki, 00750', 'Cookies', 'contact@lorimer.com', '@Lorimer.Clo']) {
     assert.ok(footer.includes(content), `about footer is missing ${content}`);
   }
   assert.ok(html.indexOf('Return &amp; Exchange Policy') < html.indexOf('<footer'), 'footer must follow the policy content');

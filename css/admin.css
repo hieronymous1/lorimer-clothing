@@ -16,3 +16,8 @@
 .admin-save-status { font-size: 12px; color: #2e7d32; }
 table { width: 100%; border-collapse: collapse; background: #fff; }
 th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; }
+.admin-card__tag { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #666; }
+.admin-thumbs { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-thumbs figure { margin: 0; width: 72px; font-size: 11px; text-align: center; color: #666; }
+.admin-thumbs img { display: block; width: 72px; height: 96px; object-fit: cover; background: #eee; }
+.admin-card__reason { white-space: pre-wrap; }

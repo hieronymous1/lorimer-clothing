@@ -34,3 +34,17 @@ create table if not exists webhook_events (
 );
 
 alter table products add column if not exists finish_prices jsonb;
+
+create table if not exists return_requests (
+  id bigserial primary key,
+  created_at timestamptz not null default now(),
+  name text not null,
+  email text not null,
+  order_ref text not null,
+  request_type text not null check (request_type in ('return', 'exchange')),
+  item text not null,
+  exchange_size text not null default '',
+  reason text not null,
+  handled boolean not null default false,
+  admin_note text not null default ''
+);

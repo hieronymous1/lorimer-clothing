@@ -26,6 +26,8 @@ When you're done, click **Log out** in the top-right corner — especially on a 
 
 ---
 
+**Sold-out 1 of 1 pieces:** these are listed further down the Products tab, marked *Sold out · 1 of 1*. You can change their name, description and photos. To change the photo order, reorder the lines in the Images box; the numbered thumbnails underneath show the order customers will see. They stay marked Sold Out and can never be bought.
+
 ## Updating stock levels
 
 **Phyllite jackets:** Phyllite Jacket (Wax) and Phyllite Jacket V2 (Fabric Paint) are separate products. Edit their prices, photos and stock separately, just like the two denim colours. After the split is released, check the stock for both jackets: existing stock stays with Wax, and V2 starts at zero until its actual quantities are entered.
@@ -48,6 +50,16 @@ When you're done, click **Log out** in the top-right corner — especially on a 
 This is just for your own record-keeping — it doesn't email the customer. If you want customers notified automatically, that's a future addition your developer can add.
 
 **Where the money actually is:** this Orders tab is a convenient summary. For refunds, disputes, or anything involving the actual charge, use your Stripe Dashboard (dashboard.stripe.com) — that's the real source of truth for payments.
+
+---
+
+## Returns & exchange requests
+
+1. Click the **Returns** tab
+2. Every request sent through the Returns & Exchanges Portal (lorimerclothing.com/returns) appears here, newest first, with the customer's name, email, order reference, item and reason
+3. Reply to the customer by email (click their address), then tick **Handled**, add a note if useful, and click **Save**. Handled requests move to the bottom
+
+The site doesn't email you when a request arrives, so check this tab regularly.
 
 ---
 

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Returns &amp; Exchanges — LORIMER®</title>
+  <meta name="description" content="Register a return or exchange for your Lorimer order.">
+  <link rel="icon" href="./assets/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=4">
+</head>
+<body class="page-body about-page">
+  <nav class="navbar" aria-label="Primary navigation">
+    <a class="navbar__item" href="ss24.html">S/S24</a>
+    <a class="navbar__item" href="shop.html">PRODUCTS</a>
+    <a class="navbar__logo" href="index.html"><img src="./assets/logo.png" alt="LORIMER®"></a>
+    <a class="navbar__item" href="about.html">ABOUT</a>
+    <button class="cart-btn open-cart" type="button">CART <span class="cart-count">(0)</span></button>
+    <button class="navbar__hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <main class="about-main">
+    <section class="about-section returns-portal reveal" aria-labelledby="returns-portal-title">
+      <h1 id="returns-portal-title">Returns &amp; Exchanges Portal</h1>
+      <p>Register your return or exchange here within 14 days of receiving your order, before sending anything back. We will reply by email with confirmation and return instructions. Please read our <a href="about.html#returns-title">Return &amp; Exchange Policy</a> first.</p>
+
+      <form class="returns-form" id="returns-form" novalidate>
+        <div class="returns-form__choice" role="radiogroup" aria-label="Request type">
+          <label><input type="radio" name="request_type" value="return" checked> Return</label>
+          <label><input type="radio" name="request_type" value="exchange"> Exchange</label>
+        </div>
+        <label>Full name<input name="name" autocomplete="name" maxlength="100" required></label>
+        <label>Email used for your order<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+        <label>Order number or order date<input name="order_ref" maxlength="100" required></label>
+        <label>Item and size<input name="item" maxlength="200" placeholder="e.g. Lorimer Selvedge Denim — Black, 32×32" required></label>
+        <label class="returns-form__exchange" hidden>Size you would like instead<input name="exchange_size" maxlength="60" disabled required></label>
+        <label>Reason<textarea name="reason" rows="5" maxlength="2000" required></textarea></label>
+        <label class="returns-form__trap" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+        <button class="returns-form__submit" type="submit">Submit request</button>
+        <p class="returns-form__status" id="returns-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer about-footer">
+    <div class="footer__col">
+      <a href="about.html">ABOUT</a>
+      <p data-cms-key="footer.copyright">© Lorimer 2026</p>
+      <p data-cms-key="footer.location">Helsinki, 00750</p>
+    </div>
+    <div class="footer__col footer__col--right">
+      <a href="cookies.html">Cookies</a>
+      <a href="mailto:contact@lorimer.com">contact@lorimer.com</a>
+      <a href="https://www.instagram.com/lorimer.clo/" rel="noopener noreferrer">@Lorimer.Clo</a>
+    </div>
+  </footer>
+
+  <script src="js/products-data.js?v=16"></script>
+  <script>window.__LORIMER_SCRIPTS_AFTER__ = ['js/cart.js?v=9','js/main.js?v=11','js/animations.js?v=2','js/returns.js?v=2'];</script>
+  <script src="js/products-remote.js?v=2"></script>
+  <script src="js/content-remote.js"></script>
+</body>
+</html>

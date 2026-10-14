@@ -407,9 +407,33 @@ function initSizeGuide(product) {
 function renderSizeGuideTable(product) {
   const container = document.getElementById('size-guide-table');
   if (!container) return;
-  const { headers, rows } = sizeGuideTable(product);
-
+  const modal = document.getElementById('size-guide-modal');
+  const note = modal?.querySelector('.size-guide-modal__note');
   container.replaceChildren();
+
+  // Garment-specific charts supplied by Lorimer replace the generic table.
+  modal?.classList.toggle('size-guide-modal--image', !!product.sizeGuideImage);
+  if (note) note.hidden = !!product.sizeGuideImage;
+  if (product.sizeGuideImage) {
+    const image = document.createElement('img');
+    image.className = 'size-guide-image';
+    image.src = product.sizeGuideImage;
+    image.alt = `${product.name} size guide: garment measurements in centimetres for each size`;
+    // Tapping opens the full chart so measurements can be pinch-zoomed on phones.
+    const link = document.createElement('a');
+    link.className = 'size-guide-image-link';
+    link.href = product.sizeGuideImage;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.append(image);
+    const hint = document.createElement('p');
+    hint.className = 'size-guide-image-hint';
+    hint.textContent = 'Tap the chart to open it full size.';
+    container.append(link, hint);
+    return;
+  }
+
+  const { headers, rows } = sizeGuideTable(product);
   const table = document.createElement('table');
   table.className = 'size-guide-table';
 

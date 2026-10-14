@@ -44,6 +44,12 @@ const API = {
       method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry),
     }),
   },
+  returns: {
+    list: () => request('/api/admin/returns').then(r => r.json()),
+    save: entry => request('/api/admin/returns', {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry),
+    }),
+  },
   upload: file => request(`/api/admin/upload?filename=${encodeURIComponent(file.name)}`, {
     method: 'POST', headers: { 'Content-Type': file.type }, body: file,
   }),
@@ -99,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     panel.dataset.loaded = 'loading';
     panel.textContent = 'Loading…';
     try {
-      await ({ products: renderProducts, inventory: renderInventory, orders: renderOrders, content: renderContent })[name]();
+      await ({ products: renderProducts, inventory: renderInventory, orders: renderOrders, content: renderContent, returns: renderReturns })[name]();
       panel.dataset.loaded = 'true';
       if (!panel.children.length) panel.textContent = 'No records yet.';
     } catch (error) {
@@ -152,17 +158,34 @@ document.addEventListener('DOMContentLoaded', () => {
       const form = document.createElement('form');
       form.className = 'admin-card';
       form.innerHTML = `
+        ${product.archived ? '<p class="admin-card__tag">Sold out · 1 of 1 — shown in the archive, not for sale</p>' : ''}
         <label>Name<input name="name" value="${escapeAttr(product.name)}"></label>
         <label>Description<textarea name="description">${escapeHtml(product.description)}</textarea></label>
         <label>Price (EUR)<input name="price" type="number" step="0.01" value="${(product.price_cents / 100).toFixed(2)}"></label>
         ${product.finish_prices ? Object.entries(product.finish_prices).map(([key, cents]) => `
         <label>${escapeHtml(key === 'fabric-paint' ? 'Fabric Paint price (EUR)' : key === 'wax' ? 'Wax price (EUR)' : key)}<input name="finish:${escapeAttr(key)}" type="number" step="0.01" min="0.01" value="${(cents / 100).toFixed(2)}"></label>`).join('') : ''}
         <label>Images (one URL per line)<textarea name="images">${escapeHtml((product.images || []).join('\n'))}</textarea></label>
+        <div class="admin-thumbs" aria-label="Image order preview"></div>
         <p>First image is the cover. Reorder or remove URLs above, then Save. Upload JPG, PNG, WebP, GIF or AVIF up to 4 MB.</p>
         <label>Add image<input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif"></label>
         <button type="submit">Save</button>
         <span class="admin-save-status" role="status" aria-live="polite"></span>
       `;
+      // Numbered thumbnails mirror the URL list so photo order can be checked by eye.
+      const thumbs = form.querySelector('.admin-thumbs');
+      const renderThumbs = () => {
+        thumbs.replaceChildren(...form.elements.images.value.split('\n').map(s => s.trim()).filter(Boolean).map((url, i) => {
+          const figure = document.createElement('figure');
+          const image = document.createElement('img');
+          image.src = url; image.alt = ''; image.loading = 'lazy';
+          const caption = document.createElement('figcaption');
+          caption.textContent = String(i + 1);
+          figure.append(image, caption);
+          return figure;
+        }));
+      };
+      form.elements.images.addEventListener('input', renderThumbs);
+      renderThumbs();
       onAction(form, 'submit', async event => {
         event.preventDefault();
         const data = new FormData(form);
@@ -177,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // neither upload it twice nor restore the old image list.
           form.elements.images.value = imageUrls.join('\n');
           form.elements.image.value = '';
+          renderThumbs();
         }
         const payload = {
           id: product.id,
@@ -249,6 +273,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const fulfilled = card.querySelector('input[type="checkbox"]').checked;
         const tracking = card.querySelector('input[type="text"]').value;
         const res = await API.orders.save({ session_id: order.id, fulfilled, tracking });
+        card.querySelector('.admin-save-status').textContent = res.ok ? 'Saved' : 'Error';
+      });
+      panel.append(card);
+    });
+  }
+
+  async function renderReturns() {
+    const panel = document.getElementById('admin-tab-returns');
+    const rows = await API.returns.list();
+    panel.innerHTML = '';
+    rows.forEach(row => {
+      const card = document.createElement('div');
+      card.className = 'admin-card';
+      const type = row.request_type === 'exchange' ? `Exchange${row.exchange_size ? ` → ${row.exchange_size}` : ''}` : 'Return';
+      card.innerHTML = `
+        <p><strong>${escapeHtml(type)}</strong> — ${escapeHtml(new Date(row.created_at).toLocaleString('en-GB'))}</p>
+        <p>${escapeHtml(row.name)} · <a href="mailto:${escapeAttr(row.email)}">${escapeHtml(row.email)}</a> · Order: ${escapeHtml(row.order_ref)}</p>
+        <p>Item: ${escapeHtml(row.item)}</p>
+        <p class="admin-card__reason">${escapeHtml(row.reason)}</p>
+        <label><input type="checkbox" ${row.handled ? 'checked' : ''}> Handled</label>
+        <label>Note <input type="text" value="${escapeAttr(row.admin_note)}"></label>
+        <button type="button">Save</button>
+        <span class="admin-save-status" role="status" aria-live="polite"></span>
+      `;
+      onAction(card.querySelector('button'), 'click', async () => {
+        const handled = card.querySelector('input[type="checkbox"]').checked;
+        const admin_note = card.querySelector('input[type="text"]').value;
+        const res = await API.returns.save({ id: row.id, handled, admin_note });
         card.querySelector('.admin-save-status').textContent = res.ok ? 'Saved' : 'Error';
       });
       panel.append(card);

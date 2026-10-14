@@ -69,30 +69,31 @@ test('desktop homepage featured products stay viewport-bounded and footer has no
   assert.doesNotMatch(css, /\.product-tile:nth-child\(2\)\s*\{[^}]*margin-top:\s*(?!0\b)/);
 });
 
-test('homepage uses the approved Cut Table preloader with supplied brand assets', () => {
+test('homepage load-up screen matches the supplied film-still design', () => {
   const html = read('index.html');
-  const preloader = html.match(/<div class="site-preloader"[\s\S]*?<\/div>\s*<\/div>/)?.[0] || '';
+  const preloader = html.match(/<div class="site-preloader"[\s\S]*?<\/div>/)?.[0] || '';
 
   assert.match(preloader, /role="status"/);
   assert.match(preloader, /aria-live="polite"/);
   assert.match(preloader, /data-preloader-progress[^>]*aria-hidden="true"/);
   assert.match(preloader, /assets\/logo\.png/);
-  assert.match(preloader, /assets\/apple-touch-icon\.png/);
-  assert.match(preloader, /Pattern loading/);
-  assert.equal((preloader.match(/class="site-preloader__panel"/g) || []).length, 6);
+  assert.match(preloader, /class="site-preloader__backdrop" src="\.\/assets\/photos\/preloader\/loadup\.jpg"[^>]*alt=""/);
+  assert.match(preloader, /LORIMER® \/ HELSINKI/);
+  // Riki: "all the other lil texts can go"
+  assert.doesNotMatch(preloader, /Pattern loading|GARMENT INDEX|apple-touch-icon|site-preloader__panel/);
   assert.doesNotMatch(preloader, /<video|\.mp4/);
   assert.match(html, /js\/preloader\.js/);
 });
 
-test('Cut Table preloader is pure white, responsive, and reduced-motion safe', () => {
+test('load-up screen is responsive, reduced-motion safe, and always releases', () => {
   const css = read('css/styles.css');
 
-  assert.match(css, /\.site-preloader\s*\{[\s\S]*?background:\s*var\(--white\)/);
-  assert.match(css, /\.site-preloader__panel\s*\{[\s\S]*?background:\s*var\(--white\)/);
+  assert.match(css, /\.site-preloader__backdrop\s*\{[\s\S]*?object-fit:\s*cover/);
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.site-preloader/);
   assert.match(css, /@keyframes\s+preloader-failsafe/);
+  assert.match(css, /\.site-preloader\.is-leaving\s*\{[^}]*preloader-failsafe[^}]*preloader-wipe-out/);
   assert.match(css, /@media\s*\(max-width:\s*768px\)[\s\S]*?\.site-preloader__logo/);
-  assert.match(css, /\.site-preloader__progress\s*\{[\s\S]*?grid-column:\s*3/);
+  assert.match(css, /\.site-preloader__progress\s*\{[\s\S]*?right:\s*20px/);
 });
 
 test('Cut Table preloader tracks loading and always releases the page', () => {

@@ -6,15 +6,22 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initPageTransitions() {
+  // Safari/iOS restore pages from the back-forward cache exactly as they
+  // were left — mid-exit at opacity 0 — so Back showed a blank white page.
+  window.addEventListener('pageshow', () => document.body.classList.remove('page-exit'));
   document.addEventListener('click', e => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const link = e.target.closest('a[href]');
     if (!link) return;
     const href = link.getAttribute('href');
+    // Only same-site page navigations fade out; mailto:/tel:/new-tab links
+    // never unload this page, so fading them would strand it at opacity 0.
     if (
       !href ||
       href.startsWith('#') ||
-      href.startsWith('http') ||
-      href.startsWith('javascript') ||
+      /^[a-z][a-z0-9+.-]*:/i.test(href) ||
+      link.target && link.target !== '_self' ||
+      link.hasAttribute('download') ||
       link.classList.contains('open-cart')
     ) return;
     e.preventDefault();

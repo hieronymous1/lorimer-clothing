@@ -111,7 +111,7 @@ test('homepage removes the standalone product row and uses one section gap token
 test('every storefront page uses the approved footer content', () => {
   for (const page of pages) {
     const footer = read(page).match(/<footer class="[^"]*footer[^"]*"[\s\S]*?<\/footer>/)?.[0] || '';
-    for (const content of ['ABOUT', '© Lorimer 2026', 'Helsinki, 00750', 'NEWSLETTER', 'contact@lorimer.com', '@Lorimer.Clo']) {
+    for (const content of ['ABOUT', '© Lorimer 2026', 'Helsinki, 00750', 'Cookies', 'contact@lorimer.com', '@Lorimer.Clo']) {
       assert.ok(footer.includes(content), `${page} footer is missing ${content}`);
     }
   }

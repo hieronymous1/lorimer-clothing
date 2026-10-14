@@ -68,6 +68,7 @@ Rib knit finishes along the collar, neck and cuffs, fully lined inside and finis
 Like a Phyllite stone reaching its metamorphosis due to subjected heat and pressure, the jacket is given an added sheen during an in-house waxing procedure that elevates the jacket's look and feel. The Phyllite Jacket is fully lined inside with a soft and light 100% cotton lining for extra comfort.`,
     material: '100% Cotton Denim, Stainless Steel Hardware',
     sizes: ['Size 1', 'Size 1.5', 'Size 2', 'Size 2.5'],
+    sizeGuideImage: './assets/photos/size-guides/phyllite-jacket.jpg',
   },
   {
     id: 'phyllite-jacket-v2',
@@ -98,6 +99,7 @@ Like a Phyllite stone reaching its metamorphosis due to subjected heat and press
 Like a Phyllite stone reaching its metamorphosis due to subjected heat and pressure, the jacket is given an added sheen during an in-house fabric painting procedure that elevates the jacket's look and feel. The Phyllite Jacket is fully lined inside with a soft and light 100% cotton lining for extra comfort.`,
     material: '100% Cotton Denim, Stainless Steel Hardware',
     sizes: ['Size 1', 'Size 1.5', 'Size 2', 'Size 2.5'],
+    sizeGuideImage: './assets/photos/size-guides/phyllite-jacket.jpg',
   },
   {
     id: 'lorimer-selvedge-denim',
@@ -123,6 +125,7 @@ The silhouette is more snug at the waist and thigh area opening up to a wider le
 Finished with a contrasting stitch, back pocket design, strong wide belt loops, a cow leather waistband patch, embroidered coin pocket, a stainless steel button and rivets and roomy pockets with easy access.`,
     material: '100% Cotton Japanese Selvedge Denim, Cowhide Leather, Stainless Steel Hardware',
     sizes: ['30×30', '30×32', '32×30', '32×32', '32×34', '34×32', '34×34'],
+    sizeGuideImage: './assets/photos/size-guides/selvedge-denim.jpg',
   },
   {
     id: 'lorimer-selvedge-denim-black',
@@ -153,6 +156,7 @@ The silhouette is more snug at the waist and thigh area opening up to a wider le
 Finished with a contrasting stitch, back pocket design, strong wide belt loops, a cow leather waistband patch, embroidered coin pocket, a stainless steel button and rivets and roomy pockets with easy access.`,
     material: '100% Cotton Japanese Selvedge Denim, Cowhide Leather, Stainless Steel Hardware',
     sizes: ['30×30', '30×32', '32×30', '32×32', '32×34', '34×32', '34×34'],
+    sizeGuideImage: './assets/photos/size-guides/selvedge-denim.jpg',
   },
   {
     id: 'reconstructed-button-up-1',

@@ -24,6 +24,6 @@ test('edge scrims are visible at rest with gated hover and reduced motion', () =
   assert.match(css, /\.lookbook-gallery__nav--next\s*\{[^}]*linear-gradient\(to left, rgba\(0, 0, 0, \.22\), transparent\)/);
   assert.match(css, /\.lookbook-gallery__nav--prev\s*\{[^}]*linear-gradient\(to right, rgba\(0, 0, 0, \.22\), transparent\)/);
   assert.match(css, /@media \(hover: hover\) and \(pointer: fine\)\s*\{[^}]*\.lookbook-gallery__nav:hover/);
-  assert.match(css, /\.lookbook-gallery__image\s*\{[^}]*transition:\s*opacity 240ms var\(--ease-out\)/);
+  assert.doesNotMatch(css.match(/\.lookbook-gallery__image\s*\{[^}]*\}/)[0], /transition/);
   assert.match(css, /@media \(max-width: 600px\)\s*\{[^}]*\.lookbook-gallery__nav\s*\{\s*width:\s*48px/);
 });

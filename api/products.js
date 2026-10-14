@@ -2,6 +2,9 @@ const { getDb } = require('./_lib/db');
 const PRODUCTS = require('../js/products-data.js');
 
 const LIVE_IDS = ['phyllite-jacket', 'phyllite-jacket-v2', 'lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'];
+// Sold-out 1 of 1 pieces: copy and photo order are admin-editable, but they are
+// never purchasable — api/checkout.js keeps its own list of sellable products.
+const ARCHIVE_IDS = PRODUCTS.filter(product => product.notForSale).map(product => product.id);
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -19,7 +22,8 @@ module.exports = async function handler(req, res) {
     stockByProduct.get(row.product_id)[row.size] = row.stock;
   });
 
-  const payload = LIVE_IDS.map(id => {
+  const payload = [...LIVE_IDS, ...ARCHIVE_IDS].map(id => {
+    const archived = ARCHIVE_IDS.includes(id);
     const structural = PRODUCTS.find(p => p.id === id);
     const override = byId.get(id);
     return {
@@ -32,7 +36,7 @@ module.exports = async function handler(req, res) {
         ? Object.fromEntries(Object.entries(override.finish_prices).map(([key, cents]) => [key, cents / 100]))
         : null,
       sizes: structural.sizes,
-      stock_by_size: stockByProduct.get(id) || {},
+      stock_by_size: archived ? null : stockByProduct.get(id) || {},
     };
   });
 

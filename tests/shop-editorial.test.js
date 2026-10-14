@@ -64,7 +64,7 @@ test('shop declares exact twelve-row sequence with no standalone look cards', ()
   const rows = JSON.parse(JSON.stringify(context.module.exports));
   const compact = rows.map(row => [row.type, ...(row.products || [])]);
   assert.deepEqual(compact, expectedRows);
-  assert.deepEqual(rows[1].images, ['./assets/photos/shop/still-01.jpg', './assets/photos/shop/still-02.jpg']);
+  assert.deepEqual(rows[1].images, ['./assets/photos/shop/still-01.jpg?v=2', './assets/photos/shop/still-02.jpg?v=2']);
   assert.deepEqual(rows[6].images, ['./assets/photos/shop/still-03.jpg', './assets/photos/shop/still-04.jpg']);
   assert.deepEqual(rows.map(row => Boolean(row.ss24)), [false, false, false, false, false, false, false, true, true, true, true, true]);
   assert.match(source, /rowIndex === 0 \? 'two'/);

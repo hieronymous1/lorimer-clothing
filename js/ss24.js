@@ -12,16 +12,38 @@ function initLookbookGallery(gallery) {
   const label = gallery.dataset.galleryLabel || `Look ${look}`;
   if (!frontImage || images.length < 2) return;
 
-  // Two stacked layers so the opacity transition actually has something to
-  // crossfade between, instead of swapping .src on a single <img>.
+  // One stacked layer per image, all fetched and decoded before the viewer
+  // reaches the gallery, so a click swaps instantly instead of leaving the
+  // previous photo on screen while the next one downloads.
   frontImage.classList.add('is-visible');
-  const backImage = frontImage.cloneNode(false);
-  backImage.removeAttribute('src');
-  backImage.alt = '';
-  backImage.classList.remove('is-visible');
-  gallery.insertBefore(backImage, frontImage.nextSibling);
-  const layers = [frontImage, backImage];
-  let frontIndex = 0;
+  frontImage.alt = `${label}, image 1 of ${images.length}`;
+  let anchor = frontImage;
+  const layers = images.map((src, i) => {
+    if (i === 0) return frontImage;
+    const layer = frontImage.cloneNode(false);
+    layer.classList.remove('is-visible');
+    layer.removeAttribute('src');
+    layer.removeAttribute('loading');
+    layer.alt = '';
+    layer.dataset.src = src;
+    anchor.after(layer);
+    anchor = layer;
+    return layer;
+  });
+  const preload = () => layers.forEach(layer => {
+    if (!layer.dataset.src) return;
+    layer.src = layer.dataset.src;
+    delete layer.dataset.src;
+    layer.decode?.().catch(() => {});
+  });
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      observer.disconnect();
+      preload();
+    }, { rootMargin: '600px 0px' });
+    observer.observe(gallery);
+  } else preload();
 
   const dotsWrap = document.createElement('div');
   dotsWrap.className = 'lookbook-gallery__dots';
@@ -47,13 +69,12 @@ function initLookbookGallery(gallery) {
     dotsWrap.querySelectorAll('span').forEach((dot, i) => dot.classList.toggle('is-active', i === index));
   };
   const move = direction => {
+    preload();
+    layers[index].classList.remove('is-visible');
+    layers[index].alt = '';
     index = (index + direction + images.length) % images.length;
-    const back = layers[1 - frontIndex];
-    back.src = images[index];
-    back.alt = `${label}, image ${index + 1} of ${images.length}`;
-    back.classList.add('is-visible');
-    layers[frontIndex].classList.remove('is-visible');
-    frontIndex = 1 - frontIndex;
+    layers[index].alt = `${label}, image ${index + 1} of ${images.length}`;
+    layers[index].classList.add('is-visible');
     updateChrome();
   };
   updateChrome();

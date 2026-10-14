@@ -20,7 +20,12 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'GET') {
     const rows = await sql`select id, name, description, price_cents, images, finish_prices, updated_at::text as updated_at from products order by id`;
-    res.status(200).json(rows);
+    // Live products first, then the sold-out 1 of 1 archive in storefront order.
+    const order = id => { const index = PRODUCTS.findIndex(p => p.id === id); return index < 0 ? PRODUCTS.length : index; };
+    const archived = id => !!PRODUCTS.find(p => p.id === id)?.notForSale;
+    res.status(200).json(rows
+      .map(row => ({ ...row, archived: archived(row.id) }))
+      .sort((a, b) => a.archived - b.archived || order(a.id) - order(b.id)));
     return;
   }
 

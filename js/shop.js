@@ -2,7 +2,7 @@
 
 const SHOP_ROWS = [
   { type: 'products', products: ['lorimer-selvedge-denim', 'phyllite-jacket'] },
-  { type: 'divider', images: ['./assets/photos/shop/still-01.jpg', './assets/photos/shop/still-02.jpg'] },
+  { type: 'divider', images: ['./assets/photos/shop/still-01.jpg?v=2', './assets/photos/shop/still-02.jpg?v=2'] },
   { type: 'products', products: ['deconstructed-bomber', 'zip-up-utility-vest', 'westworld-button-up'] },
   { type: 'products', products: ['layered-denim-shorts', 'layered-denim-jeans', 'westworld-straight-jeans'] },
   { type: 'products', products: ['reconstructed-button-up-1', 'reconstructed-button-up-2', 'reinforced-pinstripe-trousers'] },
