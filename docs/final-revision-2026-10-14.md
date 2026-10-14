@@ -76,7 +76,7 @@ Cache-bust versions bumped: styles v4, products-data v16, main v11,
 animations v2, product v13, shop v16, ss24 v12, admin.js v4, admin.css v2,
 returns.js v2.
 
-## Release
+## Release procedure
 
 Before deploying, with `DATABASE_URL` set:
 
@@ -92,10 +92,16 @@ It is idempotent and additive:
 
 Without it, the Returns form fails, the sold-out products don't appear in
 admin, and the live About page has no portal link (the CMS value overrides
-the HTML). It has not been run yet.
+the HTML). The migration was run successfully on 14 October; see below.
 
 ### Release completion — Codex, 14 October 2026
 
+- Implementation pushed as `b6f62b7` on `design/elevation`.
+- Deployed to production at https://www.lorimerclothing.com.
+  Deployment: https://lorimer-clothing-ipltp1mcu-hieronymous1s-projects.vercel.app.
+- Live smoke checks passed: Home, Returns, Cookies, 28 public products,
+  the CMS portal link, authenticated Returns listing (200), unauthenticated
+  Returns rejection (401), and empty public submission rejection (400).
 - `npm test`: all 174 tests pass; `git diff --check` is clean.
 - Admin browser regression passed: uploads, repeated saves, reload persistence,
   drafts across tabs, expired sessions, and oversized upload rejection.
@@ -134,7 +140,7 @@ the HTML). It has not been run yet.
   whether Riki owns lorimer.com. The address also appears inside both
   size-guide images and across the site's copy.
 - **Final mobile pass** after the copy and video land.
-- **Commit, then deploy.** Run the migration first.
+- **Release completed.** Follow the release procedure again for future changes.
 
 ## Known minor caveats
 - `api/returns.js` rejects a *return* request that carries a malformed
