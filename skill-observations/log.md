@@ -67,3 +67,19 @@ Observations captured during task-oriented work. Each entry identifies a potenti
 **Suggested improvement:** Add an initial dependency check for both the Python interpreter and `playwright` module. If either is unavailable, route directly to an installed browser-control capability before creating a test script or installing new packages.
 
 **Principle:** Automation workflows should verify their required runtime and library together before generating harness code, then prefer an already-installed capability-equivalent fallback.
+
+
+### Observation 5: Verify copy against the runtime CMS before release
+
+**Status:** OPEN
+**Date:** 2026-10-15
+**Session context:** Completing a revision round on a static storefront with database overrides.
+**Skill:** webapp-testing
+**Type:** open-source
+**Phase/Area:** Production parity
+
+**Issue:** Bundled product descriptions differed from the runtime database. A successful static smoke check would still have left old or inaccurate descriptions on production because the remote catalog overrides the local data.
+
+**Suggested improvement:** Before releasing a copy update, inspect the effective catalog and CMS content, back up the targeted records, migrate only approved text, and verify prices, photos and inventory remain unchanged. Test the deployed page as well as its fallback files.
+
+**Principle:** Verify user-visible content at the final source of truth, including remote overrides.

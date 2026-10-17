@@ -28,9 +28,9 @@ test('checkout.js posts to /api/checkout and clears the cart on success', () => 
 test('every storefront page defers to products-remote.js before its page script', () => {
   const pages = [
     ['index.html', 'js/home.js'],
-    ['about.html', 'js/main.js?v=11'],
+    ['about.html', 'js/main.js?v=12'],
     ['shop.html', 'js/shop.js?v=16'],
-    ['product-detail.html', 'js/product.js?v=13'],
+    ['product-detail.html', 'js/product.js?v=14'],
     ['ss24.html', 'js/ss24.js?v=12'],
     ['checkout.html', 'js/checkout.js'],
   ];

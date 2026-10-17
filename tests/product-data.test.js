@@ -74,7 +74,7 @@ test('live denim carries the new copy and material', () => {
   const products = loadProducts();
   ['lorimer-selvedge-denim', 'lorimer-selvedge-denim-black'].forEach(id => {
     const denim = products.find(p => p.id === id);
-    assert.match(denim.description, /^Constructed from a 100% Japanese Selvedge Denim fabric/);
+    assert.match(denim.description, /^Cut from a 100% Japanese Selvedge Denim fabric/);
     assert.equal(denim.description.split('\n\n').length, 3);
     assert.equal(denim.material, '100% Cotton Japanese Selvedge Denim, Cowhide Leather, Stainless Steel Hardware');
     assert.equal(denim.styleWith, undefined);

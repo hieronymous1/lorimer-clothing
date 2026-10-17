@@ -231,6 +231,9 @@ function renderGallery(product) {
     image.loading = index === 0 ? 'eager' : 'lazy';
     image.decoding = 'async';
     if (index === 0) image.fetchPriority = 'high';
+    const markWide = () => image.classList.toggle('gallery-image--wide', image.naturalWidth > image.naturalHeight);
+    image.addEventListener('load', markWide);
+    if (image.complete) markWide();
     gallery.appendChild(image);
     initImageMagnifier(image);
   });

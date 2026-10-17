@@ -7,15 +7,15 @@ const ROOT = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
 
 const descriptions = [
-  'A contoured seam defines the transition between knit textures as the silhouette adapts form through ferromagnetic articulation.',
-  'Panelled construction composes a visual rhythm, bringing contrasting textures into a singular expression.',
-  'Faceted engineering introduces a sculptural surface, balanced by a transition between structured and fluid materials.',
-  'Curved panel seams define the upper form, giving way to a fluid sense of movement.',
-  'Layered surfaces establish a softened sense of continuity, allowing asymmetry to move with cohesion.',
-  'An asymmetrical silhouette unfolds from a sculpted foundation, as layered lengths and technical fabrications create a refined balance of structure and movement.',
+  "A contoured seam defines the transition between knit textures as the silhouette adapts form through ferromagnetic articulation.",
+  "Panelled construction composes a visual rhythm, bringing subtly contrasting textures into a singular expression.",
+  "Faceted engineering introduces a sculptural surface for a three dimensional look, followed by a transition between structured and fluid materials.",
+  "Layered surfaces establish a softened sense of continuity, allowing disproportionality to move with cohesion.",
+  "Curved panel seams define the upper form, giving way to a fluid sense of movement.",
+  "An asymmetrical silhouette unfolds from a sculpted foundation, as layered lengths and technical fabrications create a refined balance of structure and movement."
 ];
 
-test('SS24 page transcribes the reference copy and navigation', () => {
+test('SS24 page uses revised garment copy and navigation', () => {
   const html = read('ss24.html');
 
   for (const label of ['S/S24', 'PRODUCTS', 'LORIMER®', 'ABOUT', 'CART']) {
@@ -25,7 +25,7 @@ test('SS24 page transcribes the reference copy and navigation', () => {
   assert.equal((html.match(/View in Products/g) || []).length, 6);
   assert.match(html, /9\.5\.2024/);
   assert.match(html, /© Lorimer 2026/);
-  assert.match(html, /contact@lorimer\.com/);
+  assert.match(html, /info@lorimerclothing\.com/);
   assert.doesNotMatch(html, /Nettspend|Slideshow arrow to show/);
 });
 

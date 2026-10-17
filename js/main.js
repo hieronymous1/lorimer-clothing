@@ -22,14 +22,10 @@ function initCookieNotice() {
   notice.setAttribute('aria-label', 'Cookie notice');
   const text = document.createElement('p');
   text.textContent = 'We only use essential cookies and storage to keep your cart working. No tracking. ';
-  const link = document.createElement('a');
-  link.href = 'cookies.html';
-  link.textContent = 'Cookie policy';
-  text.append(link);
   const accept = document.createElement('button');
   accept.type = 'button';
   accept.className = 'cookie-notice__accept';
-  accept.textContent = 'OK';
+  accept.textContent = 'Accept';
   accept.addEventListener('click', () => {
     try { localStorage.setItem(COOKIE_NOTICE_KEY, '1'); } catch { /* dismiss for this page only */ }
     notice.remove();

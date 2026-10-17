@@ -95,3 +95,20 @@ The site doesn't email you when a request arrives, so check this tab regularly.
 - Any files in the website's code — all day-to-day changes happen through this admin page
 
 If something looks broken and none of the above fixes it, contact your developer with a screenshot and a description of what you were trying to do.
+
+
+## Contact email
+
+The website contact address is **info@lorimerclothing.com**. Namecheap
+Private Email hosts the mailbox. Sign in through **privateemail.com**, using
+the complete email address and the mailbox password (separate from the
+Namecheap account password).
+
+The Launch plan includes one mailbox and 5 GB storage. Its trial ends on
+15 November 2026, with annual auto-renew enabled at the approved price of
+€13.29/year (subject to Namecheap's displayed renewal pricing). Manage it in
+Namecheap → Private Email → lorimerclothing.com.
+
+DNS includes Private Email MX, SPF and DKIM records. After setup, send a test
+email to the address from another inbox, then reply from the new mailbox to
+confirm incoming and outgoing delivery.

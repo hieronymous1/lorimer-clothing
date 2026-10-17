@@ -21,8 +21,8 @@ test('about page follows the approved reference content order', () => {
   const positions = markers.map(marker => html.indexOf(marker));
   assert.ok(positions.every(position => position >= 0), 'about page is missing a required section');
   assert.deepEqual(positions, [...positions].sort((a, b) => a - b));
-  assert.match(html, /contact@lorimer\.com/);
-  assert.match(html, /lorimer-clothing\.com/);
+  assert.match(html, /info@lorimerclothing\.com/);
+  assert.match(html, /lorimerclothing\.com/);
 });
 
 test('about page uses the four supplied editorial images in reference order', () => {
@@ -45,7 +45,7 @@ test('about page integrates shared navigation and identifies the current page', 
 test('about page ends with the approved shared storefront footer', () => {
   const html = read('about.html');
   const footer = html.match(/<footer class="[^"]*footer[^"]*"[\s\S]*?<\/footer>/)?.[0] || '';
-  for (const content of ['ABOUT', '© Lorimer 2026', 'Helsinki, 00750', 'Cookies', 'contact@lorimer.com', '@Lorimer.Clo']) {
+  for (const content of ['ABOUT', '© Lorimer 2026', 'Helsinki, 00750', 'Shipping &amp; Returns', 'info@lorimerclothing.com', '@Lorimer.Clo']) {
     assert.ok(footer.includes(content), `about footer is missing ${content}`);
   }
   assert.ok(html.indexOf('Return &amp; Exchange Policy') < html.indexOf('<footer'), 'footer must follow the policy content');

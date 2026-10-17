@@ -52,11 +52,11 @@ module.exports = async function handler(req, res) {
     from return_requests
   `;
   if (by_email >= PER_EMAIL_PER_DAY) {
-    res.status(429).json({ error: 'We have already received your request. Please email contact@lorimer.com if you need to add anything.' });
+    res.status(429).json({ error: 'We have already received your request. Please email info@lorimerclothing.com if you need to add anything.' });
     return;
   }
   if (total >= PER_HOUR_TOTAL) {
-    res.status(429).json({ error: 'We are receiving a lot of requests right now. Please try again later or email contact@lorimer.com.' });
+    res.status(429).json({ error: 'We are receiving a lot of requests right now. Please try again later or email info@lorimerclothing.com.' });
     return;
   }
 

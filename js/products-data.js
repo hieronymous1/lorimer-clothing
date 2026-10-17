@@ -63,12 +63,18 @@ Rib knit finishes along the collar, neck and cuffs, fully lined inside and finis
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_2370.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_2246.jpg',
     ],
-    description: `The subtle black two tone denim jacket is separated by its front and back panels seamlessly transitioning throughout the jacket's shoulders, sleeves and sides. Appearing in an exaggerated silhouette with a high crop on the body along with elongated sleeves and stainless steel buttons.
+    description: `Constructed from two tones of black denim, the front and back of the jacket meet in a seamless transition across the shoulders, sleeves and sides.
 
-Like a Phyllite stone reaching its metamorphosis due to subjected heat and pressure, the jacket is given an added sheen during an in-house waxing procedure that elevates the jacket's look and feel. The Phyllite Jacket is fully lined inside with a soft and light 100% cotton lining for extra comfort.`,
+An abstract rendition of a denim jacket, the silhouette features a high-crop with a body contouring shape, elongated sleeves and custom embossed buttons fully lined in a soft, lightweight cotton for extra comfort while worn.
+
+The elongated sleeves provide visual choice, with the cuffs left open the sleeves drape over the hands of the wearer, whereas when the cuffs are fastened at the wrist, the extra length gathers into a pronounced stack along the arm creating a completely different effect.
+
+The name comes from phyllite, a rock formed when the slate is subjected to further heat and pressure, emerging with a silken sheen. The jacket follows the same idea of transformation. Through an in-house waxing process, the wax is infused into the fabric with heat resulting in an elevated texture and a satin-like sheen that catches the light ensuring a unique finish to each garment, no one is the same.
+
+While a select few jackets are ready in stock, each jacket goes through an in-house waxing process and/or sleeve shortening alteration for the .5 sizes. These custom sizes with post production alterations are sold on a one order at a time basis. An order may take 1-3 days to ship after the order is placed, you will be informed throughout the process.`,
     material: '100% Cotton Denim, Stainless Steel Hardware',
     sizes: ['Size 1', 'Size 1.5', 'Size 2', 'Size 2.5'],
-    sizeGuideImage: './assets/photos/size-guides/phyllite-jacket.jpg',
+    sizeGuideImage: './assets/photos/size-guides/phyllite-jacket-v2.png',
   },
   {
     id: 'phyllite-jacket-v2',
@@ -94,12 +100,18 @@ Like a Phyllite stone reaching its metamorphosis due to subjected heat and press
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3941.jpg',
       './assets/photos/PRODUCTS/Phyllite Jacket - Photoshoot/IMG_3951.jpg',
     ],
-    description: `The subtle black two tone denim jacket is separated by its front and back panels seamlessly transitioning throughout the jacket's shoulders, sleeves and sides. Appearing in an exaggerated silhouette with a high crop on the body along with elongated sleeves and stainless steel buttons.
+    description: `Constructed from two tones of black denim, the front and back of the jacket meet in a seamless transition across the shoulders, sleeves and sides.
 
-Like a Phyllite stone reaching its metamorphosis due to subjected heat and pressure, the jacket is given an added sheen during an in-house fabric painting procedure that elevates the jacket's look and feel. The Phyllite Jacket is fully lined inside with a soft and light 100% cotton lining for extra comfort.`,
+An abstract rendition of a denim jacket, the silhouette features a high-crop with a body contouring shape, elongated sleeves and custom embossed buttons fully lined in a soft, lightweight cotton for extra comfort while worn.
+
+The elongated sleeves provide visual choice, with the cuffs left open the sleeves drape over the hands of the wearer, whereas when the cuffs are fastened at the wrist, the extra length gathers into a pronounced stack along the arm creating a completely different effect.
+
+The name comes from phyllite, a rock formed when the slate is subjected to further heat and pressure, emerging with a silken sheen. The jacket follows the same idea of transformation. Through an in-house fabric painting process, the fabric paint is infused into the fabric with heat resulting in a robust sculptural texture and a deeper black tone with a sleek shine ensuring a unique finish to each garment, no one is the same.
+
+While a select few jackets are ready in stock, each jacket goes through an in-house fabric painting process and/or sleeve shortening alteration for the .5 sizes. These custom sizes with post production alterations are sold on a one order at a time basis. An order may take 1-3 days to ship after the order is placed, you will be informed throughout the process.`,
     material: '100% Cotton Denim, Stainless Steel Hardware',
     sizes: ['Size 1', 'Size 1.5', 'Size 2', 'Size 2.5'],
-    sizeGuideImage: './assets/photos/size-guides/phyllite-jacket.jpg',
+    sizeGuideImage: './assets/photos/size-guides/phyllite-jacket-v2.png',
   },
   {
     id: 'lorimer-selvedge-denim',
@@ -118,14 +130,14 @@ Like a Phyllite stone reaching its metamorphosis due to subjected heat and press
       './assets/photos/PRODUCTS/Lorimer Selvedge Denim - Photoshoot/IMG_2577.jpg',
       './assets/photos/PRODUCTS/Lorimer Selvedge Denim - Photoshoot/IMG_2882.jpg',
     ],
-    description: `Constructed from a 100% Japanese Selvedge Denim fabric, a brand new pair arrives as a heavy structured pair which over time molds to the wearer's body and movements enhancing the silhouette to fit the personality of its wearer.
+    description: `Cut from a 100% Japanese Selvedge Denim fabric, as new the jeans arrive with a coarse structure that softens over time as it molds to the wearer's body and movements enhancing the shape to fit the personality of its wearer.
 
-The silhouette is more snug at the waist and thigh area opening up to a wider leg allowing the bottom hem to fall beautifully on any footwear. Refer to the size guide provided for specific measurements.
+The silhouette is more snug at the waist and thigh area opening up to a wider leg allowing the bottom hem to fall comfortably over any footwear. Refer to the size guide provided for specific measurements.
 
-Finished with a contrasting stitch, back pocket design, strong wide belt loops, a cow leather waistband patch, embroidered coin pocket, a stainless steel button and rivets and roomy pockets with easy access.`,
+Finished with a contrasting stitch, back pocket design with roomy pockets throughout, a coin pocket embroidery, six sturdy belt loops around the waistband with a cowhide leather patch and stainless steel hardware featuring rivets and a custom embossed button.`,
     material: '100% Cotton Japanese Selvedge Denim, Cowhide Leather, Stainless Steel Hardware',
     sizes: ['30×30', '30×32', '32×30', '32×32', '32×34', '34×32', '34×34'],
-    sizeGuideImage: './assets/photos/size-guides/selvedge-denim.jpg',
+    sizeGuideImage: './assets/photos/size-guides/selvedge-denim-v2.png',
   },
   {
     id: 'lorimer-selvedge-denim-black',
@@ -149,14 +161,14 @@ Finished with a contrasting stitch, back pocket design, strong wide belt loops, 
       './assets/photos/PRODUCTS/Lorimer Selvedge Denim Black - Photoshoot/IMG_3941.jpg',
       './assets/photos/PRODUCTS/Lorimer Selvedge Denim Black - Photoshoot/IMG_3951.jpg',
     ],
-    description: `Constructed from a 100% Japanese Selvedge Denim fabric, a brand new pair arrives as a heavy structured pair which over time molds to the wearer's body and movements enhancing the silhouette to fit the personality of its wearer.
+    description: `Cut from a 100% Japanese Selvedge Denim fabric, as new the jeans arrive with a coarse structure that softens over time as it molds to the wearer's body and movements enhancing the shape to fit the personality of its wearer.
 
-The silhouette is more snug at the waist and thigh area opening up to a wider leg allowing the bottom hem to fall beautifully on any footwear. Refer to the size guide provided for specific measurements.
+The silhouette is more snug at the waist and thigh area opening up to a wider leg allowing the bottom hem to fall comfortably over any footwear. Refer to the size guide provided for specific measurements.
 
-Finished with a contrasting stitch, back pocket design, strong wide belt loops, a cow leather waistband patch, embroidered coin pocket, a stainless steel button and rivets and roomy pockets with easy access.`,
+Finished with a contrasting stitch, back pocket design with roomy pockets throughout, a coin pocket embroidery, six sturdy belt loops around the waistband with a cowhide leather patch and stainless steel hardware featuring rivets and a custom embossed button.`,
     material: '100% Cotton Japanese Selvedge Denim, Cowhide Leather, Stainless Steel Hardware',
     sizes: ['30×30', '30×32', '32×30', '32×32', '32×34', '34×32', '34×34'],
-    sizeGuideImage: './assets/photos/size-guides/selvedge-denim.jpg',
+    sizeGuideImage: './assets/photos/size-guides/selvedge-denim-v2.png',
   },
   {
     id: 'reconstructed-button-up-1',
@@ -232,7 +244,7 @@ A University of Lorimer collegiate logo is printed across the chest with a distr
     notForSale: true,
     oneOfOne: true,
     images: [
-      './assets/photos/PRODUCTS/Distressed Lorimer Cap/1.png',
+      './assets/photos/PRODUCTS/Distressed Lorimer Cap/STERLINGCAP003.png',
     ],
     description: `A distressed logo cap, dyed black after construction for a deep black-on-black finish.
 

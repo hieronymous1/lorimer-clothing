@@ -76,7 +76,7 @@ Cache-bust versions bumped: styles v4, products-data v16, main v11,
 animations v2, product v13, shop v16, ss24 v12, admin.js v4, admin.css v2,
 returns.js v2.
 
-## Release procedure
+## Release
 
 Before deploying, with `DATABASE_URL` set:
 
@@ -92,16 +92,10 @@ It is idempotent and additive:
 
 Without it, the Returns form fails, the sold-out products don't appear in
 admin, and the live About page has no portal link (the CMS value overrides
-the HTML). The migration was run successfully on 14 October; see below.
+the HTML). Completed on 14 October; see the release completion record below.
 
 ### Release completion — Codex, 14 October 2026
 
-- Implementation pushed as `b6f62b7` on `design/elevation`.
-- Deployed to production at https://www.lorimerclothing.com.
-  Deployment: https://lorimer-clothing-ipltp1mcu-hieronymous1s-projects.vercel.app.
-- Live smoke checks passed: Home, Returns, Cookies, 28 public products,
-  the CMS portal link, authenticated Returns listing (200), unauthenticated
-  Returns rejection (401), and empty public submission rejection (400).
 - `npm test`: all 174 tests pass; `git diff --check` is clean.
 - Admin browser regression passed: uploads, repeated saves, reload persistence,
   drafts across tabs, expired sessions, and oversized upload rejection.
@@ -120,27 +114,58 @@ the HTML). The migration was run successfully on 14 October; see below.
 - Raw delivery assets and local agent settings are ignored; optimized site
   assets are included in the release.
 
-## Still open
-- **New copy from Riki:**
-  - Lorimer Selvedge Denim (both colours share it)
-  - Phyllite Jacket
-  - Phyllite Jacket V2
-  - The Brand
-  - Rest of About
-  - S/S24
+## Copy and verification completion — 15 October 2026
 
-  Product copy and About sections can also be edited in admin. S/S24 look copy
-  lives in `ss24.html`.
-- **New hero video:** Riki is sending the final version on 15 Oct. Replace
-  `assets/video/lorimer-promo.mp4` and `poster.jpg` in `index.html`, and
-  cache-bust them.
-- **Sold-out product photo order:** Riki can set it in admin after the
-  migration, or send file names and order.
-- **contact@lorimer.com:** the site domain is `lorimerclothing.com`. Confirm
-  whether Riki owns lorimer.com. The address also appears inside both
-  size-guide images and across the site's copy.
-- **Final mobile pass** after the copy and video land.
-- **Release completed.** Follow the release procedure again for future changes.
+- Applied the supplied denim copy to both colourways, and the supplied wax and
+  fabric-painted Phyllite descriptions. Proofread punctuation and phrasing while
+  retaining fit, construction, finish, .5-size alterations and 1–3-day dispatch
+  details.
+- Revised the Brand story and all six S/S24 captions for clarity and concrete
+  garment details. Corrected the inconsistent website domain and the missing
+  policy reference. Payment copy now refers to methods actually offered at
+  Stripe Checkout rather than promising a fixed list of providers.
+- Confirmed with the owner that the domain is `lorimerclothing.com`. Changed all
+  website contact links and returns error messages to
+  `contact@lorimerclothing.com`. Corrected the embedded email in both supplied
+  size charts; compared every table measurement against the original.
+- Found stale database descriptions overriding the local product copy. Backed
+  up products, content and inventory to the ignored file
+  `.vercel/backups/cms-before-copy-2026-10-15.json`, then ran
+  `scripts/migrate-2026-10-copy.js`. Verified all four live descriptions and
+  intended About replacements, with prices, photos, archived records, unrelated
+  CMS content and all 22 inventory rows unchanged.
+- `npm test`: 176 tests pass. `git diff --check`: clean.
+- Browser checks passed at 390, 768 and 1440 pixels on Home, Products, S/S24,
+  About, Cookies, Returns, Checkout and the live product pages. No horizontal
+  overflow or JavaScript exceptions; body visibility and preloader dismissal
+  verified. Size-chart images loaded and their modals opened and closed.
+- Mobile S/S24 Next/Previous controls and browser Back visibility passed.
+- Deployed to production: `https://www.lorimerclothing.com` (deployment
+  `lorimer-clothing-f82336piz-hieronymous1s-projects.vercel.app`). Production
+  checks at 390 and 1440 pixels confirmed revised API copy, corrected contact
+  links and both replacement size-chart images, with no overflow or JS errors.
+- Local static-server checks exercise the bundled fallback catalog; database
+  changes were separately verified against production.
+
+## Still open
+
+- **Mailbox creation:** owner confirmed Namecheap and signed in. The Launch
+  one-mailbox trial is selected for lorimerclothing.com. Owner approved €0
+  for 30 days, then €13.29/year with auto-renew, and accepted the checkout
+  agreements. Order 216792816 completed at $0; subscription 4454361 is on
+  trial until 15 November 2026. Namecheap automatically set Private Email DNS.
+  Verified directly at the authoritative nameserver: MX records
+  `mx1.privateemail.com` and `mx2.privateemail.com` (priority 10), SPF
+  `v=spf1 include:spf.privateemail.com ~all`, and DKIM at
+  `privateemail._domainkey`. Website A/CNAME records remain unchanged.
+  Mailbox form has `contact` entered; waiting for the owner to set and save
+  the password. Inbound/outbound delivery has not yet been tested.
+  Do not describe the address as active until setup and delivery are tested.
+- **Final hero video:** replacement not present in the workspace or Downloads.
+  Existing video remains in place pending delivery of the final version.
+- **Sold-out photo order:** admin supports numbered previews and ordering;
+  current live photo lists were preserved, including today's uploaded photos.
+  No new ordering instructions were supplied for this round.
 
 ## Known minor caveats
 - `api/returns.js` rejects a *return* request that carries a malformed
@@ -148,3 +173,22 @@ the HTML). The migration was run successfully on 14 October; see below.
   never sends that field for returns.
 - Old `assets/photos/shop/still-01.png` and `still-02.png` are unused
   leftovers.
+
+## Final copy round — 17 October 2026
+
+- Applied `Final Texts.md`: both denim colourways, the wax and fabric-paint
+  Phyllite descriptions, the six S/S24 look captions, the Brand story, and the
+  full Terms, Privacy, Shipping, Payments, Pricing and Returns copy.
+- Homepage S/S24 text revised and set one size smaller; slideshow is five
+  images (old image 5 is now image 3; old 6 and 7 removed).
+- All site emails (footer, About, Returns, API messages, both size-chart
+  images, client guide) now use `info@lorimerclothing.com`.
+- New Sterling Cap 003 photo (`STERLINGCAP003.png`, trimmed to the 5:7 frame);
+  product-page photos now fill a uniform 5:7 box (landscape photos keep their
+  natural shape).
+- **Live database:** run `node scripts/migrate-2026-10-17-final-copy.js` with
+  `DATABASE_URL` set. It backs up the rows it touches to
+  `.vercel/backups/cms-before-final-copy-2026-10-17.json`, then updates the
+  About blocks, the four product descriptions and the cap photo path.
+- The WeTransfer link contained only the cap photo; the final hero video has
+  still not been received.

@@ -69,7 +69,7 @@ test('desktop homepage featured products stay viewport-bounded and footer has no
   assert.doesNotMatch(css, /\.product-tile:nth-child\(2\)\s*\{[^}]*margin-top:\s*(?!0\b)/);
 });
 
-test('homepage load-up screen matches the supplied film-still design', () => {
+test('homepage load-up screen uses white with only the logo, location, and counter', () => {
   const html = read('index.html');
   const preloader = html.match(/<div class="site-preloader"[\s\S]*?<\/div>/)?.[0] || '';
 
@@ -77,7 +77,7 @@ test('homepage load-up screen matches the supplied film-still design', () => {
   assert.match(preloader, /aria-live="polite"/);
   assert.match(preloader, /data-preloader-progress[^>]*aria-hidden="true"/);
   assert.match(preloader, /assets\/logo\.png/);
-  assert.match(preloader, /class="site-preloader__backdrop" src="\.\/assets\/photos\/preloader\/loadup\.jpg"[^>]*alt=""/);
+  assert.doesNotMatch(preloader, /site-preloader__backdrop|photos\/preloader/);
   assert.match(preloader, /LORIMER® \/ HELSINKI/);
   // Riki: "all the other lil texts can go"
   assert.doesNotMatch(preloader, /Pattern loading|GARMENT INDEX|apple-touch-icon|site-preloader__panel/);
@@ -88,7 +88,7 @@ test('homepage load-up screen matches the supplied film-still design', () => {
 test('load-up screen is responsive, reduced-motion safe, and always releases', () => {
   const css = read('css/styles.css');
 
-  assert.match(css, /\.site-preloader__backdrop\s*\{[\s\S]*?object-fit:\s*cover/);
+  assert.match(css, /\.site-preloader\s*\{[^}]*background:\s*#fff(?:fff)?\s*;/);
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.site-preloader/);
   assert.match(css, /@keyframes\s+preloader-failsafe/);
   assert.match(css, /\.site-preloader\.is-leaving\s*\{[^}]*preloader-failsafe[^}]*preloader-wipe-out/);

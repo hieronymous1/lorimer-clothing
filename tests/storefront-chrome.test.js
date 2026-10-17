@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const pages = ['index.html', 'shop.html', 'ss24.html', 'product-detail.html', 'checkout.html'];
+const pages = ['index.html', 'shop.html', 'ss24.html', 'product-detail.html', 'checkout.html', 'about.html', 'returns.html'];
 const read = relativePath => fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
 
 test('every storefront page uses the approved five-item navigation order', () => {
@@ -49,10 +49,10 @@ test('homepage uses the approved compact SS24 preview content', () => {
   const html = read('index.html');
   const section = html.match(/<section class="look-section"[\s\S]*?<\/section>/)?.[0] || '';
 
-  assert.match(section, /Spring\/Summer 24/);
-  assert.match(section, /SS24 Featuring 6 original looks available for viewing in Products and S\/S24 page/);
+  assert.match(section, /Spring\/Summer 2024/);
+  assert.match(section, /SS24 Features six original looks available for viewing in the Products and S\/S24 pages\./);
   assert.match(section, /View in S\/S24/);
-  const expectedSlides = ['F10E840B', '03B5025B', '56AFFC6A', '45D39E80', '68DD5925', 'C629834E', '773069D2'];
+  const expectedSlides = ['F10E840B', '03B5025B', '68DD5925', '56AFFC6A', '45D39E80'];
   let previousSlide = -1;
   for (const slide of expectedSlides) {
     const position = section.indexOf(slide);
@@ -111,7 +111,9 @@ test('homepage removes the standalone product row and uses one section gap token
 test('every storefront page uses the approved footer content', () => {
   for (const page of pages) {
     const footer = read(page).match(/<footer class="[^"]*footer[^"]*"[\s\S]*?<\/footer>/)?.[0] || '';
-    for (const content of ['ABOUT', '© Lorimer 2026', 'Helsinki, 00750', 'Cookies', 'contact@lorimer.com', '@Lorimer.Clo']) {
+    assert.match(footer, /href="about\.html#delivery-title"/);
+    assert.doesNotMatch(footer, /cookies\.html|>Cookies</);
+    for (const content of ['ABOUT', '© Lorimer 2026', 'Helsinki, 00750', 'Shipping &amp; Returns', 'info@lorimerclothing.com', '@Lorimer.Clo']) {
       assert.ok(footer.includes(content), `${page} footer is missing ${content}`);
     }
   }

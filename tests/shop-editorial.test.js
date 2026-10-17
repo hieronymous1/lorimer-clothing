@@ -168,7 +168,7 @@ test('product galleries follow the supplied Finder compositions exactly', () => 
     'overlapped-fray-skirt': ['14.jpg', 'DSC_0107.jpg', 'DSC_0129.jpg', 'IMG_3029.jpeg', 'IMG_2981.jpeg', 'DSC_0279.jpg'],
     'dual-texture-knit-vest': ['16.jpg', 'DSC04170.jpg', 'IMG_6267.jpg'],
     'adjustable-button-trousers': ['17.jpg', 'DSC04171.jpg', 'IMG_6269.jpg'],
-    'distressed-lorimer-cap': ['1.png'],
+    'distressed-lorimer-cap': ['STERLINGCAP003.png'],
     'university-striped-sweatshirt': ['20.jpg', '3_VSCO.JPG', 'EditTest.jpg', 'DSC04153.jpg', '76F2B413-5A03-475A-A578-184DE63203E9.JPG'],
     'mens-straight-trousers': ['21.jpg'],
     '3d-panel-bomber': ['24.jpg', 'IMG_6298.jpg', '2_VSCO 3.JPG', 'DSC04180.jpg', '4AA042A9-08D3-488A-A147-C9A6784B1D37.JPG'],
