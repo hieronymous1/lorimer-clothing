@@ -10,7 +10,7 @@ test('homepage uses one seamless video beneath the aperture reveal', () => {
   const html = read('index.html');
   const hero = html.match(/<section class="hero"[\s\S]*?<\/section>/)?.[0] || '';
 
-  assert.match(hero, /assets\/video\/lorimer-promo\.mp4/);
+  assert.match(hero, /assets\/video\/lorimer-promo-final\.mp4/);
   assert.equal((hero.match(/<video\b/g) || []).length, 1);
   assert.match(hero, /hero__media/);
   assert.doesNotMatch(hero, /hero__col-images|MAH00426|<img\b[^>]*alt="Look [A-C2-3]"/);
@@ -41,7 +41,7 @@ test('homepage interaction supports an aperture reveal and reduced motion', () =
 
 test('homepage-owned final assets exist', () => {
   const required = [
-    'assets/video/lorimer-promo.mp4',
+    'assets/video/lorimer-promo-final.mp4',
     'assets/photos/home/denim-feature-01.jpg',
     'assets/photos/home/denim-feature-02.jpg',
     'assets/photos/home/ss24-editorial.jpg',
